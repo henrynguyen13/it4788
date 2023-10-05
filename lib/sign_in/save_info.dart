@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '/flutter_flow_animations.dart';
 
 class SaveInfoPage extends StatefulWidget {
   const SaveInfoPage({super.key, required this.title});
@@ -14,17 +13,6 @@ class SaveInfoPage extends StatefulWidget {
 }
 
 class _SaveInfoPageState extends State<SaveInfoPage> {
-  final animationsMap = {
-    'columnOnPageLoadAnimation': AnimationInfo(
-      trigger: AnimationTrigger.onPageLoad,
-      curve: Curves.easeInOut,
-      delay: 0,
-      duration: 600,
-      initialState: AnimationState(offset: Offset(0, 1000)),
-      finalState: AnimationState(offset: Offset(0, 0)),
-    ),
-  };
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,10 +93,11 @@ class _SaveInfoPageState extends State<SaveInfoPage> {
         ),
       ],
     ).animate().moveY(
-            delay: Duration(seconds: 0),
-            duration: Duration(milliseconds: 500),
-            begin: 1000,
-            end: 0));
+              delay: Duration(seconds: 0),
+              duration: Duration(milliseconds: 500),
+              begin: 1000,
+              end: 0,
+            ));
   }
 
   Padding savedInfoUser(String avatarPath, String username) {

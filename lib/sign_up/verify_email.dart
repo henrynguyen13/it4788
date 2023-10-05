@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../sign_in/save_info.dart';
+
 class VeryfyEmailPage extends StatefulWidget {
   const VeryfyEmailPage({super.key, required this.title});
 
@@ -110,7 +112,15 @@ class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
                     },
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SaveInfoPage(
+                              title: '',
+                            )),
+                  );
+                },
                 child: Text(
                   "Xác nhận",
                   style: TextStyle(
