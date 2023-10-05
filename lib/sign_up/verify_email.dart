@@ -17,6 +17,7 @@ class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: <Widget>[
           Container(
