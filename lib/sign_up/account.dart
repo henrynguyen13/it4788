@@ -54,7 +54,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     return Form(
       key: _formKey,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 50.0),
+        margin: const EdgeInsets.only(left: 50, right: 50, top: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -64,41 +64,44 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
             Container(
               margin: const EdgeInsets.symmetric(
-                vertical: 12.0,
+                vertical: 12,
               ),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 2, color: Color(0xFF1C58C9)),
-                  ),
-                  hintText: 'Nhập địa chỉ email...',
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(
-                      Icons.email,
-                      color: emailIconColor,
+              child: SizedBox(
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    // contentPadding: EdgeInsets.zero,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 2, color: Color(0xFF1C58C9)),
+                    ),
+                    hintText: 'Nhập địa chỉ email...',
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(
+                        Icons.email,
+                        color: emailIconColor,
+                      ),
                     ),
                   ),
+                  onChanged: (value) => {
+                    setState(() {
+                      emailIconColor =
+                          value.isEmpty ? Colors.grey : const Color(0xFF1C58C9);
+                    })
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Đây là trường bắt buộc';
+                    }
+                    return EmailValidator.validate(value)
+                        ? null
+                        : "Vui lòng nhập đúng định dạng email";
+                  },
                 ),
-                onChanged: (value) => {
-                  setState(() {
-                    emailIconColor =
-                        value.isEmpty ? Colors.grey : const Color(0xFF1C58C9);
-                  })
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Đây là trường bắt buộc';
-                  }
-                  return EmailValidator.validate(value)
-                      ? null
-                      : "Vui lòng nhập đúng định dạng email";
-                },
               ),
             ),
             const Text(
@@ -109,55 +112,61 @@ class MyCustomFormState extends State<MyCustomForm> {
               margin: const EdgeInsets.symmetric(
                 vertical: 12.0,
               ),
-              child: TextFormField(
-                obscureText: !_passwordVisible,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 2, color: Color(0xFF1C58C9)),
-                  ),
-                  hintText: 'Nhập mật khẩu...',
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(
-                      Icons.lock,
-                      color: passwordIconColor,
+              child: SizedBox(
+                child: TextFormField(
+                  obscureText: !_passwordVisible,
+                  decoration: InputDecoration(
+                    // contentPadding: EdgeInsets.zero,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
                     ),
-                  ),
-                  suffixIcon: Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    child: IconButton(
-                      icon: Icon(
-                        _passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.grey,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 2, color: Color(0xFF1C58C9)),
+                    ),
+                    hintText: 'Nhập mật khẩu...',
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(
+                        Icons.lock,
+                        color: passwordIconColor,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _passwordVisible = !_passwordVisible;
-                        });
-                      },
+                    ),
+                    suffixIcon: Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      child: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        },
+                      ),
                     ),
                   ),
+                  onChanged: (value) => {
+                    setState(() {
+                      passwordIconColor =
+                          value.isEmpty ? Colors.grey : const Color(0xFF1C58C9);
+                    })
+                  },
+                  controller: _pass,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Đây là trường bắt buộc';
+                    }
+                    if (value.length < 6) {
+                      return 'Mật khẩu phải có ít nhất 6 kí tự';
+                    }
+                    return null;
+                  },
                 ),
-                onChanged: (value) => {
-                  setState(() {
-                    passwordIconColor =
-                        value.isEmpty ? Colors.grey : const Color(0xFF1C58C9);
-                  })
-                },
-                controller: _pass,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Đây là trường bắt buộc';
-                  }
-                  return null;
-                },
               ),
             ),
             const Text(
@@ -168,55 +177,61 @@ class MyCustomFormState extends State<MyCustomForm> {
               margin: const EdgeInsets.symmetric(
                 vertical: 12,
               ),
-              child: TextFormField(
-                obscureText: !_confirmPasswordVisible,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 2, color: Color(0xFF1C58C9)),
-                  ),
-                  hintText: 'Nhập mật khẩu...',
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(
-                      Icons.lock,
-                      color: confirmPasswordIconColor,
+              child: SizedBox(
+                child: TextFormField(
+                  obscureText: !_confirmPasswordVisible,
+                  decoration: InputDecoration(
+                    // contentPadding: EdgeInsets.zero,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 2, color: Color(0xFF1C58C9)),
                     ),
-                  ),
-                  suffixIcon: Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    child: IconButton(
-                      icon: Icon(
-                        _confirmPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.grey,
+                    hintText: 'Nhập mật khẩu...',
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(
+                        Icons.lock,
+                        color: confirmPasswordIconColor,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _confirmPasswordVisible = !_confirmPasswordVisible;
-                        });
-                      },
+                    ),
+                    suffixIcon: Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      child: IconButton(
+                        icon: Icon(
+                          _confirmPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _confirmPasswordVisible = !_confirmPasswordVisible;
+                          });
+                        },
+                      ),
                     ),
                   ),
+                  onChanged: (value) => {
+                    setState(() {
+                      confirmPasswordIconColor =
+                          value.isEmpty ? Colors.grey : const Color(0xFF1C58C9);
+                    })
+                  },
+                  controller: _confirmPass,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Đây là trường bắt buộc';
+                    }
+                    if (value != _pass.text) return 'Mật khẩu không khớp';
+                    if (value.length < 6) {
+                      return 'Mật khẩu phải có ít nhất 6 kí tự';
+                    }
+                    return null;
+                  },
                 ),
-                onChanged: (value) => {
-                  setState(() {
-                    confirmPasswordIconColor =
-                        value.isEmpty ? Colors.grey : const Color(0xFF1C58C9);
-                  })
-                },
-                controller: _confirmPass,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Đây là trường bắt buộc';
-                  }
-                  if (value != _pass.text) return 'Mật khẩu không khớp';
-                  return null;
-                },
               ),
             ),
             Padding(
@@ -233,7 +248,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1C58C9),
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
