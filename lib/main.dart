@@ -3,6 +3,8 @@ import 'package:it4788/sign_up/account.dart';
 
 import 'sign_in/save_info.dart';
 import 'sign_up/verify_email.dart';
+import 'package:it4788/sign_up/name.dart';
+import 'package:it4788/sign_up/policy.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const VeryfyEmailPage(title: ''),
+      home: const Policy(),
     );
   }
 }
