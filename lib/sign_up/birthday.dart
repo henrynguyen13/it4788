@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/sign_up/account.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -149,8 +150,10 @@ class _RegisterPageState extends State<RegisterPage> {
             SizedBox(height: 32.0),
             TextButton(
               onPressed: () {
-                print(
-                    'Ngày tháng năm sinh: $selectedDay $selectedMonth $selectedYear');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Account()),
+                );
               },
               child: Text('Đăng ký'),
               style: ButtonStyle(
