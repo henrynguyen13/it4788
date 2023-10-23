@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/sign_up/birthday.dart';
 
 class Name extends StatefulWidget {
   const Name();
@@ -69,7 +70,10 @@ class _NameState extends State<Name> {
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white),
                   backgroundColor: MaterialStateProperty.all(Colors.blue)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RegisterPage()));
+              },
               child: const Text('Tiếp',
                   style:
                       TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500)),

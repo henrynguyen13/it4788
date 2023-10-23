@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:it4788/sign_up/verify_email.dart';
 
 class Account extends StatelessWidget {
   const Account({super.key});
@@ -241,8 +242,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const VeryfyEmailPage(
+                                  title: '',
+                                )),
                       );
                     }
                   },
