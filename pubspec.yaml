@@ -38,6 +38,9 @@ dependencies:
   flutter_animate: ^4.2.0+1
   webview_flutter_android: ^3.12.0
   webview_flutter: ^4.4.1
+  provider: ^6.0.5
+  charts_flutter: ^0.12.0
+  smoothie: ^0.3.0+1
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +52,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+  comment_box: ^0.0.18
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

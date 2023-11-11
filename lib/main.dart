@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/Comment/commentTreePainter.dart';
+import 'package:it4788/report.dart';
 import 'package:it4788/sign_up/account.dart';
 
 import 'sign_up/verify_email.dart';
@@ -7,6 +9,7 @@ import 'sign_up/verify_email.dart';
 // import 'package:it4788/sign_up/policy.dart';
 import 'sign_up/birthday.dart';
 import 'package:it4788/welcome.dart';
+import 'Comment/commentPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,7 +46,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Welcome(),
+      home: const CommentPage(),
       // home: const VeryfyEmailPage(title: "hi"),
       // home: const Account(),
       // home: RegisterPage());
