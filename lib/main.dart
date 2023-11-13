@@ -50,6 +50,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const ArticleScreen(),
+      // home: const PersonalPage(), -> Manh
+      // home: PostArticle(),  -> Hieu
+      // home: const CommentPage(), -> Hoang
+
       // home: const VeryfyEmailPage(title: "hi"),
       // home: const Account(),
       // home: RegisterPage());

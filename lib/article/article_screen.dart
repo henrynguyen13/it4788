@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:expandable_text/expandable_text.dart';
-import 'package:it4788/model;s/article.dart';
+import 'package:it4788/model/article.dart';
 
 class ArticleScreen extends StatefulWidget {
   const ArticleScreen({super.key});
