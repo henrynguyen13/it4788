@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:it4788/home.dart';
+import 'package:it4788/post_article/post_article.dart';
 import 'package:it4788/sign_up/account.dart';
 import 'package:it4788/sign_up/name.dart';
 
@@ -237,7 +238,7 @@ class _SignIn extends State<SignIn> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Home()),
+                                          builder: (context) => PostArticle()),
                                     );
                                   } else {
                                     print("Đăng nhập thất bại !");

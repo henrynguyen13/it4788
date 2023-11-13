@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/post_article/post_article.dart';
 import 'package:it4788/sign_up/account.dart';
 
 import 'sign_up/verify_email.dart';
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Welcome(),
+      home: PostArticle(),
       // home: const VeryfyEmailPage(title: "hi"),
       // home: const Account(),
       // home: RegisterPage());

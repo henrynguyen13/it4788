@@ -38,6 +38,8 @@ dependencies:
   flutter_animate: ^4.2.0+1
   webview_flutter_android: ^3.12.0
   webview_flutter: ^4.4.1
+  image_picker: ^0.8.6
+  font_awesome_flutter: ">= 4.7.0"
 
 dev_dependencies:
   flutter_test:

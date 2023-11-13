@@ -9,7 +9,9 @@ class Home extends StatelessWidget {
         appBar: AppBar(),
         backgroundColor: const Color(0xff3a57e8),
         body: Column(
-          children: [Text("Home Page")],
+          children: [
+            Text("Home Page"),
+          ],
         ));
   }
 }
