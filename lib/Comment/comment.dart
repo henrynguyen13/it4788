@@ -100,8 +100,6 @@ class CommentBox extends StatelessWidget {
     );
   }
 
-  /// This method is used to parse the image from the URL or the path.
-  /// `CommentBox.commentImageParser(imageURLorPath: 'url_or_path_to_image')`
   static ImageProvider commentImageParser({imageURLorPath}) {
     try {
       //check if imageURLorPath

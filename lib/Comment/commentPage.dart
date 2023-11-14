@@ -1,7 +1,4 @@
 // ignore_for_file: library_private_types_in_public_api
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import 'comment.dart';
@@ -14,10 +11,9 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
-  final formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
-  late FocusNode focusNode;
-  late bool isShowSendWidget = false;
+  final FocusNode focusNode = FocusNode();
   int replyingCommentId = -1;
 
   List<CommentModel> filedata = <CommentModel>[
@@ -61,20 +57,18 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
-    focusNode = FocusNode();
     WidgetsBinding.instance.addObserver(this);
   }
 
-  @override
-  void didChangeMetrics() {
-    super.didChangeMetrics();
-    // ignore: deprecated_member_use
-    final value = WidgetsBinding.instance.window.viewInsets.bottom;
-    if (value == 0) {
-      focusNode.unfocus();
-    }
-  }
+  // @override
+  // void didChangeMetrics() {
+  //   super.didChangeMetrics();
+  //   // ignore: deprecated_member_use
+  //   final value = WidgetsBinding.instance.window.viewInsets.bottom;
+  //   if (value == 0) {
+  //     focusNode.unfocus();
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -85,7 +79,6 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
 
   void ontapMethod(int parentId) {
     setState(() {
-      isShowSendWidget = true;
       replyingCommentId = parentId;
     });
   }
@@ -145,18 +138,19 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
           ontapMethod(-1);
         },
         formKey: formKey,
+        focusNode: focusNode,
         commentController: commentController,
         backgroundColor: Colors.white,
         textColor: Colors.black,
-        sendWidget: Visibility(
-          visible: isShowSendWidget,
-          child: const Icon(
+        sendWidget: const Visibility(
+          visible: true,
+          child: Icon(
             Icons.send_sharp,
             size: 30,
             color: Color.fromRGBO(57, 104, 214, 1),
           ),
         ),
-        focusNode: focusNode,
+        //focusNode: focusNode,
         child: commentChild(filedata),
       ),
     );
