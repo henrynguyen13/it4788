@@ -6,6 +6,7 @@ import 'package:it4788/report.dart';
 import 'package:it4788/post_article/post_article.dart';
 import 'package:it4788/article/article_screen.dart';
 import 'package:it4788/sign_up/account.dart';
+import 'package:it4788/sign_up/sign_up.dart';
 
 import 'sign_up/verify_email.dart';
 // import 'sign_in/save_info.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
         // home: const VeryfyEmailPage(title: "hi"),
         // home: const Account(),
         // home: RegisterPage());
-        home: const HomeScreen());
+        home: const SignUpPage());
   }
 }
 

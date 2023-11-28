@@ -7,8 +7,6 @@ Future<void> signUp(String email, String password, String uuid) async {
     'password': password,
     'uuid': uuid,
   };
-  print('khoa');
-
   final dio = ApiService.createDio();
   final response = await dio.post('signup', data: request);
   print(response);
