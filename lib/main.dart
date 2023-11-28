@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const ArticleScreen(),
+      home: Welcome(),
       // home: const PersonalPage(), -> Manh
       // home: PostArticle(),  -> Hieu
       // home: const CommentPage(), -> Hoang

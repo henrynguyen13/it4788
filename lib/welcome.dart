@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/service/api.dart';
 import 'package:it4788/sign_in/sign_in.dart';
 
 class Welcome extends StatelessWidget {
-  // Navigator.of(Context).push(), pop()
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +55,8 @@ class Welcome extends StatelessWidget {
         Padding(
           padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
           child: TextButton(
-            onPressed: () {
+            onPressed: () async {
+              await signUp("example1224ttrt@gmail.com", "Abcd1234", "ghfhf");
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SignIn()),
