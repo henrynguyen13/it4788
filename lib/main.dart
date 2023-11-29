@@ -52,14 +52,14 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home: const CommentPage(),
-        // home: const PersonalPage(), -> Manh
-        // home: PostArticle(),  -> Hieu
-        // home: const CommentPage(), -> Hoang
+        home: const PersonalPage());
+    // home: PostArticle(),  -> Hieu
+    // home: const CommentPage(), -> Hoang
 
-        // home: const VeryfyEmailPage(title: "hi"),
-        // home: const Account(),
-        // home: RegisterPage());
-        home: const SignUpPage());
+    // home: const VeryfyEmailPage(title: "hi"),
+    // home: const Account(),
+    // home: RegisterPage());
+    // home: const SignUpPage());
   }
 }
 
