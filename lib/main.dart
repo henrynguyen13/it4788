@@ -4,7 +4,6 @@ import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/Comment/commentTreePainter.dart';
 import 'package:it4788/report.dart';
 import 'package:it4788/post_article/post_article.dart';
-import 'package:it4788/article/article_screen.dart';
 import 'package:it4788/sign_up/account.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 

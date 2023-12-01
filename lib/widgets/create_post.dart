@@ -1,10 +1,11 @@
 import 'package:it4788/core/pallete.dart';
 import 'package:flutter/material.dart';
+import 'package:it4788/model/user_infor_profile.dart';
 
 import '../model/user_model.dart';
 
 class CreatePostContainer extends StatelessWidget {
-  final User currentUser;
+  final UserInfor currentUser;
 
   const CreatePostContainer({super.key, required this.currentUser});
 
@@ -21,7 +22,10 @@ class CreatePostContainer extends StatelessWidget {
                 CircleAvatar(
                   radius: 20.0,
                   backgroundColor: Colors.grey[200],
-                  backgroundImage: NetworkImage(currentUser.imageUrl!),
+                  backgroundImage: NetworkImage(currentUser
+                          .data.avatar.isNotEmpty
+                      ? currentUser.data.avatar
+                      : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'),
                 ),
                 const SizedBox(
                   width: 8.0,
@@ -48,20 +52,25 @@ class CreatePostContainer extends StatelessWidget {
                 Row(
                   children: [
                     FilledButton(
-                        onPressed: () => print("Live"),
-                        child:const Row(
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Icon(Icons.add, color: Colors.white,),
-                            SizedBox(width: 15.0, height: 5.0,),
-                            Text("Create Post",
-                                textAlign: TextAlign.end,
-                              style: TextStyle(
-                                color: Colors.white
-                              ),
-                            )
-                          ],
-                        ),
+                      onPressed: () => print("Live"),
+                      child: const Row(
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 15.0,
+                            height: 5.0,
+                          ),
+                          Text(
+                            "Create Post",
+                            textAlign: TextAlign.end,
+                            style: TextStyle(color: Colors.white),
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -69,13 +78,12 @@ class CreatePostContainer extends StatelessWidget {
                   children: [
                     FilledButton(
                       onPressed: () => print("Live"),
-                      child:const Icon(Icons.image, color: Colors.white),
+                      child: const Icon(Icons.image, color: Colors.white),
                     ),
                   ],
                 ),
               ],
             ),
-
           ),
         ],
       ),
