@@ -29,7 +29,7 @@ class Welcome extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SignIn()),
+                MaterialPageRoute(builder: (context) => SignInPage()),
               );
             },
             color: Color.fromARGB(255, 7, 101, 194),
@@ -60,7 +60,7 @@ class Welcome extends StatelessWidget {
               // await signUp("example1224đttrt@gmail.com", "Abcd1234", "ghfhf");
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SignIn()),
+                MaterialPageRoute(builder: (context) => SignInPage()),
               );
             },
             child: const Text(

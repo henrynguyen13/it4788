@@ -170,7 +170,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           signUp(email, password, 'uuid');
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => SignIn()),
+                            MaterialPageRoute(
+                                builder: (context) => SignInPage()),
                           );
                         }
                       },
@@ -223,7 +224,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SignIn()),
+                          MaterialPageRoute(builder: (context) => SignInPage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
