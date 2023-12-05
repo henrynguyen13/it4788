@@ -4,8 +4,8 @@ import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/Comment/commentTreePainter.dart';
 import 'package:it4788/report.dart';
 import 'package:it4788/post_article/post_article.dart';
-import 'package:it4788/article/article_screen.dart';
 import 'package:it4788/sign_up/account.dart';
+import 'package:it4788/sign_up/sign_up.dart';
 
 import 'sign_up/verify_email.dart';
 // import 'sign_in/save_info.dart';
@@ -51,14 +51,14 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home: const CommentPage(),
-        // home: const PersonalPage(), -> Manh
-        // home: PostArticle(),  -> Hieu
-        // home: const CommentPage(), -> Hoang
+        home: const PersonalPage());
+    // home: PostArticle(),  -> Hieu
+    // home: const CommentPage(), -> Hoang
 
-        // home: const VeryfyEmailPage(title: "hi"),
-        // home: const Account(),
-        // home: RegisterPage());
-        home: const HomeScreen());
+    // home: const VeryfyEmailPage(title: "hi"),
+    // home: const Account(),
+    // home: RegisterPage());
+    // home: const SignUpPage());
   }
 }
 

@@ -1,13 +1,148 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:it4788/model/user_infor_profile.dart';
+import 'package:it4788/personal_page/preview_avatar.dart';
+import 'package:it4788/personal_page/preview_coverage_image.dart';
+import 'package:it4788/service/profile_sevice.dart';
 
 class EditPersonalPage extends StatefulWidget {
-  const EditPersonalPage({super.key});
+  final UserInfor userInfor;
+
+  const EditPersonalPage({super.key, required this.userInfor});
 
   @override
   State<EditPersonalPage> createState() => _EditPersonalPageState();
 }
 
 class _EditPersonalPageState extends State<EditPersonalPage> {
+  late UserInfor userInfor;
+  late TextEditingController _descriptionController;
+  late TextEditingController _cityController;
+  late TextEditingController _addressController;
+  late TextEditingController _countryController;
+
+  @override
+  void initState() {
+    super.initState();
+    userInfor = widget.userInfor;
+    _descriptionController = TextEditingController();
+    _cityController = TextEditingController();
+    _addressController = TextEditingController();
+    _countryController = TextEditingController();
+
+    _descriptionController.value = _descriptionController.value.copyWith(
+      text: userInfor.data.description,
+      selection:
+          TextSelection.collapsed(offset: userInfor.data.description.length),
+    );
+
+    _cityController.value = _descriptionController.value.copyWith(
+      text: userInfor.data.city,
+      selection:
+          TextSelection.collapsed(offset: userInfor.data.description.length),
+    );
+
+    _addressController.value = _descriptionController.value.copyWith(
+      text: userInfor.data.address,
+      selection:
+          TextSelection.collapsed(offset: userInfor.data.description.length),
+    );
+
+    _countryController.value = _descriptionController.value.copyWith(
+      text: userInfor.data.country,
+      selection:
+          TextSelection.collapsed(offset: userInfor.data.description.length),
+    );
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  void navigateToPreviewAvatar(String imagePath) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PreviewAvatar(
+          imagePath: imagePath,
+          userInfor: userInfor,
+        ),
+      ),
+    );
+  }
+
+  void navigateToPreviewCoverageImage(String imagePath) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PreviewCoverageImage(
+          imagePath: imagePath,
+          userInfor: userInfor,
+        ),
+      ),
+    );
+  }
+
+  Future getAvatarImage() async {
+    try {
+      // Chọn ảnh từ gallery
+      var pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 100,
+        maxHeight: 800,
+        maxWidth: 800,
+      );
+
+      if (pickedFile == null) {
+        // Người dùng không chọn ảnh
+        return;
+      }
+
+      navigateToPreviewAvatar(pickedFile.path);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future getCoverImage() async {
+    try {
+      // Chọn ảnh từ gallery
+      var pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 100,
+        maxHeight: 800,
+        maxWidth: 800,
+      );
+
+      if (pickedFile == null) {
+        // Người dùng không chọn ảnh
+        return;
+      }
+
+      navigateToPreviewCoverageImage(pickedFile.path);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future saveUserInfor() async {
+    try {
+      await ProfileSevice().setUserInfor(
+          widget.userInfor.data.username,
+          widget.userInfor.data.description,
+          null,
+          widget.userInfor.data.address,
+          widget.userInfor.data.city,
+          widget.userInfor.data.country,
+          null,
+          widget.userInfor.data.link);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,10 +155,10 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () => {},
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Ảnh đại diện',
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -33,17 +168,21 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text(
-                          'Chỉnh sửa',
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18,
-                              color: Colors.blue),
-                        ),
-                      ),
+                          padding: const EdgeInsets.all(20),
+                          child: GestureDetector(
+                            onTap: () {
+                              getAvatarImage();
+                            },
+                            child: const Text(
+                              'Chỉnh sửa',
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 18,
+                                  color: Colors.blue),
+                            ),
+                          )),
                     ],
                   ),
                 )),
@@ -51,21 +190,23 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 padding: const EdgeInsets.all(5.0),
                 height: 300,
                 child: GestureDetector(
-                  onTap: () => {},
-                  child: const CircleAvatar(
+                  onTap: () => {getAvatarImage()},
+                  child: CircleAvatar(
                     radius: 120,
-                    backgroundImage: NetworkImage(
-                        'https://aiartshop.com/cdn/shop/files/laughing-fat-cat-animal-ai-art-143.webp?v=1686132290'),
+                    backgroundImage: NetworkImage(userInfor
+                            .data.avatar.isNotEmpty
+                        ? userInfor.data.avatar
+                        : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'),
                   ),
                 )),
             Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () => {},
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Ảnh bìa',
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -75,15 +216,20 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text(
-                          'Chỉnh sửa',
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18,
-                              color: Colors.blue),
+                        padding: const EdgeInsets.all(20),
+                        child: GestureDetector(
+                          onTap: () {
+                            getCoverImage();
+                          },
+                          child: const Text(
+                            'Chỉnh sửa',
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                                color: Colors.blue),
+                          ),
                         ),
                       ),
                     ],
@@ -94,14 +240,16 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 width: MediaQuery.of(context).size.width,
                 height: 300,
                 child: GestureDetector(
-                  onTap: () => {},
+                  onTap: () => {getCoverImage()},
                   child: Container(
                       child: ClipRRect(
                     borderRadius: BorderRadius.circular(20), // Image border
                     child: SizedBox.fromSize(
                       size: const Size.fromRadius(56), // Image radius
                       child: Image.network(
-                          'https://pbs.twimg.com/media/FsPqq36agAABXJB.jpg',
+                          userInfor.data.coverImage.isNotEmpty
+                              ? userInfor.data.coverImage
+                              : 'https://wallpapers.com/images/hd/light-grey-background-cxk0x5hxxykvb55z.jpg',
                           fit: BoxFit.cover),
                     ),
                   )),
@@ -110,10 +258,10 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () => {},
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Tiểu sử',
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -123,25 +271,35 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text(
-                          'Thêm',
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18,
-                              color: Colors.blue),
+                        padding: const EdgeInsets.all(20),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              userInfor.data.description =
+                                  _descriptionController.text;
+                            });
+                            saveUserInfor();
+                          },
+                          child: const Text(
+                            'Lưu',
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                                color: Colors.blue),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 )),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: TextField(
+                controller: _descriptionController,
                 maxLines: 3,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Tiểu sử',
                 ),
@@ -151,10 +309,10 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () => {},
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Chi tiết',
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -164,92 +322,111 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text(
-                          'Chỉnh sửa',
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18,
-                              color: Colors.blue),
+                        padding: const EdgeInsets.all(20),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              userInfor.data.address = _addressController.text;
+                              userInfor.data.city = _cityController.text;
+                              userInfor.data.country = _countryController.text;
+                            });
+                            saveUserInfor();
+                          },
+                          child: const Text(
+                            'Chỉnh sửa',
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                                color: Colors.blue),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 )),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.work,
-                        color: Colors.black45,
-                        size: 24.0,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Text(
-                          'Hà Nội',
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                  Container(
+                    width: double.infinity,
+                    height: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Icon(
+                          Icons.work,
+                          color: Colors.black45,
+                          size: 24.0,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: _cityController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Làm việc tại',
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.home,
-                        color: Colors.black45,
-                        size: 24.0,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Text.rich(
-                          TextSpan(
-                            text: 'Sống tại',
-                            style: TextStyle(fontSize: 18),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: ' Hà Nội',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                            ],
+                  Container(
+                    width: double.infinity,
+                    height: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Icon(
+                          Icons.home,
+                          color: Colors.black45,
+                          size: 24.0,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: _addressController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Sống tại',
+                              ),
+                            ),
                           ),
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_pin,
-                        color: Colors.black45,
-                        size: 24.0,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Text.rich(
-                          TextSpan(
-                            text: 'Đến từ',
-                            style: TextStyle(fontSize: 18),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: ' Thủ Đô Ánh Sáng',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                            ],
+                  Container(
+                    width: double.infinity,
+                    height: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Icon(
+                          Icons.location_pin,
+                          color: Colors.black45,
+                          size: 24.0,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: _countryController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Đến từ',
+                              ),
+                            ),
                           ),
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),

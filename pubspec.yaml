@@ -44,6 +44,10 @@ dependencies:
   provider: ^6.0.5
   charts_flutter: ^0.12.0
   smoothie: ^0.3.0+1
+  http: ^1.1.0
+  dio: ^5.3.4
+  flutter_secure_storage: ^9.0.0
+  http_parser: ^4.0.2
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +71,7 @@ flutter:
     - assets/images/
     - assets/images/icons/
     - assets/images/icons/avatar_icon.png
+    - assets/images/auth_facebook.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
