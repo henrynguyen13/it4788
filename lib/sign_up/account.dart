@@ -245,8 +245,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const VeryfyEmailPage(
-                                  title: '',
+                            builder: (context) => const VerifyEmailPage(
+                                  verifyCode: "",
                                 )),
                       );
                     }

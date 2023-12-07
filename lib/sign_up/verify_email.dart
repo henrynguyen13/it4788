@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 
 import '../sign_in/save_info.dart';
 
-class VeryfyEmailPage extends StatefulWidget {
-  const VeryfyEmailPage({super.key, required this.title});
+class VerifyEmailPage extends StatefulWidget {
+  const VerifyEmailPage({super.key, required this.verifyCode});
 
-  final String title;
+  final String verifyCode;
 
   @override
-  State<VeryfyEmailPage> createState() => _VeryfyEmailPageState();
+  State<VerifyEmailPage> createState() => _VerifyEmailPageState();
 }
 
-class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
+class _VerifyEmailPageState extends State<VerifyEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +59,7 @@ class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
           ),
           Text(
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              "Nhập mã xác thực gồm 5 chữ số:"),
+              "Nhập mã xác thực gồm 6 chữ số:"),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: Row(
@@ -75,28 +75,33 @@ class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
                   child: SizedBox(
-                    width: 100,
-                    child: TextFormField(
-                      autofocus: false,
-                      obscureText: false,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color.fromRGBO(57, 104, 214, 1),
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                      width: 100,
+                      child: Text(widget.verifyCode,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ))
+                      // child: TextFormField(
+                      //   autofocus: false,
+                      //   obscureText: false,
+                      //   decoration: InputDecoration(
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Colors.black,
+                      //         width: 1,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Color.fromRGBO(57, 104, 214, 1),
+                      //         width: 2,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //   ),
+                      // ),
                       ),
-                    ),
-                  ),
                 )
               ],
             ),
