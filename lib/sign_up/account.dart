@@ -247,6 +247,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                         MaterialPageRoute(
                             builder: (context) => const VerifyEmailPage(
                                   verifyCode: "",
+                                  email: "",
                                 )),
                       );
                     }

@@ -16,6 +16,7 @@ class _SignIn extends State<SignIn> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   String verifyCodeData = "";
+  String emailData = "";
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +106,7 @@ class _SignIn extends State<SignIn> {
                       MaterialButton(
                         onPressed: () async {
                           String email = _emailController.text;
+                          emailData = email;
                           final response = await _getVerifyCodeResponse(email);
 
                           if (response.statusCode == 200) {
@@ -126,7 +128,7 @@ class _SignIn extends State<SignIn> {
                             }
                           } else {
                             // Xử lý lỗi nếu có
-                            print("Error: ${response.statusMessage}");
+                            print("Lỗi khi lấy verify code");
                           }
                         },
                         child: Padding(
@@ -188,13 +190,11 @@ class _SignIn extends State<SignIn> {
 
   // get verify code to the VerifyEmailPage
   void _sendVerifyCode(BuildContext context) {
-    print("verify send " + verifyCodeData);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => VerifyEmailPage(
-          verifyCode: verifyCodeData,
-        ),
+        builder: (context) =>
+            VerifyEmailPage(verifyCode: verifyCodeData, email: emailData),
       ),
     );
   }
