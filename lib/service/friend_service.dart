@@ -1,10 +1,5 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
-import 'package:it4788/model/post.dart';
-import 'package:it4788/model/user_friends.dart';
-import 'package:it4788/model/user_infor_profile.dart';
+import 'package:it4788/model/request_friends.dart';
 import 'package:it4788/service/authStorage.dart';
 
 import 'api_service.dart';
@@ -14,8 +9,8 @@ class FriendService {
     return await Storage().getToken();
   }
 
-  Future<UserFriends?> getFriendRequest(int count) async {
-    UserFriends userFriends;
+  Future<RequestFriendList?> getFriendRequest(int count) async {
+    RequestFriendList requestFriends;
     var token = await _getToken();
 
     try {
@@ -24,9 +19,44 @@ class FriendService {
       final response = await dio.post('get_requested_friends',
           data: request,
           options: Options(headers: {"Authorization": "Bearer $token"}));
-      userFriends = userFriendsFromJson(response.data);
+      requestFriends = requestFriendsFromJson(response.data);
       print(response.data);
-      return userFriends;
+      return requestFriends;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> setAcceptFriend(String id) async {
+    var token = await _getToken();
+    try {
+      Map<String, dynamic> request = {
+        'user_id': id,
+        'is_accept': "1",
+      };
+      final dio = ApiService.createDio();
+      final response = await dio.post('set_accept_friend',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print(response.data);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> setDeleteFriend(String id) async {
+    var token = await _getToken();
+    try {
+      Map<String, dynamic> request = {
+        'user_id': id,
+      };
+      final dio = ApiService.createDio();
+      final response = await dio.post('del_request_friend',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print(response.data);
     } catch (e) {
       print(e);
       rethrow;
