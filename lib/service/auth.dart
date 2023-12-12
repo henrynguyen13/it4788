@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:it4788/data_storage/authStorage.dart';
 import 'api_service.dart';
@@ -56,5 +57,13 @@ Future<Response> checkVerifyCode(String email, String verifyCode) async {
   final dio = ApiService.createDio();
   final response = await dio.post('check_verify_code', data: request);
   print('Xác nhận verify code thành công !');
+  return response;
+}
+
+Future<Response> setUsername(String username, File avatar) async {
+  Map<String, dynamic> request = {'username': username, 'avatar': avatar};
+  final dio = ApiService.createDio();
+  final response = await dio.post('change_profile_after_signup', data: request);
+
   return response;
 }

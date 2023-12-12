@@ -1,21 +1,25 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/sign_up/birthday.dart';
 
-class Name extends StatefulWidget {
-  const Name();
+class SetUsernamePage extends StatefulWidget {
+  const SetUsernamePage({super.key});
 
   @override
-  State<Name> createState() => _NameState();
+  State<SetUsernamePage> createState() => _SetUsernamePageState();
 }
 
-class _NameState extends State<Name> {
-  String firstName = '';
-  String lastName = '';
+class _SetUsernamePageState extends State<SetUsernamePage> {
+  String username = '';
+  File? avatar;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Tên')),
+      appBar: AppBar(title: Text('Tên người dùng')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -32,33 +36,38 @@ class _NameState extends State<Name> {
             const SizedBox(height: 8.0),
             Row(
               children: [
-                Expanded(
-                  child: TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        firstName = value;
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Họ',
-                    ),
-                  ),
-                ),
                 const SizedBox(width: 16.0),
                 Expanded(
                   child: TextField(
                     onChanged: (value) {
                       setState(() {
-                        lastName = value;
+                        username = value;
                       });
                     },
                     decoration: const InputDecoration(
-                      labelText: 'Tên',
+                      labelText: 'Tên đăng nhập',
                     ),
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 15.0),
+            Container(
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20), // Image border
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 200, // Image radius
+
+                      child: avatar != null
+                          ? Image(image: FileImage(avatar!), fit: BoxFit.cover)
+                          : SizedBox(),
+                    ))),
+            MaterialButton(
+                onPressed: () {
+                  _pickImageFromGallery();
+                },
+                child: const Text("Ảnh đại diện")),
             const SizedBox(height: 30.0),
             TextButton(
               style: ButtonStyle(
@@ -71,8 +80,10 @@ class _NameState extends State<Name> {
                       MaterialStateProperty.all<Color>(Colors.white),
                   backgroundColor: MaterialStateProperty.all(Colors.blue)),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomeScreen()));
               },
               child: const Text('Tiếp',
                   style:
@@ -82,5 +93,19 @@ class _NameState extends State<Name> {
         ),
       ),
     );
+  }
+
+  Future _pickImageFromGallery() async {
+    final returnedImage = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 100,
+        maxHeight: 800,
+        maxWidth: 800);
+
+    if (returnedImage == null) return;
+    setState(() {
+      avatar = File(returnedImage.path);
+      print("BUGGGG ${avatar}");
+    });
   }
 }
