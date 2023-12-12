@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/sign_in.dart';
+import 'package:it4788/sign_up/verify_email.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -14,10 +18,15 @@ class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+
   Color emailIconColor = Colors.grey;
   Color passwordIconColor = Colors.grey;
   Color confirmPasswordIconColor = Colors.grey;
   bool _passwordVisible = true;
+
+  String verifyCodeData = "";
+  String emailData = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,16 +172,44 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           String email = _emailController.text;
                           String password = _passwordController.text;
-                          signUp(email, password, 'uuid');
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignInPage()),
-                          );
+                          emailData = email;
+                          final signUpResponse =
+                              await signUp(email, password, 'uuid');
+
+                          final jsonResponse = json.decode(signUpResponse.data);
+                          String message = jsonResponse['message'];
+
+                          if (message == 'OK') {
+                            final getVerifyCodeResponse =
+                                await _getVerifyCodeResponse(email);
+
+                            if (getVerifyCodeResponse.statusCode == 200) {
+                              try {
+                                // Nếu không có lỗi, chuyển đổi nội dung JSON thành đối tượng Dart
+                                final jsonResponse =
+                                    json.decode(getVerifyCodeResponse.data);
+
+                                // Truy cập thuộc tính của đối tượng Dart
+                                verifyCodeData =
+                                    jsonResponse['data']['verify_code'];
+
+                                // In giá trị ra console
+                                print("Verify Code: $verifyCodeData");
+
+                                if (!context.mounted) return;
+                                _sendVerifyCode(context);
+                              } catch (e) {
+                                print("Error parsing JSON: $e");
+                              }
+                            } else {
+                              // Xử lý lỗi nếu có
+                              print("Lỗi khi lấy verify code");
+                            }
+                          }
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -243,5 +280,25 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ],
             )));
+  }
+
+  Future<Response> _getVerifyCodeResponse(String email) async {
+    final getVerifyCodeResponse = await getVerifyCode(email);
+    return getVerifyCodeResponse;
+  }
+
+  // get verify code to the VerifyEmailPage
+  void _sendVerifyCode(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Đăng ký thành công'),
+    ));
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            VerifyEmailPage(verifyCode: verifyCodeData, email: emailData),
+      ),
+    );
   }
 }

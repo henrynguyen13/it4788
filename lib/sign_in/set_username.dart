@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/home/home_screen.dart';
+import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_up/birthday.dart';
 
 class SetUsernamePage extends StatefulWidget {
@@ -14,7 +16,7 @@ class SetUsernamePage extends StatefulWidget {
 
 class _SetUsernamePageState extends State<SetUsernamePage> {
   String username = '';
-  File? avatar;
+  // File? avatar;
 
   @override
   Widget build(BuildContext context) {
@@ -52,23 +54,23 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
               ],
             ),
             const SizedBox(height: 15.0),
-            Container(
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20), // Image border
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 200, // Image radius
+            // Container(
+            //     child: ClipRRect(
+            //         borderRadius: BorderRadius.circular(20), // Image border
+            //         child: SizedBox(
+            //           width: double.infinity,
+            //           height: 200, // Image radius
 
-                      child: avatar != null
-                          ? Image(image: FileImage(avatar!), fit: BoxFit.cover)
-                          : SizedBox(),
-                    ))),
-            MaterialButton(
-                onPressed: () {
-                  _pickImageFromGallery();
-                },
-                child: const Text("Ảnh đại diện")),
-            const SizedBox(height: 30.0),
+            //           child: avatar != null
+            //               ? Image(image: FileImage(avatar!), fit: BoxFit.cover)
+            //               : SizedBox(),
+            //         ))),
+            // MaterialButton(
+            //     onPressed: () {
+            //       _pickImageFromGallery();
+            //     },
+            //     child: const Text("Ảnh đại diện")),
+            // const SizedBox(height: 30.0),
             TextButton(
               style: ButtonStyle(
                   padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
@@ -79,13 +81,29 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white),
                   backgroundColor: MaterialStateProperty.all(Colors.blue)),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
+              onPressed: () async {
+                try {
+                  print(username);
+
+                  final setUsernameResponse = await setUsername(username);
+                  final jsonResponse = json.decode(setUsernameResponse.data);
+                  print(jsonResponse);
+                  String message = jsonResponse['message'];
+                  print(message);
+
+                  if (message == 'OK') {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Đăng nhập thành công !')));
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()));
+                  }
+                } catch (e) {}
               },
-              child: const Text('Tiếp',
+              child: const Text('Xác nhận',
                   style:
                       TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500)),
             ),
@@ -95,17 +113,17 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
     );
   }
 
-  Future _pickImageFromGallery() async {
-    final returnedImage = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 100,
-        maxHeight: 800,
-        maxWidth: 800);
+  // Future _pickImageFromGallery() async {
+  //   final returnedImage = await ImagePicker().pickImage(
+  //       source: ImageSource.gallery,
+  //       imageQuality: 100,
+  //       maxHeight: 800,
+  //       maxWidth: 800);
 
-    if (returnedImage == null) return;
-    setState(() {
-      avatar = File(returnedImage.path);
-      print("BUGGGG ${avatar}");
-    });
-  }
+  //   if (returnedImage == null) return;
+  //   setState(() {
+  //     avatar = File(returnedImage.path);
+  //     print("BUGGGG ${avatar}");
+  //   });
+  // }
 }
