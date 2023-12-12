@@ -32,4 +32,12 @@ class Storage {
   void deleteToken() async {
     await storage.delete(key: "token");
   }
+
+  Future<void> saveUserId(String userId) async {
+    await storage.write(key: "user_id", value: userId);
+  }
+
+  Future<String?> getUserId() async {
+    return await storage.read(key: "user_id");
+  }
 }

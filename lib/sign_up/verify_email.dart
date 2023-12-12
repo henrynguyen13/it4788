@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:it4788/data_storage/authStorage.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/reset_password.dart';
 

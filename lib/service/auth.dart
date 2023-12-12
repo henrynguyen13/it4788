@@ -25,12 +25,14 @@ Future<Response> signIn(String email, String password, String uuid) async {
 
   // lưu thông tin token vào storage
   final jsonResponse = json.decode(response.data);
-  String token = jsonResponse['data']['token'];
-  await Storage().saveToken(token);
+  String userId = jsonResponse['data']['id'].toString();
+
+  Storage().saveUserId(userId);
+  Storage().saveToken(jsonResponse['data']['token']);
 
   // Lấy ra token
-  String? storedToken = await Storage().getToken();
-  print('Token from storage: $storedToken');
+  // token = await Storage().getToken();
+  // print('Token from storage: $storedToken');
 
   return response;
 }
@@ -46,7 +48,8 @@ Future<Response> getVerifyCode(String email) async {
   final jsonResponse = json.decode(response.data);
   print(response.data);
   String verifyCode = jsonResponse['data']['verify_code'];
-  await Storage().saveVerifyCode(verifyCode);
+
+  Storage().saveVerifyCode(verifyCode);
 
   return response;
 }

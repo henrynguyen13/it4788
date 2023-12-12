@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/personal_page/personal_page.dart';
+import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/profile_sevice.dart';
 
 class AllFriendPage extends StatefulWidget {
@@ -11,9 +12,9 @@ class AllFriendPage extends StatefulWidget {
 }
 
 class _AllFriendPageState extends State<AllFriendPage> {
-  late List<Friend> userFriendList;
-  late Future<UserFriends?> _userFriendFuture;
-  late String total;
+  List<Friend>? userFriendList;
+  Future<UserFriends?>? _userFriendFuture;
+  String? total;
 
   @override
   void initState() {
@@ -22,7 +23,12 @@ class _AllFriendPageState extends State<AllFriendPage> {
   }
 
   void getData() async {
-    _userFriendFuture = ProfileSevice().getUserFriend('193', 50);
+    var userId = await Storage().getUserId();
+    if (userId != null) {
+      setState(() {
+        _userFriendFuture = ProfileSevice().getUserFriend(userId, 50);
+      });
+    }
   }
 
   @override
@@ -37,6 +43,8 @@ class _AllFriendPageState extends State<AllFriendPage> {
                   alignment: Alignment.center,
                   child: CircularProgressIndicator());
             } else if (snapshot.hasData) {
+              userFriendList = snapshot.data!.data.friends;
+              total = snapshot.data!.data.total;
               userFriendList = snapshot.data!.data.friends;
               total = snapshot.data!.data.total;
               return SingleChildScrollView(
@@ -87,9 +95,9 @@ class _AllFriendPageState extends State<AllFriendPage> {
                     ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: userFriendList.length,
+                        itemCount: userFriendList?.length,
                         itemBuilder: (BuildContext context, int index) {
-                          Friend item = userFriendList[index];
+                          Friend item = userFriendList![index];
 
                           return Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -152,7 +160,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                         context: context,
                                         builder: (builder) {
                                           return SizedBox(
-                                            height: 600,
+                                            height: 350,
                                             width: double.infinity,
                                             child: Column(
                                               children: [
@@ -173,9 +181,9 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .all(20),
+                                                                    .all(10),
                                                             child: Text(
-                                                              'Xem bạn bè của ${item.username}',
+                                                              'Hiển thị danh sách bạn bè của ${item.username}',
                                                               textAlign:
                                                                   TextAlign
                                                                       .center,
@@ -187,7 +195,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
-                                                                fontSize: 20,
+                                                                fontSize: 14,
                                                               ),
                                                             ),
                                                           ),
@@ -211,7 +219,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .all(20),
+                                                                    .all(10),
                                                             child: Text(
                                                               'Nhắn tin cho ${item.username}',
                                                               textAlign:
@@ -225,7 +233,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
-                                                                fontSize: 20,
+                                                                fontSize: 14,
                                                               ),
                                                             ),
                                                           ),
@@ -242,7 +250,9 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                           context,
                                                           MaterialPageRoute(
                                                               builder: (context) =>
-                                                                  const PersonalPage()),
+                                                                  PersonalPage(
+                                                                      id: item
+                                                                          .id)),
                                                         )
                                                       },
                                                       child: Row(
@@ -257,7 +267,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .all(20),
+                                                                    .all(10),
                                                             child: Text(
                                                               'Xem trang cá nhân của ${item.username}',
                                                               textAlign:
@@ -271,7 +281,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
-                                                                fontSize: 20,
+                                                                fontSize: 14,
                                                               ),
                                                             ),
                                                           ),
@@ -295,7 +305,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .all(20),
+                                                                    .all(10),
                                                             child: Text(
                                                               'Chặn ${item.username}',
                                                               textAlign:
@@ -309,7 +319,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
-                                                                fontSize: 20,
+                                                                fontSize: 14,
                                                               ),
                                                             ),
                                                           ),
@@ -332,7 +342,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .all(20),
+                                                                    .all(10),
                                                             child: Text(
                                                               'Hủy kết bạn với ${item.username}',
                                                               textAlign:
@@ -346,7 +356,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
-                                                                fontSize: 20,
+                                                                fontSize: 14,
                                                               ),
                                                             ),
                                                           ),
