@@ -207,6 +207,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         } else {
                           // Xử lý lỗi nếu có
                           print("Lỗi khi lấy verify code");
+              
                         }
                       }
                     }

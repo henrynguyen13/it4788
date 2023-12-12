@@ -69,4 +69,16 @@ Future<Response> setUsername(String username) async {
   final response = await dio.post('change_profile_after_signup', data: request);
   print('Xác nhận set username thành công !');
   return response;
+
+Future<bool> emailIsExisted(String email) async {
+  Map<String, dynamic> request = {
+    'email': email,
+  };
+  final dio = ApiService.createDio();
+  final response = await dio.post('check_email', data: request);
+
+  final jsonResponse = json.decode(response.data);
+  String isExisted = jsonResponse['data']['existed'];
+
+  return isExisted == "1";
 }

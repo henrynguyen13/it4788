@@ -3,7 +3,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/reset_password.dart';
 import 'package:it4788/sign_in/sign_in.dart';
@@ -11,10 +10,7 @@ import 'package:it4788/sign_in/sign_in.dart';
 import '../sign_in/save_info.dart';
 
 class VerifyEmailPage extends StatefulWidget {
-  const VerifyEmailPage(
-      {super.key, required this.verifyCode, required this.email});
-
-  final String verifyCode;
+  const VerifyEmailPage({super.key, required this.email});
   final String email;
 
   @override
@@ -22,6 +18,8 @@ class VerifyEmailPage extends StatefulWidget {
 }
 
 class _VerifyEmailPageState extends State<VerifyEmailPage> {
+  final TextEditingController _inputCodeController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,8 +91,8 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          widget.verifyCode,
+                        child: TextField(
+                          controller: _inputCodeController,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -122,23 +120,32 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                   ),
                 ),
                 onPressed: () async {
-                  final checkVerifyCodeResponse =
-                      await checkVerifyCode(widget.email, widget.verifyCode);
-                  final jsonResponse =
-                      json.decode(checkVerifyCodeResponse.data);
+                  final response = await checkVerifyCode(
+                      widget.email, _inputCodeController.text);
+                  final jsonResponse = json.decode(response.data);
                   String message = jsonResponse['message'];
-
                   if (message == 'OK') {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Xác nhận verify code thành công !'),
-                    ));
-
                     if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Xác thực thành công!'),
+                    ));
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => SignInPage()),
                     );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Mã xác thực không chính xác!'),
+                    ));
                   }
+
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => SaveInfoPage(
+                  //             title: '',
+                  //           )),
+                  // );
                 },
                 child: Text(
                   "Xác nhận",

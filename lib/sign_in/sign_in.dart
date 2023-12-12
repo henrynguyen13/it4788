@@ -324,8 +324,7 @@ class _SignIn extends State<SignInPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            VerifyEmailPage(verifyCode: verifyCodeData, email: emailData),
+        builder: (context) => VerifyEmailPage(email: emailData),
       ),
     );
   }
