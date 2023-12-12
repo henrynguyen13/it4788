@@ -3,8 +3,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:it4788/post_article/feelings_activities/table_cell.dart';
 import 'package:it4788/post_article/post_article.dart';
 
-class PickerFeelings extends StatelessWidget {
+class PickerFeelings extends StatefulWidget {
   const PickerFeelings({super.key});
+
+  @override
+  State<PickerFeelings> createState() => _PickerFeelings();
+}
+
+class _PickerFeelings extends State<PickerFeelings> {
+  String feelingState = "";
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +32,11 @@ class PickerFeelings extends StatelessWidget {
                   size: 28,
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PostArticle()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => PostArticle()),
+                  // );
                 },
               );
             },
@@ -43,19 +50,19 @@ class PickerFeelings extends StatelessWidget {
               1: FlexColumnWidth(),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: const <TableRow>[
+            children: <TableRow>[
               TableRow(children: <Widget>[
                 TableCellWidget(
                   height: 64,
                   color: Color.fromRGBO(230, 9, 9, 0.7),
                   icon: FontAwesomeIcons.faceGrinHearts,
-                  text: "đang yêu",
+                  feelingState: "đang yêu",
                 ),
                 TableCellWidget(
                   height: 64,
                   color: Color.fromRGBO(243, 96, 4, 0.8),
                   icon: FontAwesomeIcons.faceAngry,
-                  text: "tức giận",
+                  feelingState: "tức giận",
                 ),
               ]),
               TableRow(
@@ -64,13 +71,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(9, 9, 230, 0.7),
                     icon: FontAwesomeIcons.faceDizzy,
-                    text: "chóng mặt",
+                    feelingState: "chóng mặt",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(9, 230, 42, 0.698),
                     icon: FontAwesomeIcons.faceGrinStars,
-                    text: "hứng thú",
+                    feelingState: "hứng thú",
                   ),
                 ],
               ),
@@ -80,13 +87,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(236, 4, 236, 0.694),
                     icon: FontAwesomeIcons.faceFrown,
-                    text: "thất vọng",
+                    feelingState: "thất vọng",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(4, 181, 235, 0.69),
                     icon: FontAwesomeIcons.faceSmileWink,
-                    text: "tự tin",
+                    feelingState: "tự tin",
                   ),
                 ],
               ),
@@ -96,13 +103,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(230, 83, 9, 0.86),
                     icon: FontAwesomeIcons.faceFlushed,
-                    text: "vô tri",
+                    feelingState: "vô tri",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(230, 9, 90, 0.698),
                     icon: FontAwesomeIcons.faceFrownOpen,
-                    text: "nghi ngờ",
+                    feelingState: "nghi ngờ",
                   ),
                 ],
               ),
@@ -112,13 +119,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(9, 230, 123, 0.835),
                     icon: FontAwesomeIcons.faceGrimace,
-                    text: "lạnh buốt",
+                    feelingState: "lạnh buốt",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(9, 9, 230, 0.7),
                     icon: FontAwesomeIcons.faceGrinBeamSweat,
-                    text: "ngại ngùng",
+                    feelingState: "ngại ngùng",
                   ),
                 ],
               ),
@@ -128,13 +135,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(186, 9, 230, 0.89),
                     icon: FontAwesomeIcons.faceGrinSquint,
-                    text: "thư giãn",
+                    feelingState: "thư giãn",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(9, 178, 230, 0.832),
                     icon: FontAwesomeIcons.faceGrinSquintTears,
-                    text: "vui sướng",
+                    feelingState: "vui sướng",
                   ),
                 ],
               ),
@@ -144,13 +151,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(230, 9, 116, 0.845),
                     icon: FontAwesomeIcons.faceGrinBeam,
-                    text: "vui vẻ",
+                    feelingState: "vui vẻ",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(230, 208, 9, 0.89),
                     icon: FontAwesomeIcons.faceKiss,
-                    text: "thích thú",
+                    feelingState: "thích thú",
                   ),
                 ],
               ),
@@ -160,13 +167,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(230, 9, 20, 0.867),
                     icon: FontAwesomeIcons.faceKissWinkHeart,
-                    text: "đáng yêu",
+                    feelingState: "đáng yêu",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(9, 230, 94, 0.833),
                     icon: FontAwesomeIcons.faceLaugh,
-                    text: "sảng khoái",
+                    feelingState: "sảng khoái",
                   ),
                 ],
               ),
@@ -176,13 +183,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(230, 9, 204, 0.885),
                     icon: FontAwesomeIcons.faceGrinTongue,
-                    text: "gợi đòn",
+                    feelingState: "gợi đòn",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(122, 112, 42, 0.8),
                     icon: FontAwesomeIcons.faceSadCry,
-                    text: "buồn sương sương",
+                    feelingState: "buồn sương sương",
                   ),
                 ],
               ),
@@ -192,13 +199,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(9, 9, 230, 0.7),
                     icon: FontAwesomeIcons.faceSadTear,
-                    text: "buồn rầu",
+                    feelingState: "buồn rầu",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(9, 178, 230, 0.832),
                     icon: FontAwesomeIcons.faceTired,
-                    text: "mất hứng",
+                    feelingState: "mất hứng",
                   ),
                 ],
               ),
@@ -208,13 +215,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(186, 9, 230, 0.886),
                     icon: FontAwesomeIcons.faceMehBlank,
-                    text: "im lặng",
+                    feelingState: "im lặng",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(9, 105, 230, 0.88),
                     icon: FontAwesomeIcons.faceMeh,
-                    text: "bình thường",
+                    feelingState: "bình thường",
                   ),
                 ],
               ),
@@ -224,13 +231,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(9, 230, 90, 0.8),
                     icon: FontAwesomeIcons.faceRollingEyes,
-                    text: "không biết gì",
+                    feelingState: "không biết gì",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(230, 123, 9, 0.898),
                     icon: FontAwesomeIcons.faceSmile,
-                    text: "khinh bỉ",
+                    feelingState: "khinh bỉ",
                   ),
                 ],
               ),
@@ -240,13 +247,13 @@ class PickerFeelings extends StatelessWidget {
                     height: 64,
                     color: Color.fromRGBO(230, 230, 9, 0.9),
                     icon: FontAwesomeIcons.faceSmileBeam,
-                    text: "vui vẻ",
+                    feelingState: "vui vẻ",
                   ),
                   TableCellWidget(
                     height: 64,
                     color: Color.fromRGBO(9, 9, 230, 0.7),
                     icon: FontAwesomeIcons.faceGrinWide,
-                    text: "ngây ngô",
+                    feelingState: "ngây ngô",
                   ),
                 ],
               ),

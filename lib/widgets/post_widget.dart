@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:it4788/Comment/commentPage.dart';
 import 'package:it4788/model/post.dart';
+import 'package:it4788/report.dart';
 import 'package:it4788/service/profile_sevice.dart';
 
 class PostWidget extends StatefulWidget {
@@ -289,16 +291,25 @@ class _PostWidgetState extends State<PostWidget> {
                         ),
                       ),
                     ),
-                    const Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.message_outlined),
-                          Padding(padding: EdgeInsets.only(right: 4)),
-                          Text('comment'),
-                        ],
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CommentPage()),
+                          );
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.message_outlined),
+                            Padding(padding: EdgeInsets.only(right: 4)),
+                            Text('comment'),
+                          ],
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ],
@@ -392,6 +403,24 @@ class BottomPopup extends StatelessWidget {
                           ),
                           onPressed: () => Navigator.pop(context),
                         ),
+                        TextButton(
+                            child: const Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Icon(Icons.error),
+                                ),
+                                Text('Báo cáo bài viết'),
+                              ],
+                            ),
+                            onPressed: () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ReportPage()),
+                                  ),
+                                }),
                       ],
                     ),
                   ),

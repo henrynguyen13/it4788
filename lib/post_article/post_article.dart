@@ -12,6 +12,7 @@ class PostArticle extends StatefulWidget {
 }
 
 class _PostArticleState extends State<PostArticle> {
+  String feelingState = "";
   File? _selectedImage;
 
   @override
@@ -34,8 +35,9 @@ class _PostArticleState extends State<PostArticle> {
       ),
       body: Column(children: [
         Padding(
-          padding: EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const Image(
                 image: AssetImage('assets/images/icons/avatar_icon.png'),
@@ -43,14 +45,15 @@ class _PostArticleState extends State<PostArticle> {
                 height: 60,
               ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Hóa Oppa",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                      "Hóa Oppa ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16)),
                   Padding(
-                      padding: const EdgeInsets.all(3.0),
+                      padding: const EdgeInsets.all(1.0),
                       child: Container(
-                        alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.all(4.0),
                         decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
@@ -60,6 +63,7 @@ class _PostArticleState extends State<PostArticle> {
                               width: 1,
                             )),
                         child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(
                               Icons.language_rounded,
@@ -94,32 +98,56 @@ class _PostArticleState extends State<PostArticle> {
                     )),
               ),
             ),
+            _selectedImage != null
+                ? Image.file(_selectedImage!) // Hiển thị ảnh đã chọn
+                : Container(), // Khoảng trắng nếu không có ảnh
             Padding(
                 padding: const EdgeInsets.all(0),
                 child: InkWell(
                   onTap: () {
                     showModalBottomSheet(
                         context: context,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(20))),
-                        builder: (context) => Center(
-                                child: Column(
-                              children: [
-                                ElevatedButton(
-                                  child: const Text("Chọn ảnh từ máy"),
-                                  onPressed: () {
-                                    _pickImageFromGallery();
-                                  },
+                        builder: ((context) => Container(
+                            height: 200,
+                            color: Colors.white,
+                            child: Center(
+                                child: ListView(
+                              padding: const EdgeInsets.all(8),
+                              children: <Widget>[
+                                Container(
+                                  height: 80,
+                                  color: Colors.green[500],
+                                  child: Center(
+                                      child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    height: 40,
+                                    child: ElevatedButton(
+                                      child: const Text("Chọn ảnh từ máy"),
+                                      onPressed: () {
+                                        _pickImageFromGallery();
+                                      },
+                                    ),
+                                  )),
                                 ),
-                                ElevatedButton(
-                                  child: Text("Chụp ảnh"),
-                                  onPressed: () {
-                                    _pickImageFromCamera();
-                                  },
-                                )
+                                Container(
+                                    height: 80,
+                                    color: Colors.green[100],
+                                    child: Center(
+                                        child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.8,
+                                            height: 40,
+                                            child: ElevatedButton(
+                                              child: Text("Chụp ảnh"),
+                                              onPressed: () {
+                                                _pickImageFromCamera();
+                                              },
+                                            )))),
                               ],
-                            )));
+                            )))));
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -136,6 +164,32 @@ class _PostArticleState extends State<PostArticle> {
                           size: 28,
                         ),
                         Text("Ảnh/Video")
+                      ],
+                    ),
+                  ),
+                )),
+
+            Padding(
+                padding: const EdgeInsets.all(0),
+                child: InkWell(
+                  onTap: () {
+                    _awaitReturnValueFromPickerFeelings(context);
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        border: BorderDirectional(
+                            top: BorderSide(color: Colors.grey, width: 0.5))),
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.emoji_emotions_outlined,
+                          color: Colors.yellow,
+                          size: 28,
+                        ),
+                        Text("Cảm xúc/Hoạt động")
                       ],
                     ),
                   ),
@@ -158,35 +212,6 @@ class _PostArticleState extends State<PostArticle> {
                       ),
                       Text("Gắn thẻ bạn bè")
                     ],
-                  ),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(0),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PickerFeelings()),
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        border: BorderDirectional(
-                            top: BorderSide(color: Colors.grey, width: 0.5))),
-                    child: const Row(
-                      children: [
-                        Icon(
-                          Icons.emoji_emotions_outlined,
-                          color: Colors.yellow,
-                          size: 28,
-                        ),
-                        Text("Cảm xúc/Hoạt động")
-                      ],
-                    ),
                   ),
                 )),
             Padding(
@@ -252,6 +277,20 @@ class _PostArticleState extends State<PostArticle> {
     if (returnedImage == null) return;
     setState(() {
       _selectedImage = File(returnedImage.path);
+    });
+  }
+
+  void _awaitReturnValueFromPickerFeelings(BuildContext context) async {
+    // start PickerFeelings screen and wait for it to finish with a result
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PickerFeelings(),
+        ));
+
+    // after the feelingState comes back update the Text widget with it
+    setState(() {
+      feelingState = result;
     });
   }
 }

@@ -6,19 +6,21 @@ import 'package:it4788/model/post.dart';
 import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/model/user_model.dart';
+import 'package:it4788/service/authStorage.dart';
 
 import 'api_service.dart';
 
 class PostSevice {
-  String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTkzLCJkZXZpY2VfaWQiOiJzc3NzIiwiaWF0IjoxNzAxMjQ1NTUzfQ.41Df22_jnTTx-f7lFkGNxTMW6rWgfogGyW3AOTQY-Xs";
+  Future<String?> _getToken() async {
+    return await Storage().getToken();
+  }
 
   Future<ListPost?> getPostList(String id) async {
     ListPost listPost;
+    var token = await _getToken();
 
     try {
       Map<String, dynamic> request = {
-        'user_id': id,
         "index": 0,
         'count': 50,
         'last_id': 0,
@@ -41,6 +43,7 @@ class PostSevice {
   }
 
   Future<void> feelPost(String id, String type) async {
+    var token = await _getToken();
     try {
       Map<String, dynamic> request = {
         'id': id,
@@ -58,6 +61,7 @@ class PostSevice {
   }
 
   Future<void> deleteFeelPost(String id) async {
+    var token = await _getToken();
     try {
       Map<String, dynamic> request = {
         'id': id,

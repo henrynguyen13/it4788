@@ -6,14 +6,17 @@ import 'package:it4788/model/post.dart';
 import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/model/user_model.dart';
+import 'package:it4788/service/authStorage.dart';
 
 import 'api_service.dart';
 
 class ProfileSevice {
-  String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTkzLCJkZXZpY2VfaWQiOiJzc3NzIiwiaWF0IjoxNzAxMjQ1NTUzfQ.41Df22_jnTTx-f7lFkGNxTMW6rWgfogGyW3AOTQY-Xs";
+  Future<String?> _getToken() async {
+    return await Storage().getToken();
+  }
 
   Future<UserInfor?> getUserInfor(String id) async {
+    var token = await _getToken();
     UserInfor? userInfor;
 
     try {
@@ -35,6 +38,7 @@ class ProfileSevice {
 
   Future<UserFriends?> getUserFriend(String id, int count) async {
     UserFriends userFriends;
+    var token = await _getToken();
 
     try {
       Map<String, dynamic> request = {
@@ -82,6 +86,7 @@ class ProfileSevice {
       File? coverImage,
       String link) async {
     try {
+      var token = await _getToken();
       String avatarName = "";
       String coverImageName = "";
       if (avatar != null) avatarName = avatar.path.split('/').last;
@@ -95,10 +100,8 @@ class ProfileSevice {
         "country": country,
         "link": link,
         "avatar": avatarName.isNotEmpty && avatar != null
-            ? await MultipartFile.fromFile(
-                avatar.path,
-                filename: avatarName,
-              )
+            ? await MultipartFile.fromFile(avatar.path,
+                filename: avatarName, contentType: MediaType("image", "jpeg"))
             : "",
         "cover_image": coverImageName.isNotEmpty && coverImage != null
             ? await MultipartFile.fromFile(
@@ -125,12 +128,18 @@ class ProfileSevice {
 
   Future<ListPost?> getMyListPost(String id) async {
     ListPost listPost;
+    var token = await _getToken();
 
     try {
       Map<String, dynamic> request = {
         'user_id': id,
         'count': 50,
         'last_id': 0,
+        'in_campaign': 1,
+        'campaign_id': 1,
+        'latitude': 1.0,
+        'longitude': 1.0,
+        'index': 0
       };
       final dio = ApiService.createDio();
       final response = await dio.post('get_list_posts',
@@ -146,6 +155,7 @@ class ProfileSevice {
   }
 
   Future<void> feelPost(String id, String type) async {
+    var token = await _getToken();
     try {
       Map<String, dynamic> request = {
         'id': id,
@@ -163,6 +173,7 @@ class ProfileSevice {
   }
 
   Future<void> deleteFeelPost(String id) async {
+    var token = await _getToken();
     try {
       Map<String, dynamic> request = {
         'id': id,
