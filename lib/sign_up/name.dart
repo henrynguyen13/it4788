@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:it4788/sign_up/birthday.dart';
+import 'package:it4788/home/post_screen.dart';
 
 class Name extends StatefulWidget {
   const Name();
@@ -72,7 +72,7 @@ class _NameState extends State<Name> {
                   backgroundColor: MaterialStateProperty.all(Colors.blue)),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterPage()));
+                    MaterialPageRoute(builder: (context) => (PostScreen())));
               },
               child: const Text('Tiếp',
                   style:

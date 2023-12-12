@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/model/user_infor_profile.dart';
-import 'package:it4788/model/user_model.dart';
 import 'package:it4788/service/authStorage.dart';
 
 import 'api_service.dart';

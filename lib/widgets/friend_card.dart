@@ -1,9 +1,9 @@
 import 'package:it4788/core/pallete.dart';
 import 'package:flutter/material.dart';
-import '../model/user_model.dart';
+import 'package:it4788/model/user_friends.dart';
 
 class FriendCard extends StatelessWidget {
-  final User friend;
+  final Friend friend;
 
   FriendCard({required this.friend});
 
@@ -18,7 +18,7 @@ class FriendCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 40.0,
-              backgroundImage: NetworkImage(friend.imageUrl!),
+              backgroundImage: NetworkImage(friend.avatar!),
             ),
             const SizedBox(
               width: 10.0,
@@ -28,8 +28,9 @@ class FriendCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    friend.name!,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
+                    friend.username!,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700, fontSize: 20),
                     textAlign: TextAlign.start,
                   ),
                   const SizedBox(
@@ -47,7 +48,7 @@ class FriendCard extends StatelessWidget {
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   Palette.facebookBlue)),
-                          child:const Row(
+                          child: const Row(
                             children: [
                               Icon(Icons.add),
                               SizedBox(
@@ -63,8 +64,9 @@ class FriendCard extends StatelessWidget {
                                 MaterialStateProperty.all(Palette.scaffold),
                             foregroundColor:
                                 MaterialStateProperty.all(Colors.black),
-                            overlayColor: MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
+                            overlayColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
                                 if (states.contains(MaterialState.pressed)) {
                                   return Colors.grey;
                                 }
