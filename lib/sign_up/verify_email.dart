@@ -1,19 +1,25 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:it4788/data_storage/authStorage.dart';
+import 'package:it4788/service/auth.dart';
+import 'package:it4788/sign_in/reset_password.dart';
 
 import '../sign_in/save_info.dart';
 
-class VeryfyEmailPage extends StatefulWidget {
-  const VeryfyEmailPage({super.key, required this.title});
+class VerifyEmailPage extends StatefulWidget {
+  const VerifyEmailPage(
+      {super.key, required this.verifyCode, required this.email});
 
-  final String title;
+  final String verifyCode;
+  final String email;
 
   @override
-  State<VeryfyEmailPage> createState() => _VeryfyEmailPageState();
+  State<VerifyEmailPage> createState() => _VerifyEmailPageState();
 }
 
-class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
+class _VerifyEmailPageState extends State<VerifyEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +65,7 @@ class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
           ),
           Text(
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              "Nhập mã xác thực gồm 5 chữ số:"),
+              "Nhập mã xác thực gồm 6 chữ số:"),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: Row(
@@ -76,23 +82,23 @@ class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
                   padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
                   child: SizedBox(
                     width: 100,
-                    child: TextFormField(
-                      autofocus: false,
-                      obscureText: false,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Color.fromRGBO(57, 104, 214, 1),
+                          width: 1,
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color.fromRGBO(57, 104, 214, 1),
-                            width: 2,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          widget.verifyCode,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue[500],
                           ),
-                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
@@ -114,14 +120,22 @@ class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
                     },
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  await checkVerifyCode(widget.email, widget.verifyCode);
+
+                  if (!context.mounted) return;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SaveInfoPage(
-                              title: '',
-                            )),
+                        builder: (context) => ResetPasswordPage()),
                   );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => SaveInfoPage(
+                  //             title: '',
+                  //           )),
+                  // );
                 },
                 child: Text(
                   "Xác nhận",
@@ -162,28 +176,28 @@ class _VeryfyEmailPageState extends State<VeryfyEmailPage> {
               ),
             ),
           ),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                (Set<MaterialState> states) {
-                  return const Color.fromARGB(0, 255, 255, 255);
-                },
-              ),
-              shadowColor: MaterialStateProperty.resolveWith<Color?>(
-                (Set<MaterialState> states) {
-                  return Colors.transparent;
-                },
-              ),
-            ),
-            onPressed: () {},
-            child: Text(
-              "Đăng xuất",
-              style: TextStyle(
-                color: Color.fromRGBO(57, 104, 214, 1),
-                fontSize: 16,
-              ),
-            ),
-          ),
+          // ElevatedButton(
+          //   style: ButtonStyle(
+          //     backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+          //       (Set<MaterialState> states) {
+          //         return const Color.fromARGB(0, 255, 255, 255);
+          //       },
+          //     ),
+          //     shadowColor: MaterialStateProperty.resolveWith<Color?>(
+          //       (Set<MaterialState> states) {
+          //         return Colors.transparent;
+          //       },
+          //     ),
+          //   ),
+          //   onPressed: () {},
+          //   child: Text(
+          //     "Đăng xuất",
+          //     style: TextStyle(
+          //       color: Color.fromRGBO(57, 104, 214, 1),
+          //       fontSize: 16,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
