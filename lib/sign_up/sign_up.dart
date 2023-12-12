@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:it4788/service/auth.dart';
@@ -164,15 +166,26 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         String email = _emailController.text;
                         String password = _passwordController.text;
-                        signUp(email, password, 'uuid');
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignInPage()),
-                        );
+                        final response = await signUp(email, password, 'uuid');
+                        final jsonResponse = json.decode(response.data);
+                        String message = jsonResponse['message'];
+                        print(message);
+                        if (message == 'OK') {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text('Đăng ký thành công'),
+                          ));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignInPage()),
+                          );
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
