@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/service/auth.dart';
-import 'package:it4788/sign_up/birthday.dart';
 
 class SetUsernamePage extends StatefulWidget {
   const SetUsernamePage({super.key});
