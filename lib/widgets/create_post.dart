@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/post_article/post_article.dart';
 
-import '../model/user_model.dart';
-
 class CreatePostContainer extends StatelessWidget {
   final UserInfor currentUser;
 
