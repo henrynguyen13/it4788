@@ -1,18 +1,19 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/set_username.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 import 'package:it4788/sign_up/verify_email.dart';
 
-class SignIn extends StatefulWidget {
+class SignInPage extends StatefulWidget {
   @override
-  State<SignIn> createState() => _SignIn();
+  State<SignInPage> createState() => _SignIn();
 }
 
-class _SignIn extends State<SignIn> {
-  final _formKey = GlobalKey<FormState>();
+class _SignIn extends State<SignInPage> {
+  final formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
@@ -362,8 +363,7 @@ class _SignIn extends State<SignIn> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            SetUsernamePage()),
+                                        builder: (context) => HomeScreen()),
                                   );
                                 }
                               } catch (e) {

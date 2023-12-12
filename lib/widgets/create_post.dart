@@ -1,6 +1,7 @@
 import 'package:it4788/core/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:it4788/model/user_infor_profile.dart';
+import 'package:it4788/post_article/post_article.dart';
 
 import '../model/user_model.dart';
 
@@ -30,13 +31,14 @@ class CreatePostContainer extends StatelessWidget {
                 const SizedBox(
                   width: 8.0,
                 ),
-                const Expanded(
-                  child: TextField(
-                    decoration: InputDecoration.collapsed(
-                      hintText: 'What\'s on your mind?',
-                    ),
-                  ),
-                )
+                MaterialButton(
+                    onPressed: () => {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PostArticle()))
+                        },
+                    child: const Text('What\'s on your mind?'))
               ],
             ),
           ),
@@ -44,47 +46,53 @@ class CreatePostContainer extends StatelessWidget {
             height: 10.0,
             thickness: 0.5,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    FilledButton(
-                      onPressed: () => print("Live"),
-                      child: const Row(
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          SizedBox(
-                            width: 15.0,
-                            height: 5.0,
-                          ),
-                          Text(
-                            "Create Post",
-                            textAlign: TextAlign.end,
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    FilledButton(
-                      onPressed: () => print("Live"),
-                      child: const Icon(Icons.image, color: Colors.white),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       Row(
+          //         children: [
+          //           FilledButton(
+          //             onPressed: () => {
+          //               Navigator.push(
+          //                 context,
+          //                 MaterialPageRoute(
+          //                     builder: (context) => PostArticle()),
+          //               )
+          //             },
+          //             child: const Row(
+          //               textBaseline: TextBaseline.alphabetic,
+          //               children: [
+          //                 Icon(
+          //                   Icons.add,
+          //                   color: Colors.white,
+          //                 ),
+          //                 SizedBox(
+          //                   width: 15.0,
+          //                   height: 5.0,
+          //                 ),
+          //                 Text(
+          //                   "Create Post",
+          //                   textAlign: TextAlign.end,
+          //                   style: TextStyle(color: Colors.white),
+          //                 )
+          //               ],
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       Row(
+          //         children: [
+          //           FilledButton(
+          //             onPressed: () => print("Live"),
+          //             child: const Icon(Icons.image, color: Colors.white),
+          //           ),
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

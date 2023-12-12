@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:it4788/data/data.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/user_infor_profile.dart';
+import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/profile_sevice.dart';
 import 'package:it4788/widgets/post_widget.dart';
 import 'package:it4788/service/post_sevice.dart';
@@ -14,8 +15,9 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-  late Future<ListPost?> _future;
-  late ListPost listPost;
+  Future<ListPost?>? _future;
+  ListPost? listPost;
+  PostSevice? postSevice;
   UserInfor? userInfor;
 
   @override
@@ -24,14 +26,23 @@ class _PostScreenState extends State<PostScreen> {
     getData();
   }
 
+  Future<String?> _getUserId() async {
+    return await Storage().getUserId();
+  }
+
   void getData() async {
-    _future = PostSevice().getPostList('193');
-    Future<UserInfor?> user = ProfileSevice().getUserInfor('193');
-    user.then((value) => {
-          setState(() {
-            userInfor = value;
-          })
-        });
+    postSevice = PostSevice();
+    var userId = await _getUserId();
+
+    if (userId != null) {
+      _future = postSevice?.getPostList(userId);
+      Future<UserInfor?> user = ProfileSevice().getUserInfor(userId);
+      user.then((value) => {
+            setState(() {
+              userInfor = value;
+            })
+          });
+    }
   }
 
   final ScrollController _scrollController =
@@ -58,9 +69,9 @@ class _PostScreenState extends State<PostScreen> {
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    return PostWidget(post: listPost.data.post[index]);
+                    return PostWidget(post: listPost!.data.post[index]);
                   },
-                  childCount: listPost.data.post.length,
+                  childCount: listPost!.data.post.length,
                 ),
               ),
             ],
@@ -68,7 +79,8 @@ class _PostScreenState extends State<PostScreen> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          return Text('No data available');
+          return const Align(
+              alignment: Alignment.center, child: CircularProgressIndicator());
         }
       },
     );
