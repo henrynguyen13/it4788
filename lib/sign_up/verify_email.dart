@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/reset_password.dart';
+import 'package:it4788/sign_in/sign_in.dart';
 
 import '../sign_in/save_info.dart';
 
@@ -23,7 +26,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(),
       body: Column(
         children: <Widget>[
           Container(
@@ -120,21 +122,23 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                   ),
                 ),
                 onPressed: () async {
-                  await checkVerifyCode(widget.email, widget.verifyCode);
+                  final checkVerifyCodeResponse =
+                      await checkVerifyCode(widget.email, widget.verifyCode);
+                  final jsonResponse =
+                      json.decode(checkVerifyCodeResponse.data);
+                  String message = jsonResponse['message'];
 
-                  if (!context.mounted) return;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ResetPasswordPage()),
-                  );
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => SaveInfoPage(
-                  //             title: '',
-                  //           )),
-                  // );
+                  if (message == 'OK') {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Xác nhận verify code thành công !'),
+                    ));
+
+                    if (!context.mounted) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignInPage()),
+                    );
+                  }
                 },
                 child: Text(
                   "Xác nhận",
