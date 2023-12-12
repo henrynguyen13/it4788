@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/sign_in.dart';
+import 'package:it4788/sign_up/verify_email.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -170,21 +171,33 @@ class _SignUpPageState extends State<SignUpPage> {
                       if (_formKey.currentState!.validate()) {
                         String email = _emailController.text;
                         String password = _passwordController.text;
-                        final response = await signUp(email, password, 'uuid');
-                        final jsonResponse = json.decode(response.data);
-                        String message = jsonResponse['message'];
-                        print(message);
-                        if (message == 'OK') {
-                          if (!context.mounted) return;
+                        bool isEmailExisted = await emailIsExisted(email);
+                        if (isEmailExisted) {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content: Text('Đăng ký thành công'),
+                            content: Text(
+                                'Email đã được sử dụng!. Vui lòng sử dụng email khác!'),
                           ));
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignInPage()),
-                          );
+                        } else {
+                          final response =
+                              await signUp(email, password, 'uuid');
+                          final jsonResponse = json.decode(response.data);
+                          String message = jsonResponse['message'];
+
+                          if (message == 'OK') {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text('Đã gửi mã xác thực!'),
+                            ));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => VerifyEmailPage(
+                                        email: email,
+                                      )),
+                            );
+                          }
                         }
                       }
                     },
