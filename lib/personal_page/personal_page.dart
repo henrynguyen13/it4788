@@ -6,6 +6,7 @@ import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/personal_page/all_friend_page.dart';
 import 'package:it4788/personal_page/edit_personal_page.dart';
+import 'package:it4788/post_article/post_article.dart';
 import 'package:it4788/widgets/post_widget.dart';
 import 'package:it4788/personal_page/preview_avatar.dart';
 import 'package:it4788/personal_page/preview_coverage_image.dart';
@@ -658,11 +659,11 @@ class _PersonalPageState extends State<PersonalPage> {
                         ),
                       ),
                       Container(
-                        child: const Column(
+                        child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Padding(
+                              const Padding(
                                 padding: EdgeInsets.all(10.0),
                                 child: Text(
                                   'Bài viết',
@@ -673,33 +674,45 @@ class _PersonalPageState extends State<PersonalPage> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.all(5.0),
+                                padding: const EdgeInsets.all(5.0),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: CircleAvatar(
-                                        radius: 30,
-                                        backgroundImage: NetworkImage(
-                                            'https://aiartshop.com/cdn/shop/files/laughing-fat-cat-animal-ai-art-143.webp?v=1686132290'),
-                                      ),
-                                    ),
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: NetworkImage(userInfor
+                                                  .data.avatar.isNotEmpty
+                                              ? userInfor.data.avatar
+                                              : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'),
+                                        )),
                                     SizedBox(
-                                      width: 300,
-                                      height: 60,
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          labelText: 'Enter your username',
-                                        ),
-                                      ),
-                                    ),
+                                        width: 300,
+                                        height: 60,
+                                        child: MaterialButton(
+                                            onPressed: () => {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const PostArticle()))
+                                                },
+                                            child: const Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'Bạn đang nghĩ gì?',
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                                ),
+                                              ],
+                                            ))),
                                   ],
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: double.infinity,
                                 height: 2,
                                 child: DecoratedBox(
@@ -708,11 +721,11 @@ class _PersonalPageState extends State<PersonalPage> {
                                           Color.fromARGB(255, 183, 180, 180)),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: double.infinity,
                                 height: 30,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: double.infinity,
                                 height: 15,
                                 child: DecoratedBox(
@@ -740,7 +753,7 @@ class _PersonalPageState extends State<PersonalPage> {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
-              return Text('No data available');
+              return const Text('No data available');
             }
           }),
     );

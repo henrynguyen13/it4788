@@ -25,8 +25,9 @@ class _NotificationCardState extends State<NotificationCard> {
                   Stack(
                     children: [
                       // Avatar Image
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(onlineUsers[0].imageUrl!),
+                      const CircleAvatar(
+                        backgroundImage:
+                            NetworkImage('https://picsum.photos/250?image=9'),
                         radius: 30.0,
                       ),
                       Positioned(
@@ -50,16 +51,16 @@ class _NotificationCardState extends State<NotificationCard> {
                   const SizedBox(
                     width: 20.0,
                   ),
-                  Column(
+                  const Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${onlineUsers[0].name} has liked your post",
-                        style: const TextStyle(
+                        "Khoa has liked your post",
+                        style: TextStyle(
                             fontWeight: FontWeight.w400, fontSize: 14),
                       ),
-                      const Text(
+                      Text(
                         "5 mins ago",
                         style: TextStyle(
                             fontWeight: FontWeight.w300, fontSize: 12),
@@ -68,17 +69,17 @@ class _NotificationCardState extends State<NotificationCard> {
                   ),
                   Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                      IconButton(
-                          onPressed: () {},
-                          splashRadius: 20.0,
-                          icon: const Icon(
-                            Icons.more_vert,
-                            color: Palette.facebookBlue,
-                          )),
-                    ]),
+                          IconButton(
+                              onPressed: () {},
+                              splashRadius: 20.0,
+                              icon: const Icon(
+                                Icons.more_vert,
+                                color: Palette.facebookBlue,
+                              )),
+                        ]),
                   )
                 ],
               ),
