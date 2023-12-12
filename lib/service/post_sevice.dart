@@ -75,4 +75,8 @@ class PostSevice {
       rethrow;
     }
   }
+
+  Future<void> addPost() async {
+    try {} catch (e) {}
+  }
 }
