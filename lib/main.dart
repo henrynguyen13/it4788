@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home: const CommentPage(),
-        home: const PersonalPage());
+        home: const PersonalPage(id: '668'));
     // home: PostArticle(),  -> Hieu
     // home: const CommentPage(), -> Hoang
 

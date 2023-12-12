@@ -11,14 +11,13 @@ import 'api_service.dart';
 
 class PostSevice {
   String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTkzLCJkZXZpY2VfaWQiOiJzc3NzIiwiaWF0IjoxNzAxMjQ1NTUzfQ.41Df22_jnTTx-f7lFkGNxTMW6rWgfogGyW3AOTQY-Xs";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjY4LCJkZXZpY2VfaWQiOiJzdHJpbmciLCJpYXQiOjE3MDIzNTE1MDF9.42M9IQqlICxzTIf59FA6nBscj1bFdCc1v7bJYkW-keI";
 
   Future<ListPost?> getPostList(String id) async {
     ListPost listPost;
 
     try {
       Map<String, dynamic> request = {
-        'user_id': id,
         "index": 0,
         'count': 50,
         'last_id': 0,

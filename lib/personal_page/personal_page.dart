@@ -14,7 +14,9 @@ import 'package:it4788/service/profile_sevice.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PersonalPage extends StatefulWidget {
-  const PersonalPage({super.key});
+  final String id;
+
+  const PersonalPage({super.key, required this.id});
 
   @override
   State<PersonalPage> createState() => _PersonalPageState();
@@ -34,7 +36,7 @@ class _PersonalPageState extends State<PersonalPage> {
 
   void getData() async {
     var profileAPI = ProfileSevice();
-    _futures = profileAPI.getDataForPersonalPage('193');
+    _futures = profileAPI.getDataForPersonalPage(widget.id);
   }
 
   void navigateToPreviewAvatar(String imagePath) {
@@ -187,7 +189,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                                       const EdgeInsets.all(8.0),
                                                   child: GestureDetector(
                                                     onTap: () =>
-                                                        getAvatarImage(),
+                                                        getCoverImage(),
                                                     child: const Row(
                                                       children: [
                                                         Icon(
@@ -561,7 +563,11 @@ class _PersonalPageState extends State<PersonalPage> {
                       ),
                       Container(
                         child: SizedBox(
-                          height: userFriends.data.friends.isNotEmpty ? 300 : 0,
+                          height: userFriends.data.friends.isNotEmpty
+                              ? userFriends.data.friends.length > 3
+                                  ? 350
+                                  : 150
+                              : 0,
                           child: GridView.builder(
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
@@ -590,14 +596,15 @@ class _PersonalPageState extends State<PersonalPage> {
                                         ),
                                       ),
                                     ),
-                                    Text(
-                                      item.username,
-                                      textAlign: TextAlign.left,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14,
-                                      ),
-                                    ),
+                                    Text(item.username,
+                                        textAlign: TextAlign.left,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12,
+                                        ),
+                                        maxLines:
+                                            2, // Số dòng tối đa bạn muốn hiển thị
+                                        overflow: TextOverflow.ellipsis),
                                   ],
                                 ),
                               );

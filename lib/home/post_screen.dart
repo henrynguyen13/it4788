@@ -25,8 +25,8 @@ class _PostScreenState extends State<PostScreen> {
   }
 
   void getData() async {
-    _future = PostSevice().getPostList('193');
-    Future<UserInfor?> user = ProfileSevice().getUserInfor('193');
+    _future = PostSevice().getPostList('668');
+    Future<UserInfor?> user = ProfileSevice().getUserInfor('668');
     user.then((value) => {
           setState(() {
             userInfor = value;

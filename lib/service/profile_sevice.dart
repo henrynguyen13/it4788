@@ -11,7 +11,7 @@ import 'api_service.dart';
 
 class ProfileSevice {
   String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTkzLCJkZXZpY2VfaWQiOiJzc3NzIiwiaWF0IjoxNzAxMjQ1NTUzfQ.41Df22_jnTTx-f7lFkGNxTMW6rWgfogGyW3AOTQY-Xs";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjY4LCJkZXZpY2VfaWQiOiJzdHJpbmciLCJpYXQiOjE3MDIzNTE1MDF9.42M9IQqlICxzTIf59FA6nBscj1bFdCc1v7bJYkW-keI";
 
   Future<UserInfor?> getUserInfor(String id) async {
     UserInfor? userInfor;
@@ -95,10 +95,8 @@ class ProfileSevice {
         "country": country,
         "link": link,
         "avatar": avatarName.isNotEmpty && avatar != null
-            ? await MultipartFile.fromFile(
-                avatar.path,
-                filename: avatarName,
-              )
+            ? await MultipartFile.fromFile(avatar.path,
+                filename: avatarName, contentType: MediaType("image", "jpeg"))
             : "",
         "cover_image": coverImageName.isNotEmpty && coverImage != null
             ? await MultipartFile.fromFile(
@@ -131,6 +129,11 @@ class ProfileSevice {
         'user_id': id,
         'count': 50,
         'last_id': 0,
+        'in_campaign': 1,
+        'campaign_id': 1,
+        'latitude': 1.0,
+        'longitude': 1.0,
+        'index': 0
       };
       final dio = ApiService.createDio();
       final response = await dio.post('get_list_posts',
