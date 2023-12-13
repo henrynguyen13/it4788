@@ -94,7 +94,10 @@ class _PostWidgetState extends State<PostWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(child: _buildArticleItem(post));
+    return Card(
+        elevation: 0,
+        color: Colors.transparent,
+        child: _buildArticleItem(post));
   }
 
   Widget _buildImageSection(List<ImagePost> images) {
@@ -240,7 +243,7 @@ class _PostWidgetState extends State<PostWidget> {
                 Icons.mood_bad_rounded,
               ),
               Text(post.feel),
-              Spacer(),
+              const Spacer(),
               Text("${post.commentMark} comments")
             ]),
           ),
@@ -315,6 +318,13 @@ class _PostWidgetState extends State<PostWidget> {
               ],
             ),
           ),
+          const SizedBox(
+              width: double.infinity,
+              height: 10,
+              child: DecoratedBox(
+                decoration:
+                    BoxDecoration(color: Color.fromARGB(255, 195, 193, 192)),
+              ))
         ],
       ),
     );

@@ -62,6 +62,8 @@ class RequestFriend {
   String avatar;
   String sameFriends;
   DateTime created;
+  bool isAccept = false;
+  bool isCancel = false;
 
   RequestFriend({
     required this.id,
