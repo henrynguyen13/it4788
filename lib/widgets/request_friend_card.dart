@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:it4788/model/request_friends.dart';
 import 'package:it4788/service/friend_service.dart';
 
-class FriendCard extends StatefulWidget {
+class RequestFriendCard extends StatefulWidget {
   final RequestFriend friend;
-  const FriendCard({super.key, required this.friend});
+  const RequestFriendCard({super.key, required this.friend});
 
   @override
-  State<FriendCard> createState() => _FriendCardState();
+  State<RequestFriendCard> createState() => _RequestFriendCardState();
 }
 
-class _FriendCardState extends State<FriendCard> {
+class _RequestFriendCardState extends State<RequestFriendCard> {
   RequestFriend? friend;
   FriendService? friendService;
-  bool isAccept = false;
-  bool isCancel = false;
 
   @override
   void initState() {
@@ -28,7 +26,7 @@ class _FriendCardState extends State<FriendCard> {
     try {
       await friendService?.setAcceptFriend(id);
       setState(() {
-        isAccept = true;
+        friend!.isAccept = true;
       });
     } catch (e) {
       rethrow;
@@ -39,7 +37,7 @@ class _FriendCardState extends State<FriendCard> {
     try {
       await friendService?.setDeleteFriend(id);
       setState(() {
-        isCancel = true;
+        friend!.isCancel = true;
       });
     } catch (e) {
       rethrow;
@@ -49,14 +47,15 @@ class _FriendCardState extends State<FriendCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 3,
+      elevation: 0,
+      color: Colors.transparent,
       margin: const EdgeInsets.all(8),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
             CircleAvatar(
-              radius: 40.0,
+              radius: 45.0,
               backgroundImage: NetworkImage(friend!.avatar),
             ),
             const SizedBox(
@@ -76,13 +75,10 @@ class _FriendCardState extends State<FriendCard> {
                     height: 10.0,
                   ),
                   Text(friend!.sameFriends),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      !isAccept
+                      !friend!.isAccept
                           ? (FilledButton(
                               onPressed: () {
                                 setAcceptFriend(friend!.id);
@@ -96,11 +92,11 @@ class _FriendCardState extends State<FriendCard> {
                                   SizedBox(
                                     width: 8.0,
                                   ),
-                                  Text("Add friend"),
+                                  Text("Chấp nhận"),
                                 ],
                               )))
-                          : const Text("Added"),
-                      !isCancel
+                          : const Text("Đã chấp nhận"),
+                      !friend!.isCancel
                           ? FilledButton(
                               onPressed: () {
                                 deleteFriend(friend!.id);
@@ -127,10 +123,10 @@ class _FriendCardState extends State<FriendCard> {
                                   SizedBox(
                                     width: 8.0,
                                   ),
-                                  Text("Cancel"),
+                                  Text("Gỡ"),
                                 ],
                               ))
-                          : const Text("Canceled"),
+                          : const Text("Đã hủy"),
                     ],
                   )
                 ],
