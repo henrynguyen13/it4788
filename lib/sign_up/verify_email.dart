@@ -4,10 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:it4788/service/auth.dart';
-import 'package:it4788/sign_in/reset_password.dart';
 import 'package:it4788/sign_in/sign_in.dart';
-
-import '../sign_in/save_info.dart';
 
 class VerifyEmailPage extends StatefulWidget {
   const VerifyEmailPage({super.key, required this.email});
@@ -24,6 +21,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(),
       body: Column(
         children: <Widget>[
           Container(
@@ -138,14 +136,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                       content: Text('Mã xác thực không chính xác!'),
                     ));
                   }
-
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => SaveInfoPage(
-                  //             title: '',
-                  //           )),
-                  // );
                 },
                 child: Text(
                   "Xác nhận",
@@ -186,28 +176,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               ),
             ),
           ),
-          // ElevatedButton(
-          //   style: ButtonStyle(
-          //     backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-          //       (Set<MaterialState> states) {
-          //         return const Color.fromARGB(0, 255, 255, 255);
-          //       },
-          //     ),
-          //     shadowColor: MaterialStateProperty.resolveWith<Color?>(
-          //       (Set<MaterialState> states) {
-          //         return Colors.transparent;
-          //       },
-          //     ),
-          //   ),
-          //   onPressed: () {},
-          //   child: Text(
-          //     "Đăng xuất",
-          //     style: TextStyle(
-          //       color: Color.fromRGBO(57, 104, 214, 1),
-          //       fontSize: 16,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
