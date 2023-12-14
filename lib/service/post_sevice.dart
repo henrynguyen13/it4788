@@ -76,7 +76,36 @@ class PostSevice {
     }
   }
 
-  Future<void> addPost() async {
-    try {} catch (e) {}
+  Future<Response> addPost(File? image, File? video, String described,
+      String status, String auto_accept) async {
+    try {
+      var token = await _getToken();
+      String imagePath = "";
+
+      if (image != null) imagePath = image.path.split('/').last;
+      print(imagePath);
+
+      FormData formData = FormData.fromMap({
+        'image': imagePath.isNotEmpty && image != null
+            ? await MultipartFile.fromFile(image.path,
+                filename: imagePath, contentType: MediaType("image", "jpeg"))
+            : "",
+        'described': described,
+        'status': status,
+        "auto_accept": auto_accept,
+      });
+      final dio = ApiService.createDio();
+      final response = await dio.post('add_post',
+          data: formData,
+          options: Options(headers: {
+            "Authorization": "Bearer $token",
+          }));
+
+      print(response.data);
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/set_username.dart';
 import 'package:it4788/sign_up/sign_up.dart';
@@ -187,8 +188,19 @@ class _SignIn extends State<SignInPage> {
 
                                 final jsonResponse = json.decode(response.data);
                                 String message = jsonResponse['message'];
+                                String username =
+                                    jsonResponse['data']['username'];
 
-                                if (message == 'OK') {
+                                if (message == 'OK' && username != '') {
+                                  if (!context.mounted) return;
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomeScreen()),
+                                  );
+                                } else {
                                   if (!context.mounted) return;
 
                                   Navigator.push(
