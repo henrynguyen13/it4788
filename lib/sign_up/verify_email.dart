@@ -138,14 +138,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                       content: Text('Mã xác thực không chính xác!'),
                     ));
                   }
-
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => SaveInfoPage(
-                  //             title: '',
-                  //           )),
-                  // );
                 },
                 child: Text(
                   "Xác nhận",
@@ -186,28 +178,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               ),
             ),
           ),
-          // ElevatedButton(
-          //   style: ButtonStyle(
-          //     backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-          //       (Set<MaterialState> states) {
-          //         return const Color.fromARGB(0, 255, 255, 255);
-          //       },
-          //     ),
-          //     shadowColor: MaterialStateProperty.resolveWith<Color?>(
-          //       (Set<MaterialState> states) {
-          //         return Colors.transparent;
-          //       },
-          //     ),
-          //   ),
-          //   onPressed: () {},
-          //   child: Text(
-          //     "Đăng xuất",
-          //     style: TextStyle(
-          //       color: Color.fromRGBO(57, 104, 214, 1),
-          //       fontSize: 16,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );

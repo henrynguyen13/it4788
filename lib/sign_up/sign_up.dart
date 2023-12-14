@@ -176,38 +176,46 @@ class _SignUpPageState extends State<SignUpPage> {
                       String email = _emailController.text;
                       String password = _passwordController.text;
                       emailData = email;
-                      final signUpResponse =
-                          await signUp(email, password, 'uuid');
 
-                      final jsonResponse = json.decode(signUpResponse.data);
-                      String message = jsonResponse['message'];
+                      final checkEmailResponse = await emailIsExisted(email);
+                      if (checkEmailResponse == true) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Email đã tồn tại tài khoản!'),
+                        ));
+                      } else {
+                        final signUpResponse =
+                            await signUp(email, password, 'uuid');
 
-                      if (message == 'OK') {
-                        final getVerifyCodeResponse =
-                            await _getVerifyCodeResponse(email);
+                        final jsonResponse = json.decode(signUpResponse.data);
+                        String message = jsonResponse['message'];
 
-                        if (getVerifyCodeResponse.statusCode == 200) {
-                          try {
-                            // Nếu không có lỗi, chuyển đổi nội dung JSON thành đối tượng Dart
-                            final jsonResponse =
-                                json.decode(getVerifyCodeResponse.data);
+                        if (message == 'OK') {
+                          final getVerifyCodeResponse =
+                              await _getVerifyCodeResponse(email);
 
-                            // Truy cập thuộc tính của đối tượng Dart
-                            verifyCodeData =
-                                jsonResponse['data']['verify_code'];
+                          if (getVerifyCodeResponse.statusCode == 200) {
+                            try {
+                              // Nếu không có lỗi, chuyển đổi nội dung JSON thành đối tượng Dart
+                              final jsonResponse =
+                                  json.decode(getVerifyCodeResponse.data);
 
-                            // In giá trị ra console
-                            print("Verify Code: $verifyCodeData");
+                              // Truy cập thuộc tính của đối tượng Dart
+                              verifyCodeData =
+                                  jsonResponse['data']['verify_code'];
 
-                            if (!context.mounted) return;
-                            _sendVerifyCode(context);
-                          } catch (e) {
-                            print("Error parsing JSON: $e");
+                              // In giá trị ra console
+                              print("Verify Code: $verifyCodeData");
+
+                              if (!context.mounted) return;
+                              _sendVerifyCode(context);
+                            } catch (e) {
+                              print("Error parsing JSON: $e");
+                            }
+                          } else {
+                            // Xử lý lỗi nếu có
+                            print("Lỗi khi lấy verify code");
                           }
-                        } else {
-                          // Xử lý lỗi nếu có
-                          print("Lỗi khi lấy verify code");
-              
                         }
                       }
                     }
@@ -289,14 +297,13 @@ class _SignUpPageState extends State<SignUpPage> {
   // get verify code to the VerifyEmailPage
   void _sendVerifyCode(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Đăng ký thành công'),
+      content: Text('Gửi mã xác thực thành công!'),
     ));
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            VerifyEmailPage(verifyCode: verifyCodeData, email: emailData),
+        builder: (context) => VerifyEmailPage(email: emailData),
       ),
     );
   }
