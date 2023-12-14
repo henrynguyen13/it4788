@@ -81,11 +81,10 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                   backgroundColor: MaterialStateProperty.all(Colors.blue)),
               onPressed: () async {
                 try {
-                  print(username);
-
                   final setUsernameResponse = await setUsername(username);
                   final jsonResponse = json.decode(setUsernameResponse.data);
                   print(jsonResponse);
+
                   String message = jsonResponse['message'];
                   print(message);
 
