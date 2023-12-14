@@ -76,6 +76,7 @@ Future<Response> setUsername(String username) async {
       options: Options(headers: {"Authorization": "Bearer $token"}));
   print('Xác nhận set username thành công !');
   return response;
+}
 
 Future<bool> emailIsExisted(String email) async {
   Map<String, dynamic> request = {
