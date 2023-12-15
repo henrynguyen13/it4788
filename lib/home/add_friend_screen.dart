@@ -16,6 +16,7 @@ class AddFriendScreen extends StatefulWidget {
 class _AddFriendScreenState extends State<AddFriendScreen> {
   List<RequestFriend>? requestFriendList;
   Future<RequestFriendList?>? _requestFriends;
+  String? userId;
 
   @override
   void initState() {
@@ -24,7 +25,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
   }
 
   void getData() async {
-    var userId = await Storage().getUserId();
+    userId = await Storage().getUserId();
     if (userId != null) {
       setState(() {
         _requestFriends = FriendService().getFriendRequest(10);
@@ -115,7 +116,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const AllFriendPage()),
+                                              AllFriendPage(id: userId!)),
                                     );
                                   },
                                   child: const Text(

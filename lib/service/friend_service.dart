@@ -100,4 +100,21 @@ class FriendService {
       rethrow;
     }
   }
+
+  Future<void> unFriend(String id) async {
+    var token = await _getToken();
+    try {
+      Map<String, dynamic> request = {
+        'user_id': id,
+      };
+      final dio = ApiService.createDio();
+      final response = await dio.post('unfriend',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print(response.data);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

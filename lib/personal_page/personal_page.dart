@@ -6,12 +6,15 @@ import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/personal_page/all_friend_page.dart';
 import 'package:it4788/personal_page/edit_personal_page.dart';
+import 'package:it4788/service/friend_service.dart';
 import 'package:it4788/widgets/post_widget.dart';
 import 'package:it4788/personal_page/preview_avatar.dart';
 import 'package:it4788/personal_page/preview_coverage_image.dart';
 import 'package:it4788/personal_page/setting_personal_page.dart';
 import 'package:it4788/service/profile_sevice.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../service/authStorage.dart';
 
 class PersonalPage extends StatefulWidget {
   final String id;
@@ -27,16 +30,25 @@ class _PersonalPageState extends State<PersonalPage> {
   late UserInfor userInfor;
   late UserFriends userFriends;
   late ListPost listPost;
+  String? userId;
+  String? curId;
+  bool isRequest = false;
 
   @override
   void initState() {
     super.initState;
     getData();
+    curId = widget.id;
+  }
+
+  Future<String?> _getUserId() async {
+    return await Storage().getUserId();
   }
 
   void getData() async {
     var profileAPI = ProfileSevice();
     _futures = profileAPI.getDataForPersonalPage(widget.id);
+    userId = await _getUserId();
   }
 
   void navigateToPreviewAvatar(String imagePath) {
@@ -105,6 +117,22 @@ class _PersonalPageState extends State<PersonalPage> {
     }
   }
 
+  bool isCurrentUser() {
+    if (curId == userId) return true;
+    return false;
+  }
+
+  Future setRequestFriend(String id) async {
+    try {
+      await FriendService().setRequestFriend(id);
+      setState(() {
+        isRequest = true;
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,89 +168,99 @@ class _PersonalPageState extends State<PersonalPage> {
                               height: 300,
                               child: GestureDetector(
                                 onTap: () => {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (builder) {
-                                        return SizedBox(
-                                          height: 200,
-                                          width: double.infinity,
-                                          child: Column(
-                                            children: [
-                                              Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: GestureDetector(
-                                                    onTap: () =>
-                                                        getCoverImage(),
-                                                    child: const Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons
-                                                              .picture_in_picture_outlined,
-                                                          color: Colors.black45,
-                                                          size: 24.0,
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  20),
-                                                          child: Text(
-                                                            'Xem ảnh bìa',
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 20,
+                                  isCurrentUser()
+                                      ? showModalBottomSheet(
+                                          context: context,
+                                          builder: (builder) {
+                                            return SizedBox(
+                                              height: 200,
+                                              width: double.infinity,
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: GestureDetector(
+                                                        onTap: () =>
+                                                            getCoverImage(),
+                                                        child: const Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .picture_in_picture_outlined,
+                                                              color: Colors
+                                                                  .black45,
+                                                              size: 24.0,
                                                             ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )),
-                                              Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: GestureDetector(
-                                                    onTap: () =>
-                                                        getCoverImage(),
-                                                    child: const Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.upload,
-                                                          color: Colors.black45,
-                                                          size: 24.0,
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  20),
-                                                          child: Text(
-                                                            'Tải ảnh lên',
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 20,
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(20),
+                                                              child: Text(
+                                                                'Xem ảnh bìa',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 20,
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
+                                                          ],
                                                         ),
-                                                      ],
-                                                    ),
-                                                  )),
-                                            ],
-                                          ),
-                                        );
-                                      })
+                                                      )),
+                                                  Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: GestureDetector(
+                                                        onTap: () =>
+                                                            getCoverImage(),
+                                                        child: const Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.upload,
+                                                              color: Colors
+                                                                  .black45,
+                                                              size: 24.0,
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(20),
+                                                              child: Text(
+                                                                'Tải ảnh lên',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 20,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )),
+                                                ],
+                                              ),
+                                            );
+                                          })
+                                      : {}
                                 },
                                 child: Container(
                                     child: ClipRRect(
@@ -245,61 +283,62 @@ class _PersonalPageState extends State<PersonalPage> {
                               child: Center(
                                 child: GestureDetector(
                                     onTap: () => {
-                                          showModalBottomSheet(
-                                              context: context,
-                                              builder: (builder) {
-                                                return SizedBox(
-                                                  height: 100,
-                                                  width: double.infinity,
-                                                  child: Column(
-                                                    children: [
-                                                      Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () =>
-                                                                getAvatarImage(),
-                                                            child: const Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .photo_outlined,
-                                                                  color: Colors
-                                                                      .black45,
-                                                                  size: 24.0,
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              20),
-                                                                  child: Text(
-                                                                    'Chọn ảnh đại diện',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          20,
+                                          isCurrentUser()
+                                              ? showModalBottomSheet(
+                                                  context: context,
+                                                  builder: (builder) {
+                                                    return SizedBox(
+                                                      height: 100,
+                                                      width: double.infinity,
+                                                      child: Column(
+                                                        children: [
+                                                          Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () =>
+                                                                    getAvatarImage(),
+                                                                child:
+                                                                    const Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .photo_outlined,
+                                                                      color: Colors
+                                                                          .black45,
+                                                                      size:
+                                                                          24.0,
                                                                     ),
-                                                                  ),
+                                                                    Padding(
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              20),
+                                                                      child:
+                                                                          Text(
+                                                                        'Chọn ảnh đại diện',
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          fontSize:
+                                                                              20,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          )),
-                                                    ],
-                                                  ),
-                                                );
-                                              })
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  })
+                                              : {}
                                         },
                                     child: CircleAvatar(
                                       radius: 100,
@@ -320,40 +359,97 @@ class _PersonalPageState extends State<PersonalPage> {
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 24),
                       ),
-                      TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue),
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color.fromARGB(255, 187, 226, 245)),
-                            overlayColor:
-                                MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.focused) ||
-                                    states.contains(MaterialState.pressed)) {
-                                  return Colors.blue.withOpacity(0.12);
-                                }
-                                return null; // Defer to the widget's default.
-                              },
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SettingPersonalPage(
-                                        userInfor: userInfor,
-                                      )),
-                            );
-                          },
-                          child: const Text(
-                            '...',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
-                            ),
-                          )),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          !isCurrentUser()
+                              ? TextButton(
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Color.fromARGB(255, 65, 50, 233)),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Color.fromARGB(255, 57, 47, 232)),
+                                    overlayColor: MaterialStateProperty
+                                        .resolveWith<Color?>(
+                                      (Set<MaterialState> states) {
+                                        if (states.contains(
+                                                MaterialState.focused) ||
+                                            states.contains(
+                                                MaterialState.pressed)) {
+                                          return Colors.blue.withOpacity(0.12);
+                                        }
+                                        return null; // Defer to the widget's default.
+                                      },
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (userInfor.data.isFriend == "0") {
+                                      setRequestFriend(userInfor.data.id);
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(90, 5, 90, 5),
+                                    child: Text(
+                                      userInfor.data.isFriend == "1"
+                                          ? 'Bạn bè'
+                                          : !isRequest
+                                              ? 'Thêm bạn bè'
+                                              : 'Đã gửi lời mời',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Colors.white),
+                                    ),
+                                  ))
+                              : Container(),
+                          isCurrentUser()
+                              ? TextButton(
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Color.fromARGB(255, 65, 50, 233)),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Color.fromARGB(255, 57, 47, 232)),
+                                    overlayColor: MaterialStateProperty
+                                        .resolveWith<Color?>(
+                                      (Set<MaterialState> states) {
+                                        if (states.contains(
+                                                MaterialState.focused) ||
+                                            states.contains(
+                                                MaterialState.pressed)) {
+                                          return Colors.blue.withOpacity(0.12);
+                                        }
+                                        return null; // Defer to the widget's default.
+                                      },
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SettingPersonalPage(
+                                                userInfor: userInfor,
+                                              )),
+                                    );
+                                  },
+                                  child: const Text(
+                                    '...',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 20,
+                                    ),
+                                  ))
+                              : Container(),
+                        ],
+                      ),
                       Align(
                         alignment: Alignment.center,
                         child: Padding(
@@ -458,44 +554,52 @@ class _PersonalPageState extends State<PersonalPage> {
                           ],
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        width: double.infinity,
-                        child: TextButton(
-                            style: ButtonStyle(
-                              foregroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.blue),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  const Color.fromARGB(255, 187, 226, 245)),
-                              overlayColor:
-                                  MaterialStateProperty.resolveWith<Color?>(
-                                (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.focused) ||
-                                      states.contains(MaterialState.pressed)) {
-                                    return Colors.blue.withOpacity(0.12);
-                                  }
-                                  return null; // Defer to the widget's default.
-                                },
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditPersonalPage(
-                                          userInfor: userInfor,
-                                        )),
-                              );
-                            },
-                            child: const Text(
-                              'Chỉnh sửa chi tiết công khai',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18,
-                              ),
-                            )),
-                      ),
+                      isCurrentUser()
+                          ? Container(
+                              padding: const EdgeInsets.all(10),
+                              width: double.infinity,
+                              child: TextButton(
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.blue),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            const Color.fromARGB(
+                                                255, 187, 226, 245)),
+                                    overlayColor: MaterialStateProperty
+                                        .resolveWith<Color?>(
+                                      (Set<MaterialState> states) {
+                                        if (states.contains(
+                                                MaterialState.focused) ||
+                                            states.contains(
+                                                MaterialState.pressed)) {
+                                          return Colors.blue.withOpacity(0.12);
+                                        }
+                                        return null; // Defer to the widget's default.
+                                      },
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditPersonalPage(
+                                                userInfor: userInfor,
+                                              )),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'Chỉnh sửa chi tiết công khai',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 18,
+                                    ),
+                                  )),
+                            )
+                          : Container(),
                       Align(
                         alignment: Alignment.center,
                         child: Padding(
@@ -565,7 +669,7 @@ class _PersonalPageState extends State<PersonalPage> {
                         child: SizedBox(
                           height: userFriends.data.friends.isNotEmpty
                               ? userFriends.data.friends.length > 3
-                                  ? 350
+                                  ? 300
                                   : 150
                               : 0,
                           child: GridView.builder(
@@ -586,7 +690,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: SizedBox.fromSize(
-                                          size: const Size.fromRadius(56),
+                                          size: const Size.fromRadius(54),
                                           child: Image.network(
                                             item.avatar.isNotEmpty
                                                 ? item.avatar
@@ -637,7 +741,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const AllFriendPage()),
+                                        AllFriendPage(id: curId!)),
                               );
                             },
                             child: const Text(
@@ -657,72 +761,78 @@ class _PersonalPageState extends State<PersonalPage> {
                               color: Color.fromARGB(255, 144, 142, 142)),
                         ),
                       ),
-                      Container(
-                        child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: Text(
-                                  'Bài viết',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 24,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(5.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                      isCurrentUser()
+                          ? Container(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: CircleAvatar(
-                                        radius: 30,
-                                        backgroundImage: NetworkImage(
-                                            'https://aiartshop.com/cdn/shop/files/laughing-fat-cat-animal-ai-art-143.webp?v=1686132290'),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 300,
-                                      height: 60,
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          labelText: 'Enter your username',
+                                    const Padding(
+                                      padding: EdgeInsets.all(10.0),
+                                      child: Text(
+                                        'Bài viết',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 24,
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 2,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                      color:
-                                          Color.fromARGB(255, 183, 180, 180)),
-                                ),
-                              ),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 30,
-                              ),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 15,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                      color:
-                                          Color.fromARGB(255, 144, 142, 142)),
-                                ),
-                              ),
-                            ]),
-                      ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: CircleAvatar(
+                                              radius: 30,
+                                              backgroundImage: NetworkImage(
+                                                  userInfor.data.avatar
+                                                          .isNotEmpty
+                                                      ? userInfor.data.avatar
+                                                      : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 300,
+                                            height: 60,
+                                            child: TextField(
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                labelText:
+                                                    'Enter your username',
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: double.infinity,
+                                      height: 2,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 183, 180, 180)),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: double.infinity,
+                                      height: 30,
+                                    ),
+                                    const SizedBox(
+                                      width: double.infinity,
+                                      height: 15,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 144, 142, 142)),
+                                      ),
+                                    ),
+                                  ]),
+                            )
+                          : Container(),
                       Container(
                           child: ListView.separated(
                               shrinkWrap: true,
