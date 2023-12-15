@@ -1,12 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:it4788/model/post.dart';
-import 'package:it4788/model/user_friends.dart';
-import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/service/authStorage.dart';
-
 import 'api_service.dart';
 
 class PostSevice {
@@ -76,27 +72,29 @@ class PostSevice {
     }
   }
 
-  Future<Response> addPost(File? image, File? video, String described,
+  Future<Response> addPost(List<XFile?> images, File? video, String described,
       String status, String auto_accept) async {
     try {
       var token = await _getToken();
-      String imagePath = "";
+
+      FormData formData = FormData();
+
+      for (XFile? image in images) {
+        formData.fields.add(MapEntry("image", image.toString()));
+      }
+
       String videoPath = "";
+      if (video != null) videoPath = video.path.split('/').last;
 
-      if (image != null) imagePath = image.path.split('/').last;
-      print(imagePath);
+      formData.files.add(MapEntry(
+          'video', MultipartFile.fromString(video!.path, filename: videoPath)));
 
-      FormData formData = FormData.fromMap({
-        'image': imagePath.isNotEmpty && image != null
-            ? await MultipartFile.fromFile(image.path, filename: imagePath)
-            : "",
-        'video': videoPath.isNotEmpty && video != null
-            ? await MultipartFile.fromFile(video.path, filename: videoPath)
-            : "",
-        'described': described,
-        'status': status,
-        "auto_accept": auto_accept,
-      });
+      formData.fields.add(MapEntry('described', described));
+
+      formData.fields.add(MapEntry('status', status));
+
+      formData.fields.add(MapEntry('auto_accept', auto_accept));
+
       final dio = ApiService.createDio();
       final response = await dio.post('add_post',
           data: formData,

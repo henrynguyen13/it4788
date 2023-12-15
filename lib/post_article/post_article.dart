@@ -18,19 +18,11 @@ class PostArticle extends StatefulWidget {
 class _PostArticleState extends State<PostArticle> {
   String feelingState = "";
 
-  File? image;
+  List<XFile?> selectedImages = [];
   File? video;
   String postContent = "";
   String status = "Hyped";
   String auto_accept = "1";
-  late String _selectedImage;
-
-  List<String> selectedImages = [
-    // 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
-    // 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-    // 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-    // 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +36,8 @@ class _PostArticleState extends State<PostArticle> {
             MaterialButton(
               onPressed: () async {
                 try {
-                  final addPostResponse = await PostSevice()
-                      .addPost(image, video, postContent, status, auto_accept);
+                  final addPostResponse = await PostSevice().addPost(
+                      selectedImages, video, postContent, status, auto_accept);
 
                   final jsonResponse = json.decode(addPostResponse.data);
 
@@ -180,7 +172,7 @@ class _PostArticleState extends State<PostArticle> {
                                       child: ElevatedButton(
                                         child: const Text("Chọn ảnh từ máy"),
                                         onPressed: () {
-                                          _pickImageFromGallery();
+                                          _pickImagesFromGallery();
                                         },
                                       ),
                                     )),
@@ -313,14 +305,19 @@ class _PostArticleState extends State<PostArticle> {
         ));
   }
 
-  Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future _pickImagesFromGallery() async {
+    final pickedImages = await ImagePicker().pickMultiImage(imageQuality: 100);
 
-    if (returnedImage == null) return;
+    if (pickedImages.isEmpty) return;
+
     setState(() {
-      _selectedImage = returnedImage.path;
-      print(_selectedImage);
+      if (pickedImages.length <= 4) {
+        selectedImages = pickedImages;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bạn chỉ được chọn tối đa 4 ảnh !')));
+        return;
+      }
     });
   }
 
@@ -330,7 +327,7 @@ class _PostArticleState extends State<PostArticle> {
 
     if (returnedImage == null) return;
     setState(() {
-      _selectedImage = returnedImage.path;
+      selectedImages.add(returnedImage);
     });
   }
 
@@ -339,7 +336,7 @@ class _PostArticleState extends State<PostArticle> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PickerFeelings(),
+          builder: (context) => const PickerFeelings(),
         ));
 
     // after the feelingState comes back update the Text widget with it
@@ -348,9 +345,9 @@ class _PostArticleState extends State<PostArticle> {
     });
   }
 
-  Widget _buildImageSection(List<String> images) {
+  Widget _buildImageSection(List<XFile?> images) {
     if (images.length == 1) {
-      return Image.network(images[0],
+      return Image.file(File(images[0]!.path),
           height: 400, width: double.infinity, fit: BoxFit.cover);
     } else if (images.length == 2) {
       return GridView.builder(
@@ -363,7 +360,7 @@ class _PostArticleState extends State<PostArticle> {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 1),
-            child: Image.network(images[index],
+            child: Image.file(File(images[index]!.path),
                 height: 400, width: double.infinity, fit: BoxFit.cover),
           );
         },
@@ -372,19 +369,20 @@ class _PostArticleState extends State<PostArticle> {
       return Row(
         children: [
           Expanded(
-            child: Image.network(images[0], height: 400, fit: BoxFit.cover),
+            child: Image.file(File(images[0]!.path),
+                height: 400, fit: BoxFit.cover),
           ),
           Expanded(
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 4, bottom: 2),
-                  child: Image.network(images[1],
+                  child: Image.file(File(images[1]!.path),
                       height: 198, width: double.infinity, fit: BoxFit.cover),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4, top: 2),
-                  child: Image.network(images[1],
+                  child: Image.file(File(images[2]!.path),
                       height: 198, width: double.infinity, fit: BoxFit.cover),
                 ),
               ],
@@ -403,7 +401,7 @@ class _PostArticleState extends State<PostArticle> {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(1),
-            child: Image.network(images[index],
+            child: Image.file(File(images[index]!.path),
                 height: 200, width: double.infinity, fit: BoxFit.cover),
           );
         },
