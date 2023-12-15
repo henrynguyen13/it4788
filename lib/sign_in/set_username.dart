@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/home/home_screen.dart';
@@ -59,7 +58,6 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                 borderRadius: BorderRadius.circular(20), // Image border
                 child: SizedBox(
                   width: double.infinity,
-                  height: 400, // Image radius
                   child: avatar != null
                       ? Image.file(
                           avatar!,
@@ -67,9 +65,7 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                           height: 400,
                           fit: BoxFit.cover,
                         )
-                      : const SizedBox(
-                          height: 40,
-                        ),
+                      : const SizedBox(height: 15.0),
                 ),
               )),
               const SizedBox(height: 15.0),
@@ -86,7 +82,10 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                   ),
                   child: const Text(
                     "Chọn ảnh đại diện",
-                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w500),
                   )),
               const SizedBox(height: 30.0),
               TextButton(
@@ -102,7 +101,8 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                     backgroundColor: MaterialStateProperty.all(Colors.blue)),
                 onPressed: () async {
                   try {
-                    final setUsernameResponse = await setUsername(username);
+                    final setUsernameResponse =
+                        await setUsername(username, avatar);
                     final jsonResponse = json.decode(setUsernameResponse.data);
                     print(jsonResponse);
 
