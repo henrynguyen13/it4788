@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
-      home: const SignUpPage(),
+      home: const PostArticle(),
     );
   }
 }

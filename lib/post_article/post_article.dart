@@ -28,9 +28,86 @@ class _PostArticleState extends State<PostArticle> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "Tạo bài viết",
-            style: TextStyle(fontSize: 18),
+          title: Row(
+            children: [
+              MaterialButton(
+                  minWidth: 10,
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SizedBox(
+                          height: 300,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.save_alt_rounded),
+                                      ),
+                                      Text('Lưu bản nháp'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.delete),
+                                      ),
+                                      Text('Hủy bài viết'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.edit),
+                                      ),
+                                      Text('Chỉnh sửa bài viết'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.link),
+                                      ),
+                                      Text('Sao chép liên kết'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: const Icon(Icons.arrow_back)),
+              const Text(
+                "Tạo bài viết",
+                style: TextStyle(fontSize: 18),
+              ),
+            ],
           ),
           actions: [
             MaterialButton(
@@ -78,7 +155,7 @@ class _PostArticleState extends State<PostArticle> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "${userInfor.data.username} ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
+                            "pidk ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                         Padding(
@@ -173,6 +250,7 @@ class _PostArticleState extends State<PostArticle> {
                                         child: const Text("Chọn ảnh từ máy"),
                                         onPressed: () {
                                           _pickImagesFromGallery();
+                                          Navigator.pop(context);
                                         },
                                       ),
                                     )),
@@ -191,6 +269,7 @@ class _PostArticleState extends State<PostArticle> {
                                                 child: Text("Chụp ảnh"),
                                                 onPressed: () {
                                                   _pickImageFromCamera();
+                                                  Navigator.pop(context);
                                                 },
                                               )))),
                                 ],
