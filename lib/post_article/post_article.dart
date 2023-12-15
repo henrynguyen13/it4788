@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:it4788/model/user_infor_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
-import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/post_sevice.dart';
 
 class PostArticle extends StatefulWidget {
@@ -16,6 +14,8 @@ class PostArticle extends StatefulWidget {
 }
 
 class _PostArticleState extends State<PostArticle> {
+  late UserInfor userInfor;
+
   String feelingState = "";
 
   List<XFile?> selectedImages = [];
@@ -78,7 +78,7 @@ class _PostArticleState extends State<PostArticle> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "Idk ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
+                            "${userInfor.data.username} ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                         Padding(
