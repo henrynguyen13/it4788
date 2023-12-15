@@ -67,14 +67,18 @@ Future<Response> checkVerifyCode(String email, String verifyCode) async {
   return response;
 }
 
-Future<Response> setUsername(String username) async {
+Future<Response> setUsername(String username, File? avatar) async {
   var token = await _getToken();
-  FormData formData = FormData.fromMap({'username': username, 'avatar': ""});
+  FormData formData = FormData.fromMap({
+    'username': username,
+    'avatar': MultipartFile.fromFile(avatar!.path,
+        filename: avatar.path.split('/').last)
+  });
   final dio = ApiService.createDio();
   final response = await dio.post('change_profile_after_signup',
       data: formData,
       options: Options(headers: {"Authorization": "Bearer $token"}));
-  print('Xác nhận set username thành công !');
+  print('Bạn đã đặt tên thành công !');
   return response;
 }
 
