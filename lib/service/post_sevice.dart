@@ -81,14 +81,17 @@ class PostSevice {
     try {
       var token = await _getToken();
       String imagePath = "";
+      String videoPath = "";
 
       if (image != null) imagePath = image.path.split('/').last;
       print(imagePath);
 
       FormData formData = FormData.fromMap({
         'image': imagePath.isNotEmpty && image != null
-            ? await MultipartFile.fromFile(image.path,
-                filename: imagePath, contentType: MediaType("image", "jpeg"))
+            ? await MultipartFile.fromFile(image.path, filename: imagePath)
+            : "",
+        'video': videoPath.isNotEmpty && video != null
+            ? await MultipartFile.fromFile(video.path, filename: videoPath)
             : "",
         'described': described,
         'status': status,

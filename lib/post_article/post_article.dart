@@ -23,13 +23,13 @@ class _PostArticleState extends State<PostArticle> {
   String postContent = "";
   String status = "Hyped";
   String auto_accept = "1";
-  File? _selectedImage;
+  late String _selectedImage;
 
   List<String> selectedImages = [
-    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
-    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+    // 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
+    // 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+    // 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+    // 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
   ];
 
   @override
@@ -64,7 +64,7 @@ class _PostArticleState extends State<PostArticle> {
               },
               child: const Text(
                 'Đăng',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -86,7 +86,7 @@ class _PostArticleState extends State<PostArticle> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "Manh ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
+                            "Idk ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                         Padding(
@@ -147,10 +147,15 @@ class _PostArticleState extends State<PostArticle> {
                       ])),
                 ),
               ),
-              _buildImageSection(selectedImages),
-              // _selectedImage != null
-              //     ? Image.file(_selectedImage!) // Hiển thị ảnh đã chọn
-              //     : Container(), // Khoảng trắng nếu không có ảnh
+              Container(
+                child: selectedImages.isNotEmpty
+                    ? _buildImageSection(selectedImages)
+                    : Padding(
+                        padding: EdgeInsets.all(0),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height / 3,
+                        )),
+              ),
               Padding(
                   padding: const EdgeInsets.all(0),
                   child: InkWell(
@@ -218,7 +223,6 @@ class _PostArticleState extends State<PostArticle> {
                       ),
                     ),
                   )),
-
               Padding(
                   padding: const EdgeInsets.all(0),
                   child: InkWell(
@@ -315,7 +319,8 @@ class _PostArticleState extends State<PostArticle> {
 
     if (returnedImage == null) return;
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      _selectedImage = returnedImage.path;
+      print(_selectedImage);
     });
   }
 
@@ -325,7 +330,7 @@ class _PostArticleState extends State<PostArticle> {
 
     if (returnedImage == null) return;
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      _selectedImage = returnedImage.path;
     });
   }
 

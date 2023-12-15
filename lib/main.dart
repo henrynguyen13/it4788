@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:it4788/post_article/post_article.dart';
+import 'package:it4788/sign_in/set_username.dart';
 
 import 'package:it4788/sign_up/sign_up.dart';
 
@@ -19,6 +20,8 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         ),
-        home: const SignUpPage());
+        home: const SetUsernamePage()
+        // home: const PostArticle(),
+        );
   }
 }
