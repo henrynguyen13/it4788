@@ -92,7 +92,7 @@ class PostSevice {
       }
       if (video != null) {
         formData.files.add(MapEntry(
-            'image',
+            'video',
             (await MultipartFile.fromFile(video.path,
                 filename: video.path.split('/').last,
                 contentType: MediaType("video", "mp4")))));
