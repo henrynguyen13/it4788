@@ -118,7 +118,7 @@ class _PostArticleState extends State<PostArticle> {
 
                   final jsonResponse = json.decode(addPostResponse.data);
 
-                  print(jsonResponse);
+                  print("BUGGGGGG $jsonResponse");
 
                   String message = jsonResponse['message'];
 
@@ -391,7 +391,7 @@ class _PostArticleState extends State<PostArticle> {
 
     setState(() {
       if (pickedImages.length <= 4) {
-        selectedImages = pickedImages;
+        selectedImages.addAll(pickedImages);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Bạn chỉ được chọn tối đa 4 ảnh !')));

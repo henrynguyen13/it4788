@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/service/authStorage.dart';
@@ -80,14 +81,22 @@ class PostSevice {
       FormData formData = FormData();
 
       for (XFile? image in images) {
-        formData.fields.add(MapEntry("image", image.toString()));
+        if (image != null) {
+          File file = File(image.path);
+          formData.files.add(MapEntry(
+              'image',
+              (await MultipartFile.fromFile(file.path,
+                  filename: file.path.split('/').last,
+                  contentType: MediaType("image", "jpeg")))));
+        }
       }
-
-      String videoPath = "";
-      if (video != null) videoPath = video.path.split('/').last;
-
-      formData.files.add(MapEntry(
-          'video', MultipartFile.fromString(video!.path, filename: videoPath)));
+      if (video != null) {
+        formData.files.add(MapEntry(
+            'image',
+            (await MultipartFile.fromFile(video.path,
+                filename: video.path.split('/').last,
+                contentType: MediaType("video", "mp4")))));
+      }
 
       formData.fields.add(MapEntry('described', described));
 
