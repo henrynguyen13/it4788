@@ -4,7 +4,9 @@ import 'package:it4788/model/user_infor_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
+import 'package:it4788/post_article/post_draft.dart';
 import 'package:it4788/service/post_sevice.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PostArticle extends StatefulWidget {
   const PostArticle({super.key});
@@ -15,6 +17,7 @@ class PostArticle extends StatefulWidget {
 
 class _PostArticleState extends State<PostArticle> {
   late UserInfor userInfor;
+  late PostDraft postDraft;
 
   String feelingState = "";
 
@@ -36,17 +39,29 @@ class _PostArticleState extends State<PostArticle> {
                     showModalBottomSheet<void>(
                       context: context,
                       builder: (BuildContext context) {
-                        return SizedBox(
-                          height: 300,
-                          child: Center(
+                        return Container(
+                          height: MediaQuery.of(context).size.height / 3,
+                          padding: EdgeInsets.all(8.0),
+                          child: SizedBox(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                Text(
-                                    "Bạn muốn hoàn thành bài viết của mình sau ?"),
-                                Text(
-                                    "Lưu làm bản nháp hoặc bạn có thể tiếp tục chỉnh sửa"),
+                                const Padding(
+                                  padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
+                                  child: Text(
+                                      "Bạn muốn hoàn thành bài viết của mình sau ?"),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
+                                  child: Text(
+                                    "Lưu làm bản nháp hoặc bạn có thể tiếp tục chỉnh sửa",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 12),
+                                  ),
+                                ),
+                                const SizedBox(height: 20.0),
                                 TextButton(
                                   child: const Row(
                                     children: [
@@ -58,7 +73,20 @@ class _PostArticleState extends State<PostArticle> {
                                       Text('Lưu bản nháp'),
                                     ],
                                   ),
-                                  onPressed: () => Navigator.pop(context),
+                                  onPressed: () async {
+                                    postDraft.status = 'Hyped';
+                                    postDraft.autoAccept = '1';
+
+                                    await _savePostDraft(postDraft);
+                                    setState(() {
+                                      selectedImages = [];
+                                      video = null;
+                                      postContent = "";
+                                      status = 'Hyped';
+                                      auto_accept = '1';
+                                    });
+                                    Navigator.pop(context);
+                                  },
                                 ),
                                 TextButton(
                                   child: const Row(
@@ -79,7 +107,7 @@ class _PostArticleState extends State<PostArticle> {
                                       Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10),
-                                        child: Icon(Icons.edit),
+                                        child: Icon(Icons.check),
                                       ),
                                       Text('Tiếp tục chỉnh sửa'),
                                     ],
@@ -201,6 +229,7 @@ class _PostArticleState extends State<PostArticle> {
                           onChanged: (text) {
                             setState(() {
                               postContent = text;
+                              postDraft.postContent = text;
                             });
                           },
                         ),
@@ -383,6 +412,7 @@ class _PostArticleState extends State<PostArticle> {
     setState(() {
       if (pickedImages.length <= 4) {
         selectedImages = pickedImages;
+        postDraft.selectedImages = pickedImages;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Bạn chỉ được chọn tối đa 4 ảnh !')));
@@ -398,6 +428,7 @@ class _PostArticleState extends State<PostArticle> {
     if (returnedImage == null) return;
     setState(() {
       selectedImages.add(returnedImage);
+      postDraft.selectedImages.add(returnedImage);
     });
   }
 
@@ -478,6 +509,30 @@ class _PostArticleState extends State<PostArticle> {
       );
     } else {
       return Container();
+    }
+  }
+
+  Future<void> _savePostDraft(PostDraft draft) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/post_draft.json');
+    await file.writeAsString(draft.toJson().toString());
+  }
+
+  Future<PostDraft> _loadPostDraft() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/post_draft.json');
+      final jsonString = await file.readAsString();
+      final jsonMap = Map<String, dynamic>.from(json.decode(jsonString));
+      return PostDraft.fromJson(jsonMap);
+    } catch (e) {
+      return PostDraft(
+        selectedImages: [],
+        video: null,
+        postContent: '',
+        status: 'Hyped',
+        autoAccept: '1',
+      );
     }
   }
 }
