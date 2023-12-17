@@ -43,6 +43,10 @@ class _PostArticleState extends State<PostArticle> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
+                                Text(
+                                    "Bạn muốn hoàn thành bài viết của mình sau ?"),
+                                Text(
+                                    "Lưu làm bản nháp hoặc bạn có thể tiếp tục chỉnh sửa"),
                                 TextButton(
                                   child: const Row(
                                     children: [
@@ -64,7 +68,7 @@ class _PostArticleState extends State<PostArticle> {
                                             horizontal: 10),
                                         child: Icon(Icons.delete),
                                       ),
-                                      Text('Hủy bài viết'),
+                                      Text('Bỏ bài viết'),
                                     ],
                                   ),
                                   onPressed: () => Navigator.pop(context),
@@ -77,20 +81,7 @@ class _PostArticleState extends State<PostArticle> {
                                             horizontal: 10),
                                         child: Icon(Icons.edit),
                                       ),
-                                      Text('Chỉnh sửa bài viết'),
-                                    ],
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                                TextButton(
-                                  child: const Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Icon(Icons.link),
-                                      ),
-                                      Text('Sao chép liên kết'),
+                                      Text('Tiếp tục chỉnh sửa'),
                                     ],
                                   ),
                                   onPressed: () => Navigator.pop(context),
