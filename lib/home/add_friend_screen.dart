@@ -18,6 +18,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
   Future<RequestFriendList?>? _future;
   final ScrollController _scrollController =
       ScrollController(keepScrollOffset: true);
+  String id = "";
   int index = 0;
   int count = 20;
   bool isLoading = false;
@@ -38,6 +39,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     var userId = await Storage().getUserId();
     if (userId != null) {
       setState(() {
+        id = userId;
         _future = FriendService().getFriendRequest(index, count);
       });
     }
@@ -126,7 +128,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const AllFriendPage()),
+                                              AllFriendPage(id: id)),
                                     );
                                   },
                                   child: const Text(

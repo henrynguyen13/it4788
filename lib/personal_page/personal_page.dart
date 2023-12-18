@@ -638,7 +638,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const AllFriendPage()),
+                                        AllFriendPage(id: widget.id)),
                               );
                             },
                             child: const Text(
