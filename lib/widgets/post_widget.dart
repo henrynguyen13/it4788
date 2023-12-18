@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:it4788/comment/commentPage.dart';
 import 'package:it4788/model/post.dart';
+import 'package:it4788/post_article/edit_post_article.dart';
 import 'package:it4788/report.dart';
 import 'package:it4788/service/profile_sevice.dart';
 
@@ -214,8 +215,9 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
               ),
               // const Spacer(),
-              const Padding(
-                  padding: EdgeInsets.only(right: 8), child: BottomPopup())
+              Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: BottomPopup(postId: post.id))
             ],
           ),
           Padding(
@@ -332,7 +334,8 @@ class _PostWidgetState extends State<PostWidget> {
 }
 
 class BottomPopup extends StatelessWidget {
-  const BottomPopup({super.key});
+  final String postId;
+  const BottomPopup({super.key, required this.postId});
 
   @override
   Widget build(BuildContext context) {
@@ -399,7 +402,16 @@ class BottomPopup extends StatelessWidget {
                               Text('Chỉnh sửa bài viết'),
                             ],
                           ),
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditPostArticle(id: postId),
+                              ),
+                            );
+                          },
                         ),
                         TextButton(
                           child: const Row(

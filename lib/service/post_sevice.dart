@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
+import 'package:it4788/model/edit_post.dart';
 import 'package:it4788/model/post.dart';
+import 'package:it4788/model/post_response.dart';
 import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/service/authStorage.dart';
@@ -78,5 +81,80 @@ class PostSevice {
 
   Future<void> addPost() async {
     try {} catch (e) {}
+  }
+
+  Future<PostResponse> getPostById(String id) async {
+    var token = await _getToken();
+    PostResponse postResponse;
+
+    try {
+      Map<String, dynamic> request = {
+        'id': id,
+      };
+
+      final dio = ApiService.createDio();
+      final response = await dio.post('get_post',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print(response.data);
+      postResponse = postResponseFromJson(response.data);
+      return postResponse;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<EditPostResponse> editPost(EditPostDto postDto) async {
+    try {
+      var token = await _getToken();
+
+      FormData formData = FormData.fromMap(postDto.toJson());
+
+      if (postDto.images != null) {
+        for (int i = 0; i < postDto.images!.length; i++) {
+          File imageFile = postDto.images![i];
+          if (imageFile.existsSync()) {
+            formData.files.add(MapEntry(
+              'image',
+              await MultipartFile.fromFile(
+                imageFile.path,
+                filename: 'image$i',
+                contentType: MediaType('image', 'jpeg'),
+              ),
+            ));
+          } else {
+            print('Image file $i does not exist.');
+          }
+        }
+      }
+
+      if (postDto.video != null) {
+        File videoFile = postDto.video!;
+        if (videoFile.existsSync()) {
+          formData.files.add(MapEntry(
+            'video',
+            MultipartFile.fromBytes(
+              await videoFile.readAsBytes(),
+              filename: 'video',
+              contentType: MediaType('video', 'mp4'),
+            ),
+          ));
+        } else {
+          print('Video file does not exist.');
+        }
+      }
+      final dio = ApiService.createDio();
+      final response = await dio.post('edit_post',
+          data: formData,
+          options: Options(headers: {
+            "Authorization": "Bearer $token",
+          }));
+
+      print(response.data);
+      return response.data;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 }

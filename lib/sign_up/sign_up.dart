@@ -207,7 +207,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         } else {
                           // Xử lý lỗi nếu có
                           print("Lỗi khi lấy verify code");
-              
                         }
                       }
                     }
@@ -292,12 +291,12 @@ class _SignUpPageState extends State<SignUpPage> {
       content: Text('Đăng ký thành công'),
     ));
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            VerifyEmailPage(verifyCode: verifyCodeData, email: emailData),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) =>
+    //         VerifyEmailPage(verifyCode: verifyCodeData, email: emailData),
+    //   ),
+    // );
   }
 }
