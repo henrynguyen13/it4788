@@ -12,33 +12,43 @@ class SuggestFriendScreen extends StatefulWidget {
 }
 
 class _SuggestFriendScreenState extends State<SuggestFriendScreen> {
-  List<SuggestedFriend>? suggestedFriendList;
+  List<SuggestedFriend> suggestedFriendList = <SuggestedFriend>[];
   Future<SuggestedFriendList?>? _future;
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: true);
+  int index = 0;
+  int count = 20;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     getData();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        loadMoreFriends();
+      }
+    });
   }
 
   void getData() async {
     var userId = await Storage().getUserId();
     if (userId != null) {
       setState(() {
-        _future = FriendService().getSuggestFriend(10);
+        _future = FriendService().getSuggestFriend(index, count);
       });
     }
   }
 
-  final ScrollController _scrollController =
-      ScrollController(keepScrollOffset: true);
-  int visibleFriendsCount = 5;
-  int maxVisibleFriendCount = 10;
-
-  void loadMoreFriends() {
-    setState(() {
-      visibleFriendsCount += 5;
-    });
+  void loadMoreFriends() async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+        index += count; // Increment the index to load the next set of data
+      });
+      _future = FriendService().getSuggestFriend(index, count);
+    }
   }
 
   @override
@@ -50,12 +60,14 @@ class _SuggestFriendScreenState extends State<SuggestFriendScreen> {
       body: FutureBuilder(
           future: _future,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                suggestedFriendList.isEmpty) {
               return const Align(
                   alignment: Alignment.center,
                   child: CircularProgressIndicator());
             } else if (snapshot.hasData) {
-              suggestedFriendList = snapshot.data!.data;
+              suggestedFriendList.addAll(snapshot.data!.data);
+              isLoading = false;
               return Scaffold(
                 body: CustomScrollView(
                   controller: _scrollController,
@@ -112,6 +124,20 @@ class _SuggestFriendScreenState extends State<SuggestFriendScreen> {
                             ? suggestedFriendList!.length
                             : 0,
                       ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: isLoading
+                          ? const SizedBox(
+                              height: 300,
+                              width: double.infinity,
+                              child: Padding(
+                                padding: EdgeInsets.all(30),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                            )
+                          : Container(),
                     ),
                   ],
                 ),
