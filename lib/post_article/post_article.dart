@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:it4788/model/user_infor_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
-import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/post_sevice.dart';
 
 class PostArticle extends StatefulWidget {
@@ -16,40 +14,111 @@ class PostArticle extends StatefulWidget {
 }
 
 class _PostArticleState extends State<PostArticle> {
+  late UserInfor userInfor;
+
   String feelingState = "";
 
-  File? image;
+  List<XFile?> selectedImages = [];
   File? video;
   String postContent = "";
   String status = "Hyped";
   String auto_accept = "1";
-  File? _selectedImage;
-
-  List<String> selectedImages = [
-    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
-    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "Tạo bài viết",
-            style: TextStyle(fontSize: 18),
+          title: Row(
+            children: [
+              MaterialButton(
+                  minWidth: 10,
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SizedBox(
+                          height: 300,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.save_alt_rounded),
+                                      ),
+                                      Text('Lưu bản nháp'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.delete),
+                                      ),
+                                      Text('Hủy bài viết'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.edit),
+                                      ),
+                                      Text('Chỉnh sửa bài viết'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.link),
+                                      ),
+                                      Text('Sao chép liên kết'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: const Icon(Icons.arrow_back)),
+              const Text(
+                "Tạo bài viết",
+                style: TextStyle(fontSize: 18),
+              ),
+            ],
           ),
           actions: [
             MaterialButton(
               onPressed: () async {
                 try {
-                  final addPostResponse = await PostSevice()
-                      .addPost(image, video, postContent, status, auto_accept);
+                  final addPostResponse = await PostSevice().addPost(
+                      selectedImages, video, postContent, status, auto_accept);
 
                   final jsonResponse = json.decode(addPostResponse.data);
 
-                  print(jsonResponse);
+                  print("BUGGGGGG $jsonResponse");
 
                   String message = jsonResponse['message'];
 
@@ -64,7 +133,7 @@ class _PostArticleState extends State<PostArticle> {
               },
               child: const Text(
                 'Đăng',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -86,7 +155,7 @@ class _PostArticleState extends State<PostArticle> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "Manh ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
+                            "pidk ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                         Padding(
@@ -147,10 +216,15 @@ class _PostArticleState extends State<PostArticle> {
                       ])),
                 ),
               ),
-              _buildImageSection(selectedImages),
-              // _selectedImage != null
-              //     ? Image.file(_selectedImage!) // Hiển thị ảnh đã chọn
-              //     : Container(), // Khoảng trắng nếu không có ảnh
+              Container(
+                child: selectedImages.isNotEmpty
+                    ? _buildImageSection(selectedImages)
+                    : Padding(
+                        padding: EdgeInsets.all(0),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height / 3,
+                        )),
+              ),
               Padding(
                   padding: const EdgeInsets.all(0),
                   child: InkWell(
@@ -175,7 +249,8 @@ class _PostArticleState extends State<PostArticle> {
                                       child: ElevatedButton(
                                         child: const Text("Chọn ảnh từ máy"),
                                         onPressed: () {
-                                          _pickImageFromGallery();
+                                          _pickImagesFromGallery();
+                                          Navigator.pop(context);
                                         },
                                       ),
                                     )),
@@ -194,6 +269,7 @@ class _PostArticleState extends State<PostArticle> {
                                                 child: Text("Chụp ảnh"),
                                                 onPressed: () {
                                                   _pickImageFromCamera();
+                                                  Navigator.pop(context);
                                                 },
                                               )))),
                                 ],
@@ -218,7 +294,6 @@ class _PostArticleState extends State<PostArticle> {
                       ),
                     ),
                   )),
-
               Padding(
                   padding: const EdgeInsets.all(0),
                   child: InkWell(
@@ -309,13 +384,19 @@ class _PostArticleState extends State<PostArticle> {
         ));
   }
 
-  Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future _pickImagesFromGallery() async {
+    final pickedImages = await ImagePicker().pickMultiImage(imageQuality: 100);
 
-    if (returnedImage == null) return;
+    if (pickedImages.isEmpty) return;
+
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      if (pickedImages.length <= 4) {
+        selectedImages.addAll(pickedImages);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bạn chỉ được chọn tối đa 4 ảnh !')));
+        return;
+      }
     });
   }
 
@@ -325,7 +406,7 @@ class _PostArticleState extends State<PostArticle> {
 
     if (returnedImage == null) return;
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      selectedImages.add(returnedImage);
     });
   }
 
@@ -334,7 +415,7 @@ class _PostArticleState extends State<PostArticle> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PickerFeelings(),
+          builder: (context) => const PickerFeelings(),
         ));
 
     // after the feelingState comes back update the Text widget with it
@@ -343,9 +424,9 @@ class _PostArticleState extends State<PostArticle> {
     });
   }
 
-  Widget _buildImageSection(List<String> images) {
+  Widget _buildImageSection(List<XFile?> images) {
     if (images.length == 1) {
-      return Image.network(images[0],
+      return Image.file(File(images[0]!.path),
           height: 400, width: double.infinity, fit: BoxFit.cover);
     } else if (images.length == 2) {
       return GridView.builder(
@@ -358,7 +439,7 @@ class _PostArticleState extends State<PostArticle> {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 1),
-            child: Image.network(images[index],
+            child: Image.file(File(images[index]!.path),
                 height: 400, width: double.infinity, fit: BoxFit.cover),
           );
         },
@@ -367,19 +448,20 @@ class _PostArticleState extends State<PostArticle> {
       return Row(
         children: [
           Expanded(
-            child: Image.network(images[0], height: 400, fit: BoxFit.cover),
+            child: Image.file(File(images[0]!.path),
+                height: 400, fit: BoxFit.cover),
           ),
           Expanded(
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 4, bottom: 2),
-                  child: Image.network(images[1],
+                  child: Image.file(File(images[1]!.path),
                       height: 198, width: double.infinity, fit: BoxFit.cover),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4, top: 2),
-                  child: Image.network(images[1],
+                  child: Image.file(File(images[2]!.path),
                       height: 198, width: double.infinity, fit: BoxFit.cover),
                 ),
               ],
@@ -398,7 +480,7 @@ class _PostArticleState extends State<PostArticle> {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(1),
-            child: Image.network(images[index],
+            child: Image.file(File(images[index]!.path),
                 height: 200, width: double.infinity, fit: BoxFit.cover),
           );
         },
