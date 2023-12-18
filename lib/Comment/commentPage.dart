@@ -1,7 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
 
-import 'comment.dart';
+import 'package:it4788/comment/commentBox.dart';
 
 class CommentPage extends StatefulWidget {
   const CommentPage({super.key});
@@ -14,7 +14,6 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
   final FocusNode focusNode = FocusNode();
-  int replyingCommentId = -1;
 
   List<CommentModel> filedata = <CommentModel>[
     CommentModel(
@@ -23,8 +22,6 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
       pic: 'assets/images/icons/avatar_icon.png',
       message: 'Tôi thích uống bia',
       date: '20p',
-      childrenIdList: [1, 2],
-      parentId: -1,
     ),
     CommentModel(
       id: 1,
@@ -32,8 +29,6 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
       pic: 'assets/images/icons/avatar_icon.png',
       message: 'Haha',
       date: '4h',
-      childrenIdList: [],
-      parentId: 0,
     ),
     CommentModel(
       id: 2,
@@ -41,8 +36,6 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
       pic: 'assets/images/icons/avatar_icon.png',
       message: 'Mèo méo meo',
       date: '8h',
-      childrenIdList: [],
-      parentId: 0,
     ),
     CommentModel(
       id: 3,
@@ -50,8 +43,6 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
       pic: 'assets/images/icons/avatar_icon.png',
       message: 'Very cool',
       date: '1 ngày',
-      childrenIdList: [],
-      parentId: -1,
     ),
   ];
   @override
@@ -77,11 +68,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void ontapMethod(int parentId) {
-    setState(() {
-      replyingCommentId = parentId;
-    });
-  }
+  void ontapMethod(int parentId) {}
 
   Widget commentChild(data) {
     return ListView(
@@ -120,14 +107,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                 pic: 'assets/images/icons/avatar_icon.png',
                 message: commentController.text,
                 date: 'Vừa xong',
-                childrenIdList: [],
-                parentId: replyingCommentId,
               );
-              if (replyingCommentId >= 0) {
-                filedata[replyingCommentId].childrenIdList.insert(
-                    filedata[replyingCommentId].childrenIdList.length,
-                    filedata.length);
-              }
               filedata.insert(filedata.length, newComment);
             });
             commentController.clear();
@@ -250,8 +230,6 @@ class CommentModel {
   String pic;
   String message;
   String date;
-  List<int> childrenIdList;
-  int parentId;
 
   CommentModel({
     required this.id,
@@ -259,7 +237,5 @@ class CommentModel {
     required this.pic,
     required this.message,
     required this.date,
-    required this.childrenIdList,
-    required this.parentId,
   });
 }

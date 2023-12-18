@@ -35,13 +35,13 @@ class ProfileSevice {
     }
   }
 
-  Future<UserFriends?> getUserFriend(String id, int count) async {
+  Future<UserFriends?> getUserFriend(String id, int index, int count) async {
     UserFriends userFriends;
     var token = await _getToken();
 
     try {
       Map<String, dynamic> request = {
-        'index': 0,
+        'index': index,
         'user_id': id,
         'count': count
       };
@@ -62,7 +62,7 @@ class ProfileSevice {
     try {
       List<Future<dynamic>> futures = [
         getUserInfor(id),
-        getUserFriend(id, 6),
+        getUserFriend(id, 0, 10),
         getMyListPost(id)
       ];
 

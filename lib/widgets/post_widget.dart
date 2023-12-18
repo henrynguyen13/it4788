@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:expandable_text/expandable_text.dart';
-import 'package:it4788/Comment/commentPage.dart';
+import 'package:it4788/comment/commentPage.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/report.dart';
 import 'package:it4788/service/profile_sevice.dart';

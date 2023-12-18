@@ -6,6 +6,7 @@ import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/personal_page/all_friend_page.dart';
 import 'package:it4788/personal_page/edit_personal_page.dart';
+import 'package:it4788/post_article/post_article.dart';
 import 'package:it4788/service/friend_service.dart';
 import 'package:it4788/widgets/post_widget.dart';
 import 'package:it4788/personal_page/preview_avatar.dart';
@@ -850,7 +851,7 @@ class _PersonalPageState extends State<PersonalPage> {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
-              return Text('No data available');
+              return const Text('No data available');
             }
           }),
     );
