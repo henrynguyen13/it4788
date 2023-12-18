@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:it4788/comment/commentBox.dart';
 import 'package:it4788/model/mark_comment.dart';
-import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/service/comment_service.dart';
-import 'package:it4788/service/profile_sevice.dart';
 
 class CommentPage extends StatefulWidget {
   const CommentPage({super.key, required this.postID});
@@ -88,7 +86,6 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                     ]));
           } else if (snapshot.hasData) {
             listMark = snapshot.data!;
-            print(listMark?.length);
             return Scaffold(
               appBar: AppBar(
                 title: const Text("(React count)"),
@@ -166,17 +163,16 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
           child: Container(
-            height: avatarSize,
-            width: avatarSize,
-            //key: _key,
-            decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.all(Radius.circular(avatarSize))),
-            child: CircleAvatar(
+              height: avatarSize,
+              width: avatarSize,
+              //key: _key,
+              decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.all(Radius.circular(avatarSize))),
+              child: CircleAvatar(
                 radius: 50,
-                backgroundImage: CommentBox.commentImageParser(
-                    imageURLorPath: "assets/images/icons/avatar_icon.png")),
-          ),
+                backgroundImage: NetworkImage(data[index].poster.avatar),
+              )),
         ),
         Column(
           mainAxisSize: MainAxisSize.max,
@@ -213,7 +209,9 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
             Row(mainAxisSize: MainAxisSize.max, children: [
               const SizedBox(width: 10), //Space
               Text(
-                data[index].createdTime,
+                formatTimeDifferenceToNow(
+                    DateTime.parse(data[index].createdTime)),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: 5), //Space
               SizedBox(
@@ -265,8 +263,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                 borderRadius: BorderRadius.all(Radius.circular(avatarSize))),
             child: CircleAvatar(
                 radius: 50,
-                backgroundImage: CommentBox.commentImageParser(
-                    imageURLorPath: "assets/images/icons/avatar_icon.png")),
+                backgroundImage: NetworkImage(data[index].poster.avatar)),
           ),
         ),
         Column(
@@ -302,8 +299,13 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
               ),
             ),
             Text(
-              data[index].createdTime,
+              formatTimeDifferenceToNow(
+                  DateTime.parse(data[index].createdTime)),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
+            const SizedBox(
+              height: 10,
+            )
           ],
         ),
       ],
@@ -354,18 +356,18 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
     );
   }
 
-  String formatTimeDifference(DateTime from, DateTime to) {
-    Duration difference = to.difference(from);
+  String formatTimeDifferenceToNow(DateTime from) {
+    Duration difference = DateTime.now().difference(from);
 
     if (difference.inSeconds < 60) {
-      return '${difference.inSeconds} seconds ago';
+      return '${difference.inSeconds} giây trước';
     } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes} minutes ago';
+      return '${difference.inMinutes} phút trước';
     } else if (difference.inHours < 24) {
-      return '${difference.inHours} hours ago';
+      return '${difference.inHours} giờ trước';
     } else {
       int days = difference.inDays;
-      return '$days ${days == 1 ? 'day' : 'days'} ago';
+      return '$days ngày trước';
     }
   }
 }

@@ -13,7 +13,6 @@ Future<List<Mark>> setMark(String postId, String content, String index,
     'content': content,
     'index': index,
     'count': count,
-    //'mark_id': "",
     'type': markType,
   };
 
@@ -35,7 +34,6 @@ Future<List<Mark>> setComment(String postId, String content, String index,
     'index': index,
     'count': count,
     'mark_id': markId,
-    'type': "",
   };
   final dio = ApiService.createDio();
   final response = await dio.post('set_mark_comment',
