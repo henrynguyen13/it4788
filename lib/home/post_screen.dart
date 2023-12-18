@@ -15,15 +15,43 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: true);
   Future<ListPost?>? _future;
-  ListPost? listPost;
+  ListPost? listPostResponse;
   PostSevice? postSevice;
   UserInfor? userInfor;
+  List<Post> postList = <Post>[];
+  int index = 0;
+  int count = 20;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     getData();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        loadMoreData();
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
+    });
+  }
+
+  void loadMoreData() async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+        index += count; // Increment the index to load the next set of data
+      });
+      var tmp = await postSevice?.getPostList(index, count);
+
+      setState(() {
+        postList.addAll(tmp!.data.post);
+        isLoading = false;
+      });
+    }
   }
 
   Future<String?> _getUserId() async {
@@ -35,7 +63,7 @@ class _PostScreenState extends State<PostScreen> {
     var userId = await _getUserId();
 
     if (userId != null) {
-      _future = postSevice?.getPostList(userId);
+      _future = postSevice?.getPostList(index, count);
       Future<UserInfor?> user = ProfileSevice().getUserInfor(userId);
       user.then((value) => {
             setState(() {
@@ -45,19 +73,20 @@ class _PostScreenState extends State<PostScreen> {
     }
   }
 
-  final ScrollController _scrollController =
-      ScrollController(keepScrollOffset: true);
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: _future,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            postList.isEmpty) {
           return const Align(
               alignment: Alignment.center, child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
-          listPost = snapshot.data!;
+          if (postList.isEmpty) {
+            listPostResponse = snapshot.data!;
+            postList.addAll(listPostResponse!.data.post);
+          }
 
           return CustomScrollView(
             controller: _scrollController,
@@ -69,9 +98,16 @@ class _PostScreenState extends State<PostScreen> {
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    return PostWidget(post: listPost!.data.post[index]);
+                    if (index == postList.length) {
+                      return const SizedBox(
+                          height: 300,
+                          width: double.infinity,
+                          child: Center(child: CircularProgressIndicator()));
+                    } else {
+                      return PostWidget(post: postList[index]);
+                    }
                   },
-                  childCount: listPost!.data.post.length,
+                  childCount: postList.length + (isLoading ? 1 : 0),
                 ),
               ),
             ],

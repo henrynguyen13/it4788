@@ -60,6 +60,7 @@ class Friend {
   String avatar;
   String sameFriends;
   String created;
+  bool isUnfriend = false;
 
   Friend({
     required this.id,
