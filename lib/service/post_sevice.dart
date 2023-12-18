@@ -118,4 +118,27 @@ class PostSevice {
       rethrow;
     }
   }
+
+  Future<Response> reportPost(
+      int postID, String subject, String details) async {
+    ListPost listPost;
+    var token = await _getToken();
+
+    try {
+      Map<String, dynamic> request = {
+        "id": postID,
+        'subject': subject,
+        'details': details,
+      };
+      final dio = ApiService.createDio();
+      final response = await dio.post('report_post',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print(response.data);
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

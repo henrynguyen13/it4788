@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'competeReport.dart';
 
 class ReportPage extends StatefulWidget {
-  const ReportPage({super.key});
-
+  const ReportPage({super.key, required this.postID});
+  final postID;
   @override
   State<ReportPage> createState() => _ReportPageState();
 }
@@ -110,9 +110,11 @@ class _ReportPageState extends State<ReportPage> {
               ]),
             ),
             const Divider(),
+            const Expanded(child: Row()),
             Center(
               child: SizedBox(
                 width: 500,
+                height: 50,
                 child: FilledButton(
                   onPressed: () {
                     if (isCanContinue) {
@@ -126,7 +128,9 @@ class _ReportPageState extends State<ReportPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ComleteReportPage(
-                                selectedContents: listContents)),
+                                  selectedContents: listContents,
+                                  postID: widget.postID,
+                                )),
                       );
                     }
                   },
@@ -139,11 +143,15 @@ class _ReportPageState extends State<ReportPage> {
                   child: Text(
                     "Tiếp",
                     style: TextStyle(
-                        color: isCanContinue ? Colors.white : Colors.black),
+                        color: isCanContinue ? Colors.white : Colors.black,
+                        fontSize: 18),
                   ),
                 ),
               ),
             ),
+            const SizedBox(
+              height: 50,
+            )
           ],
         ),
       ),

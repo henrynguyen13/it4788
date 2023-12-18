@@ -1,19 +1,24 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:it4788/service/post_sevice.dart';
 
 import 'report.dart';
 
 class ComleteReportPage extends StatefulWidget {
   final List<String> selectedContents;
-  const ComleteReportPage({super.key, required this.selectedContents});
-
+  ComleteReportPage(
+      {super.key, required this.selectedContents, required this.postID});
+  int postID;
   @override
   State<ComleteReportPage> createState() => _ComleteReportPageState();
 }
 
 class _ComleteReportPageState extends State<ComleteReportPage> {
+  final TextEditingController detailsController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,10 +54,24 @@ class _ComleteReportPageState extends State<ComleteReportPage> {
                 textAlign: TextAlign.center,
               ),
             ),
-            const Divider(),
-            const SizedBox(
-              height: 20,
+            Container(
+              width: MediaQuery.of(context).size.width - 20,
+              height: 60,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 2),
+                  borderRadius: const BorderRadius.all(Radius.circular(12))),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: "Chi tiết ...",
+                    border: InputBorder.none,
+                  ),
+                  controller: detailsController,
+                ),
+              ),
             ),
+            const Divider(),
             const Text(
               "Các bước khác mà bạn có thể thực hiện",
               style: TextStyle(
@@ -61,10 +80,13 @@ class _ComleteReportPageState extends State<ComleteReportPage> {
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             TextButton(
               onPressed: () {},
+              style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(
+                      Color.fromARGB(255, 242, 242, 242))),
               child: const Row(
                 children: [
                   Image(
@@ -103,19 +125,31 @@ class _ComleteReportPageState extends State<ComleteReportPage> {
                 ],
               ),
             ),
+            const Expanded(child: Row()),
             SizedBox(
               width: 300,
+              height: 50,
               child: FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  String subject = "";
+                  for (var i = 0; i < widget.selectedContents.length; i++) {
+                    subject += "${widget.selectedContents[i]} ";
+                  }
+                  PostSevice().reportPost(
+                      widget.postID, subject, detailsController.text);
+                },
                 style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll<Color>(
                         Color.fromARGB(255, 58, 72, 255))),
                 child: const Text(
-                  "Xong",
-                  style: TextStyle(color: Colors.white),
+                  "Báo cáo",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
             ),
+            const SizedBox(
+              height: 20,
+            )
           ],
         ));
   }
