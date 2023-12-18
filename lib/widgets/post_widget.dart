@@ -300,7 +300,9 @@ class _PostWidgetState extends State<PostWidget> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CommentPage()),
+                                builder: (context) => CommentPage(
+                                      postID: post.id,
+                                    )),
                           );
                         },
                         child: const Row(
