@@ -18,6 +18,14 @@ class Storage {
     await storage.write(key: "verify_code", value: verifyCode);
   }
 
+  Future<void> saveAvatar(String avatar) async {
+    await storage.write(key: "avatar", value: avatar);
+  }
+
+  Future<void> saveUserId(String userId) async {
+    await storage.write(key: "user_id", value: userId);
+  }
+
   Future<String?> getToken() async {
     return await storage.read(key: "token");
   }
@@ -34,12 +42,16 @@ class Storage {
     return await storage.read(key: "verify_code");
   }
 
-  void deleteToken() async {
-    await storage.delete(key: "token");
+  Future<String?> setAvatar() async {
+    return await storage.read(key: "avatar");
   }
 
-  Future<void> saveUserId(String userId) async {
-    await storage.write(key: "user_id", value: userId);
+  Future<String?> getAvatar() async {
+    return await storage.read(key: "avatar");
+  }
+
+  void deleteToken() async {
+    await storage.delete(key: "token");
   }
 
   Future<String?> getUserId() async {

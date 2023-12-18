@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/post_article/post_article.dart';
 import 'package:it4788/sign_in/set_username.dart';
 
@@ -14,13 +15,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Anti Facebook',
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
       home: const SignUpPage(),
+      // routes: <String, WidgetBuilder>{
+      //   '/home': (BuildContext context) => new HomeScreen(),
+      // },
     );
   }
 }

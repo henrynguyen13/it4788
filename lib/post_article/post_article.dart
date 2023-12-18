@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
 import 'package:it4788/post_article/post_draft.dart';
+import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/post_sevice.dart';
+import 'package:it4788/service/profile_sevice.dart';
 import 'package:path_provider/path_provider.dart';
 
 class PostArticle extends StatefulWidget {
@@ -16,10 +19,11 @@ class PostArticle extends StatefulWidget {
 }
 
 class _PostArticleState extends State<PostArticle> {
-  late UserInfor userInfor;
   late PostDraft postDraft;
 
   String feelingState = "";
+  String? username = "";
+  String? avatar;
 
   List<XFile?> selectedImages = [];
   File? video;
@@ -28,9 +32,20 @@ class _PostArticleState extends State<PostArticle> {
   String auto_accept = "1";
 
   @override
+  void initState() {
+    super.initState();
+    _getUsername().then((value) {
+      setState(() {
+        username = value ?? "";
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Row(
             children: [
               MaterialButton(
@@ -89,18 +104,27 @@ class _PostArticleState extends State<PostArticle> {
                                   },
                                 ),
                                 TextButton(
-                                  child: const Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Icon(Icons.delete),
-                                      ),
-                                      Text('Bỏ bài viết'),
-                                    ],
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
+                                    child: const Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Icon(Icons.delete),
+                                        ),
+                                        Text('Bỏ bài viết'),
+                                      ],
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const HomeScreen(),
+                                          ));
+                                      // Navigator.popUntil(context,
+                                      //     ModalRoute.withName("/home"));
+                                    }),
                                 TextButton(
                                   child: const Row(
                                     children: [
@@ -145,6 +169,11 @@ class _PostArticleState extends State<PostArticle> {
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Đăng bài viết thành công !')));
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()));
                   }
                 } catch (e) {
                   print(e);
@@ -165,16 +194,19 @@ class _PostArticleState extends State<PostArticle> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Image(
-                      image: AssetImage('assets/images/icons/avatar_icon.png'),
-                      width: 60,
-                      height: 60,
-                    ),
+                    avatar != null
+                        ? Image.network("$avatar")
+                        : const Image(
+                            image: AssetImage(
+                                'assets/images/icons/avatar_icon.png'),
+                            width: 60,
+                            height: 60,
+                          ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "pidk ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
+                            "${username} ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                         Padding(
@@ -510,6 +542,18 @@ class _PostArticleState extends State<PostArticle> {
     } else {
       return Container();
     }
+  }
+
+  Future<String?> _getUserId() async {
+    return await Storage().getUserId();
+  }
+
+  Future<String?> _getUsername() async {
+    return await Storage().getUsername();
+  }
+
+  Future<String?> _getAvatar() async {
+    return await Storage().getAvatar();
   }
 
   Future<void> _savePostDraft(PostDraft draft) async {

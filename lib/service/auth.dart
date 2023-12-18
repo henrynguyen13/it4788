@@ -34,6 +34,8 @@ Future<Response> signIn(String email, String password, String uuid) async {
 
   Storage().saveUserId(userId);
   Storage().saveToken(jsonResponse['data']['token']);
+  Storage().saveUsername(jsonResponse['data']['username']);
+  Storage().saveAvatar(jsonResponse['data']['avatar']).toString();
 
   // Lấy ra token
   // token = await Storage().getToken();
