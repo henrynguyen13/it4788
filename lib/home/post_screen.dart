@@ -34,6 +34,7 @@ class _PostScreenState extends State<PostScreen> {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         loadMoreData();
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       }
     });
   }
@@ -44,7 +45,12 @@ class _PostScreenState extends State<PostScreen> {
         isLoading = true;
         index += count; // Increment the index to load the next set of data
       });
-      _future = postSevice?.getPostList(index, count);
+      var tmp = await postSevice?.getPostList(index, count);
+
+      setState(() {
+        postList.addAll(tmp!.data.post);
+        isLoading = false;
+      });
     }
   }
 
@@ -77,9 +83,10 @@ class _PostScreenState extends State<PostScreen> {
           return const Align(
               alignment: Alignment.center, child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
-          listPostResponse = snapshot.data!;
-          postList.addAll(listPostResponse!.data.post);
-          isLoading = false;
+          if (postList.isEmpty) {
+            listPostResponse = snapshot.data!;
+            postList.addAll(listPostResponse!.data.post);
+          }
 
           return CustomScrollView(
             controller: _scrollController,
@@ -91,24 +98,17 @@ class _PostScreenState extends State<PostScreen> {
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    return PostWidget(post: postList[index]);
+                    if (index == postList.length) {
+                      return const SizedBox(
+                          height: 300,
+                          width: double.infinity,
+                          child: Center(child: CircularProgressIndicator()));
+                    } else {
+                      return PostWidget(post: postList[index]);
+                    }
                   },
-                  childCount: postList.length,
+                  childCount: postList.length + (isLoading ? 1 : 0),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: isLoading
-                    ? const SizedBox(
-                        height: 300,
-                        width: double.infinity,
-                        child: Padding(
-                          padding: EdgeInsets.all(30),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      )
-                    : Container(),
               ),
             ],
           );

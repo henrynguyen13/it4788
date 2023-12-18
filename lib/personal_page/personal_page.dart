@@ -27,19 +27,46 @@ class PersonalPage extends StatefulWidget {
 }
 
 class _PersonalPageState extends State<PersonalPage> {
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: true);
   late Future<List<dynamic>> _futures;
   late UserInfor userInfor;
   late UserFriends userFriends;
-  late ListPost listPost;
+  ListPost? listPost;
   String? userId;
   String? curId;
   bool isRequest = false;
+  int index = 0;
+  int count = 10;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState;
     getData();
     curId = widget.id;
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        loadMoreData();
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
+    });
+  }
+
+  void loadMoreData() async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+        index += count; // Increment the index to load the next set of data
+      });
+      var tmp = await ProfileSevice().getMyListPost(curId!, index, count);
+
+      setState(() {
+        listPost!.data.post.addAll(tmp!.data.post);
+        isLoading = false;
+      });
+    }
   }
 
   Future<String?> _getUserId() async {
@@ -48,7 +75,7 @@ class _PersonalPageState extends State<PersonalPage> {
 
   void getData() async {
     var profileAPI = ProfileSevice();
-    _futures = profileAPI.getDataForPersonalPage(widget.id);
+    _futures = profileAPI.getDataForPersonalPage(widget.id, index, count);
     userId = await _getUserId();
   }
 
@@ -150,9 +177,10 @@ class _PersonalPageState extends State<PersonalPage> {
             } else if (snapshot.hasData) {
               userInfor = snapshot.data!.elementAt(0);
               userFriends = snapshot.data!.elementAt(1);
-              listPost = snapshot.data!.elementAt(2);
+              listPost ??= snapshot.data!.elementAt(2);
 
               return SingleChildScrollView(
+                  controller: _scrollController,
                   physics: const ScrollPhysics(),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -839,13 +867,22 @@ class _PersonalPageState extends State<PersonalPage> {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int index) {
-                                return PostWidget(
-                                    post: listPost.data.post[index]);
+                                if (index == listPost!.data.post.length) {
+                                  return const SizedBox(
+                                      height: 300,
+                                      width: double.infinity,
+                                      child: Center(
+                                          child: CircularProgressIndicator()));
+                                } else {
+                                  return PostWidget(
+                                      post: listPost!.data.post[index]);
+                                }
                               },
                               separatorBuilder:
                                   (BuildContext context, int index) =>
                                       const Divider(),
-                              itemCount: listPost.data.post.length)),
+                              itemCount: listPost!.data.post.length +
+                                  (isLoading ? 1 : 0))),
                     ],
                   ));
             } else if (snapshot.hasError) {

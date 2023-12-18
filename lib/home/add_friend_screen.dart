@@ -36,7 +36,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
   }
 
   void getData() async {
-    userId = await Storage().getUserId();
+    var userId = await Storage().getUserId();
     if (userId != null) {
       setState(() {
         id = userId;

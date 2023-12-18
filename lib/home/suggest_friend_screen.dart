@@ -28,6 +28,7 @@ class _SuggestFriendScreenState extends State<SuggestFriendScreen> {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         loadMoreFriends();
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       }
     });
   }
@@ -47,7 +48,12 @@ class _SuggestFriendScreenState extends State<SuggestFriendScreen> {
         isLoading = true;
         index += count; // Increment the index to load the next set of data
       });
-      _future = FriendService().getSuggestFriend(index, count);
+      var tmp = await FriendService().getSuggestFriend(index, count);
+
+      setState(() {
+        suggestedFriendList.addAll(tmp!.data);
+        isLoading = false;
+      });
     }
   }
 
@@ -66,8 +72,9 @@ class _SuggestFriendScreenState extends State<SuggestFriendScreen> {
                   alignment: Alignment.center,
                   child: CircularProgressIndicator());
             } else if (snapshot.hasData) {
-              suggestedFriendList.addAll(snapshot.data!.data);
-              isLoading = false;
+              if (suggestedFriendList.isEmpty) {
+                suggestedFriendList.addAll(snapshot.data!.data);
+              }
               return Scaffold(
                 body: CustomScrollView(
                   controller: _scrollController,
@@ -117,27 +124,20 @@ class _SuggestFriendScreenState extends State<SuggestFriendScreen> {
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
-                          return SuggestedFriendCard(
-                              friend: suggestedFriendList![index]);
+                          if (index == suggestedFriendList.length) {
+                            return const SizedBox(
+                                height: 300,
+                                width: double.infinity,
+                                child:
+                                    Center(child: CircularProgressIndicator()));
+                          } else {
+                            return SuggestedFriendCard(
+                                friend: suggestedFriendList[index]);
+                          }
                         },
-                        childCount: suggestedFriendList!.isNotEmpty
-                            ? suggestedFriendList!.length
-                            : 0,
+                        childCount:
+                            suggestedFriendList.length + (isLoading ? 1 : 0),
                       ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: isLoading
-                          ? const SizedBox(
-                              height: 300,
-                              width: double.infinity,
-                              child: Padding(
-                                padding: EdgeInsets.all(30),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                            )
-                          : Container(),
                     ),
                   ],
                 ),
