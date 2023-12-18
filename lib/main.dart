@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:it4788/post_article/post_article.dart';
+import 'package:it4788/comment/commentPage.dart';
 
 import 'package:it4788/sign_up/sign_up.dart';
 
