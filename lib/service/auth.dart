@@ -34,12 +34,25 @@ Future<Response> signIn(String email, String password, String uuid) async {
 
   Storage().saveUserId(userId);
   Storage().saveToken(jsonResponse['data']['token']);
-
-  // Lấy ra token
-  // token = await Storage().getToken();
-  // print('Token from storage: $storedToken');
+  Storage().saveUsername(jsonResponse['data']['username']);
+  Storage().saveAvatar(jsonResponse['data']['avatar']).toString();
 
   return response;
+}
+
+Future<Response> logOut() async {
+  try {
+    var token = await _getToken();
+
+    final dio = ApiService.createDio();
+    final response = await dio.post('logout',
+        options: Options(headers: {
+          "Authorization": "Bearer $token",
+        }));
+    return response;
+  } catch (e) {
+    throw e;
+  }
 }
 
 Future<Response> getVerifyCode(String email) async {

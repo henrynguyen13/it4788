@@ -2,32 +2,65 @@ import 'package:flutter/material.dart';
 import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/service/authStorage.dart';
+import 'package:it4788/service/friend_service.dart';
 import 'package:it4788/service/profile_sevice.dart';
 
 class AllFriendPage extends StatefulWidget {
-  const AllFriendPage({super.key});
+  final String id;
+  const AllFriendPage({super.key, required this.id});
 
   @override
   State<AllFriendPage> createState() => _AllFriendPageState();
 }
 
 class _AllFriendPageState extends State<AllFriendPage> {
-  List<Friend>? userFriendList;
-  Future<UserFriends?>? _userFriendFuture;
+  List<Friend> userFriendList = <Friend>[];
+  Future<UserFriends?>? _future;
   String? total;
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: true);
+  int index = 0;
+  int count = 20;
+  bool isLoading = false;
+  String? curId;
 
   @override
   void initState() {
     super.initState();
+    curId = widget.id;
     getData();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        loadMoreFriends();
+      }
+    });
+  }
+
+  void loadMoreFriends() async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+        index += count; // Increment the index to load the next set of data
+      });
+      _future = ProfileSevice().getUserFriend(widget.id, index, count);
+    }
   }
 
   void getData() async {
-    var userId = await Storage().getUserId();
-    if (userId != null) {
+    setState(() {
+      _future = ProfileSevice().getUserFriend(widget.id, index, count);
+    });
+  }
+
+  Future handleUnfriend(Friend friend) async {
+    try {
+      await FriendService().unFriend(friend.id);
       setState(() {
-        _userFriendFuture = ProfileSevice().getUserFriend(userId, 50);
+        friend.isUnfriend = true;
       });
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -36,17 +69,16 @@ class _AllFriendPageState extends State<AllFriendPage> {
     return Scaffold(
         appBar: AppBar(title: const Text('Danh sách bạn bè')),
         body: FutureBuilder(
-          future: _userFriendFuture,
+          future: _future,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Align(
                   alignment: Alignment.center,
                   child: CircularProgressIndicator());
             } else if (snapshot.hasData) {
-              userFriendList = snapshot.data!.data.friends;
+              userFriendList.addAll(snapshot.data!.data.friends);
               total = snapshot.data!.data.total;
-              userFriendList = snapshot.data!.data.friends;
-              total = snapshot.data!.data.total;
+              isLoading = false;
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,9 +127,9 @@ class _AllFriendPageState extends State<AllFriendPage> {
                     ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: userFriendList?.length,
+                        itemCount: userFriendList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          Friend item = userFriendList![index];
+                          Friend item = userFriendList[index];
 
                           return Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -142,7 +174,9 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                 15, 0, 0, 0),
                                             child: Text(
                                               textAlign: TextAlign.left,
-                                              item.sameFriends,
+                                              (!item.isUnfriend)
+                                                  ? "${item.sameFriends} người bạn chung"
+                                                  : "Đã hủy kết bạn",
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 14,
@@ -207,7 +241,9 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: GestureDetector(
-                                                      onTap: () => {},
+                                                      onTap: () => {
+                                                        Navigator.pop(context)
+                                                      },
                                                       child: Row(
                                                         children: [
                                                           const Icon(
@@ -331,7 +367,10 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: GestureDetector(
-                                                      onTap: () => {},
+                                                      onTap: () => {
+                                                        handleUnfriend(item),
+                                                        Navigator.pop(context)
+                                                      },
                                                       child: Row(
                                                         children: [
                                                           const Icon(
@@ -378,6 +417,18 @@ class _AllFriendPageState extends State<AllFriendPage> {
                             ),
                           );
                         }),
+                    isLoading
+                        ? const SizedBox(
+                            height: 300,
+                            width: double.infinity,
+                            child: Padding(
+                              padding: EdgeInsets.all(30),
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          )
+                        : Container(),
                   ],
                 ),
               );

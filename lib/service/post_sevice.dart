@@ -11,14 +11,14 @@ class PostSevice {
     return await Storage().getToken();
   }
 
-  Future<ListPost?> getPostList(String id) async {
+  Future<ListPost?> getPostList(int index, int count) async {
     ListPost listPost;
     var token = await _getToken();
 
     try {
       Map<String, dynamic> request = {
-        "index": 0,
-        'count': 50,
+        "index": index,
+        'count': count,
         'last_id': 0,
         "in_campaign": "1",
         "campaign_id": "1",

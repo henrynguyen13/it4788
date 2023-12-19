@@ -11,12 +11,12 @@ class FriendService {
     return await Storage().getToken();
   }
 
-  Future<RequestFriendList?> getFriendRequest(int count) async {
+  Future<RequestFriendList?> getFriendRequest(int index, int count) async {
     RequestFriendList requestFriends;
     var token = await _getToken();
 
     try {
-      Map<String, dynamic> request = {'index': 0, 'count': count};
+      Map<String, dynamic> request = {'index': index, 'count': count};
       final dio = ApiService.createDio();
       final response = await dio.post('get_requested_friends',
           data: request,
@@ -30,12 +30,12 @@ class FriendService {
     }
   }
 
-  Future<SuggestedFriendList?> getSuggestFriend(int count) async {
+  Future<SuggestedFriendList?> getSuggestFriend(int index, int count) async {
     SuggestedFriendList suggestedFriendList;
     var token = await _getToken();
 
     try {
-      Map<String, dynamic> request = {'index': 0, 'count': count};
+      Map<String, dynamic> request = {'index': index, 'count': count};
       final dio = ApiService.createDio();
       final response = await dio.post('get_suggested_friends',
           data: request,
@@ -92,6 +92,23 @@ class FriendService {
       };
       final dio = ApiService.createDio();
       final response = await dio.post('del_request_friend',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print(response.data);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> unFriend(String id) async {
+    var token = await _getToken();
+    try {
+      Map<String, dynamic> request = {
+        'user_id': id,
+      };
+      final dio = ApiService.createDio();
+      final response = await dio.post('unfriend',
           data: request,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print(response.data);
