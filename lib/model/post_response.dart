@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:image_picker/image_picker.dart';
 import 'package:it4788/model/post.dart';
 
 PostResponse postResponseFromJson(String str) =>

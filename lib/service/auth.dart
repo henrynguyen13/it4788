@@ -107,3 +107,17 @@ Future<bool> emailIsExisted(String email) async {
 
   return isExisted == "1";
 }
+
+Future<Response> resetPassword(
+    String email, String verifyCode, String password) async {
+  Map<String, dynamic> request = {
+    'email': email,
+    'code': verifyCode,
+    'password': password
+  };
+
+  final dio = ApiService.createDio();
+  final response = await dio.post('reset_password', data: request);
+
+  return response;
+}
