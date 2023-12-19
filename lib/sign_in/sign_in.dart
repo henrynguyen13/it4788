@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/service/auth.dart';
+import 'package:it4788/sign_in/reset_password.dart';
 import 'package:it4788/sign_in/set_username.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 import 'package:it4788/sign_up/verify_email.dart';
@@ -211,7 +212,10 @@ class _SignIn extends State<SignInPage> {
                                   );
                                 }
                               } catch (e) {
-                                print("Đăng nhập không thành công");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Đăng nhập không thành công!')));
                               }
                             }
                           },
@@ -335,7 +339,7 @@ class _SignIn extends State<SignInPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => VerifyEmailPage(email: emailData),
+        builder: (context) => ResetPasswordPage(email: emailData),
       ),
     );
   }
