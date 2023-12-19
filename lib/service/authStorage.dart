@@ -4,17 +4,18 @@ class Storage {
   final storage = const FlutterSecureStorage();
   Future<void> saveToken(String token) async {
     await storage.write(key: "token", value: token);
-    print(storage);
   }
 
   Future<void> saveEmail(String email) async {
     await storage.write(key: "email", value: email);
-    print(storage);
+  }
+
+  Future<void> saveUsername(String username) async {
+    await storage.write(key: "username", value: username);
   }
 
   Future<void> saveVerifyCode(String verifyCode) async {
     await storage.write(key: "verify_code", value: verifyCode);
-    print(storage);
   }
 
   Future<String?> getToken() async {
@@ -23,6 +24,10 @@ class Storage {
 
   Future<String?> getEmail() async {
     return await storage.read(key: "email");
+  }
+
+  Future<String?> getUsername() async {
+    return await storage.read(key: "username");
   }
 
   Future<String?> getVerifyCode() async {

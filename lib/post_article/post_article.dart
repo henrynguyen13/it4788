@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:it4788/model/user_infor_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
+import 'package:it4788/service/post_sevice.dart';
 
 class PostArticle extends StatefulWidget {
   const PostArticle({super.key});
@@ -12,143 +14,313 @@ class PostArticle extends StatefulWidget {
 }
 
 class _PostArticleState extends State<PostArticle> {
+  late UserInfor userInfor;
+
   String feelingState = "";
-  File? _selectedImage;
+
+  List<XFile?> selectedImages = [];
+  File? video;
+  String postContent = "";
+  String status = "Hyped";
+  String auto_accept = "1";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Tạo bài viết",
-          style: TextStyle(fontSize: 18),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Đăng',
-              style: TextStyle(fontSize: 18),
-            ),
-          ),
-        ],
-      ),
-      body: Column(children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+        appBar: AppBar(
+          title: Row(
             children: [
-              const Image(
-                image: AssetImage('assets/images/icons/avatar_icon.png'),
-                width: 60,
-                height: 60,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                      "Hóa Oppa ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16)),
-                  Padding(
-                      padding: const EdgeInsets.all(1.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(4.0),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 1,
-                            )),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.language_rounded,
-                              color: Colors.black54,
-                              size: 18,
+              MaterialButton(
+                  minWidth: 10,
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SizedBox(
+                          height: 300,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.save_alt_rounded),
+                                      ),
+                                      Text('Lưu bản nháp'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.delete),
+                                      ),
+                                      Text('Hủy bài viết'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.edit),
+                                      ),
+                                      Text('Chỉnh sửa bài viết'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  child: const Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Icon(Icons.link),
+                                      ),
+                                      Text('Sao chép liên kết'),
+                                    ],
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
                             ),
-                            Text(
-                              "Công khai",
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 12),
-                            )
-                          ],
-                        ),
-                      )),
-                ],
-              )
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: const Icon(Icons.arrow_back)),
+              const Text(
+                "Tạo bài viết",
+                style: TextStyle(fontSize: 18),
+              ),
             ],
           ),
-        ),
-        Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: TextField(
-                maxLines: 10,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Bạn đang nghĩ gì ?",
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 20,
-                    )),
+          actions: [
+            MaterialButton(
+              onPressed: () async {
+                try {
+                  final addPostResponse = await PostSevice().addPost(
+                      selectedImages, video, postContent, status, auto_accept);
+
+                  final jsonResponse = json.decode(addPostResponse.data);
+
+                  print("BUGGGGGG $jsonResponse");
+
+                  String message = jsonResponse['message'];
+
+                  if (message == 'OK') {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Đăng bài viết thành công !')));
+                  }
+                } catch (e) {
+                  print(e);
+                }
+              },
+              child: const Text(
+                'Đăng',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            _selectedImage != null
-                ? Image.file(_selectedImage!) // Hiển thị ảnh đã chọn
-                : Container(), // Khoảng trắng nếu không có ảnh
-            Padding(
-                padding: const EdgeInsets.all(0),
-                child: InkWell(
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: ((context) => Container(
-                            height: 200,
-                            color: Colors.white,
-                            child: Center(
-                                child: ListView(
-                              padding: const EdgeInsets.all(8),
-                              children: <Widget>[
-                                Container(
-                                  height: 80,
-                                  color: Colors.green[500],
-                                  child: Center(
-                                      child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.8,
-                                    height: 40,
-                                    child: ElevatedButton(
-                                      child: const Text("Chọn ảnh từ máy"),
-                                      onPressed: () {
-                                        _pickImageFromGallery();
-                                      },
-                                    ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Image(
+                      image: AssetImage('assets/images/icons/avatar_icon.png'),
+                      width: 60,
+                      height: 60,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            "pidk ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                        Padding(
+                            padding: const EdgeInsets.all(1.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(4.0),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
                                   )),
-                                ),
-                                Container(
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.language_rounded,
+                                    color: Colors.black54,
+                                    size: 18,
+                                  ),
+                                  Text(
+                                    "Công khai",
+                                    style: TextStyle(
+                                        color: Colors.black54, fontSize: 12),
+                                  )
+                                ],
+                              ),
+                            )),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                child: Flexible(
+                  child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      child: Column(children: [
+                        TextField(
+                          autofocus: true,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          textInputAction: TextInputAction.newline,
+                          decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Bạn đang nghĩ gì ?",
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 20,
+                              )),
+                          onChanged: (text) {
+                            setState(() {
+                              postContent = text;
+                            });
+                          },
+                        ),
+                      ])),
+                ),
+              ),
+              Container(
+                child: selectedImages.isNotEmpty
+                    ? _buildImageSection(selectedImages)
+                    : Padding(
+                        padding: EdgeInsets.all(0),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height / 3,
+                        )),
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: ((context) => Container(
+                              height: 200,
+                              color: Colors.white,
+                              child: Center(
+                                  child: ListView(
+                                padding: const EdgeInsets.all(8),
+                                children: <Widget>[
+                                  Container(
                                     height: 80,
-                                    color: Colors.green[100],
+                                    color: Colors.green[500],
                                     child: Center(
                                         child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.8,
-                                            height: 40,
-                                            child: ElevatedButton(
-                                              child: Text("Chụp ảnh"),
-                                              onPressed: () {
-                                                _pickImageFromCamera();
-                                              },
-                                            )))),
-                              ],
-                            )))));
-                  },
+                                      width: MediaQuery.of(context).size.width *
+                                          0.8,
+                                      height: 40,
+                                      child: ElevatedButton(
+                                        child: const Text("Chọn ảnh từ máy"),
+                                        onPressed: () {
+                                          _pickImagesFromGallery();
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    )),
+                                  ),
+                                  Container(
+                                      height: 80,
+                                      color: Colors.green[100],
+                                      child: Center(
+                                          child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.8,
+                                              height: 40,
+                                              child: ElevatedButton(
+                                                child: Text("Chụp ảnh"),
+                                                onPressed: () {
+                                                  _pickImageFromCamera();
+                                                  Navigator.pop(context);
+                                                },
+                                              )))),
+                                ],
+                              )))));
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          border: BorderDirectional(
+                              top: BorderSide(color: Colors.grey, width: 0.5))),
+                      child: const Row(
+                        children: [
+                          Icon(
+                            Icons.image,
+                            color: Colors.green,
+                            size: 28,
+                          ),
+                          Text("Ảnh/Video")
+                        ],
+                      ),
+                    ),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: InkWell(
+                    onTap: () {
+                      _awaitReturnValueFromPickerFeelings(context);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          border: BorderDirectional(
+                              top: BorderSide(color: Colors.grey, width: 0.5))),
+                      child: const Row(
+                        children: [
+                          Icon(
+                            Icons.emoji_emotions_outlined,
+                            color: Colors.yellow,
+                            size: 28,
+                          ),
+                          Text("Cảm xúc/Hoạt động")
+                        ],
+                      ),
+                    ),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(0),
                   child: Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(10.0),
@@ -159,22 +331,16 @@ class _PostArticleState extends State<PostArticle> {
                     child: const Row(
                       children: [
                         Icon(
-                          Icons.image,
-                          color: Colors.green,
+                          Icons.person,
+                          color: Colors.blue,
                           size: 28,
                         ),
-                        Text("Ảnh/Video")
+                        Text("Gắn thẻ bạn bè")
                       ],
                     ),
-                  ),
-                )),
-
-            Padding(
-                padding: const EdgeInsets.all(0),
-                child: InkWell(
-                  onTap: () {
-                    _awaitReturnValueFromPickerFeelings(context);
-                  },
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(0),
                   child: Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(10.0),
@@ -185,88 +351,52 @@ class _PostArticleState extends State<PostArticle> {
                     child: const Row(
                       children: [
                         Icon(
-                          Icons.emoji_emotions_outlined,
-                          color: Colors.yellow,
+                          Icons.photo_camera,
+                          color: Colors.lightBlueAccent,
                           size: 28,
                         ),
-                        Text("Cảm xúc/Hoạt động")
+                        Text("Máy ảnh")
                       ],
                     ),
-                  ),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(0),
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10.0),
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      border: BorderDirectional(
-                          top: BorderSide(color: Colors.grey, width: 0.5))),
-                  child: const Row(
-                    children: [
-                      Icon(
-                        Icons.person,
-                        color: Colors.blue,
-                        size: 28,
-                      ),
-                      Text("Gắn thẻ bạn bè")
-                    ],
-                  ),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(0),
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10.0),
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      border: BorderDirectional(
-                          top: BorderSide(color: Colors.grey, width: 0.5))),
-                  child: const Row(
-                    children: [
-                      Icon(
-                        Icons.photo_camera,
-                        color: Colors.lightBlueAccent,
-                        size: 28,
-                      ),
-                      Text("Máy ảnh")
-                    ],
-                  ),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(0),
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10.0),
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      border: BorderDirectional(
-                          top: BorderSide(color: Colors.grey, width: 0.5))),
-                  child: const Row(
-                    children: [
-                      Icon(
-                        Icons.gif_box_rounded,
-                        color: Colors.pinkAccent,
-                        size: 28,
-                      ),
-                      Text("GIF")
-                    ],
-                  ),
-                )),
-          ],
-        )
-      ]),
-    );
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        border: BorderDirectional(
+                            top: BorderSide(color: Colors.grey, width: 0.5))),
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.gif_box_rounded,
+                          color: Colors.pinkAccent,
+                          size: 28,
+                        ),
+                        Text("GIF")
+                      ],
+                    ),
+                  )),
+            ],
+          ),
+        ));
   }
 
-  Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future _pickImagesFromGallery() async {
+    final pickedImages = await ImagePicker().pickMultiImage(imageQuality: 100);
 
-    if (returnedImage == null) return;
+    if (pickedImages.isEmpty) return;
+
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      if (pickedImages.length <= 4) {
+        selectedImages.addAll(pickedImages);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bạn chỉ được chọn tối đa 4 ảnh !')));
+        return;
+      }
     });
   }
 
@@ -276,7 +406,7 @@ class _PostArticleState extends State<PostArticle> {
 
     if (returnedImage == null) return;
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      selectedImages.add(returnedImage);
     });
   }
 
@@ -285,12 +415,78 @@ class _PostArticleState extends State<PostArticle> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PickerFeelings(),
+          builder: (context) => const PickerFeelings(),
         ));
 
     // after the feelingState comes back update the Text widget with it
     setState(() {
       feelingState = result;
     });
+  }
+
+  Widget _buildImageSection(List<XFile?> images) {
+    if (images.length == 1) {
+      return Image.file(File(images[0]!.path),
+          height: 400, width: double.infinity, fit: BoxFit.cover);
+    } else if (images.length == 2) {
+      return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: images.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 1),
+            child: Image.file(File(images[index]!.path),
+                height: 400, width: double.infinity, fit: BoxFit.cover),
+          );
+        },
+      );
+    } else if (images.length == 3) {
+      return Row(
+        children: [
+          Expanded(
+            child: Image.file(File(images[0]!.path),
+                height: 400, fit: BoxFit.cover),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, bottom: 2),
+                  child: Image.file(File(images[1]!.path),
+                      height: 198, width: double.infinity, fit: BoxFit.cover),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, top: 2),
+                  child: Image.file(File(images[2]!.path),
+                      height: 198, width: double.infinity, fit: BoxFit.cover),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else if (images.length >= 4) {
+      return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: images.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(1),
+            child: Image.file(File(images[index]!.path),
+                height: 200, width: double.infinity, fit: BoxFit.cover),
+          );
+        },
+      );
+    } else {
+      return Container();
+    }
   }
 }

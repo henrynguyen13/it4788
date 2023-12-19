@@ -1,15 +1,16 @@
 import 'dart:convert';
-import 'dart:ffi';
+// import 'dart:ffi';
 import 'dart:io';
-import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
 import 'package:it4788/model/edit_post.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/post_response.dart';
 import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/model/user_infor_profile.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:it4788/model/post.dart';
 import 'package:it4788/service/authStorage.dart';
-
 import 'api_service.dart';
 
 class PostSevice {
@@ -79,8 +80,50 @@ class PostSevice {
     }
   }
 
-  Future<void> addPost() async {
-    try {} catch (e) {}
+  Future<Response> addPost(List<XFile?> images, File? video, String described,
+      String status, String auto_accept) async {
+    try {
+      var token = await _getToken();
+
+      FormData formData = FormData();
+
+      for (XFile? image in images) {
+        if (image != null) {
+          File file = File(image.path);
+          formData.files.add(MapEntry(
+              'image',
+              (await MultipartFile.fromFile(file.path,
+                  filename: file.path.split('/').last,
+                  contentType: MediaType("image", "jpeg")))));
+        }
+      }
+      if (video != null) {
+        formData.files.add(MapEntry(
+            'video',
+            (await MultipartFile.fromFile(video.path,
+                filename: video.path.split('/').last,
+                contentType: MediaType("video", "mp4")))));
+      }
+
+      formData.fields.add(MapEntry('described', described));
+
+      formData.fields.add(MapEntry('status', status));
+
+      formData.fields.add(MapEntry('auto_accept', auto_accept));
+
+      final dio = ApiService.createDio();
+      final response = await dio.post('add_post',
+          data: formData,
+          options: Options(headers: {
+            "Authorization": "Bearer $token",
+          }));
+
+      print(response.data);
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 
   Future<PostResponse> getPostById(String id) async {
@@ -104,45 +147,30 @@ class PostSevice {
     }
   }
 
-  Future<EditPostResponse> editPost(EditPostDto postDto) async {
+  Future<Response> editPost(EditPostDto postDto) async {
     try {
       var token = await _getToken();
 
       FormData formData = FormData.fromMap(postDto.toJson());
 
-      if (postDto.images != null) {
-        for (int i = 0; i < postDto.images!.length; i++) {
-          File imageFile = postDto.images![i];
-          if (imageFile.existsSync()) {
-            formData.files.add(MapEntry(
+      for (XFile? image in postDto.images) {
+        if (image != null) {
+          File file = File(image.path);
+          formData.files.add(MapEntry(
               'image',
-              await MultipartFile.fromFile(
-                imageFile.path,
-                filename: 'image$i',
-                contentType: MediaType('image', 'jpeg'),
-              ),
-            ));
-          } else {
-            print('Image file $i does not exist.');
-          }
+              (await MultipartFile.fromFile(file.path,
+                  filename: file.path.split('/').last,
+                  contentType: MediaType("image", "jpeg")))));
         }
+      }
+      if (postDto.video != null) {
+        formData.files.add(MapEntry(
+            'video',
+            (await MultipartFile.fromFile(postDto.video!.path,
+                filename: postDto.video!.path.split('/').last,
+                contentType: MediaType("video", "mp4")))));
       }
 
-      if (postDto.video != null) {
-        File videoFile = postDto.video!;
-        if (videoFile.existsSync()) {
-          formData.files.add(MapEntry(
-            'video',
-            MultipartFile.fromBytes(
-              await videoFile.readAsBytes(),
-              filename: 'video',
-              contentType: MediaType('video', 'mp4'),
-            ),
-          ));
-        } else {
-          print('Video file does not exist.');
-        }
-      }
       final dio = ApiService.createDio();
       final response = await dio.post('edit_post',
           data: formData,
@@ -151,7 +179,7 @@ class PostSevice {
           }));
 
       print(response.data);
-      return response.data;
+      return response;
     } catch (e) {
       print(e);
       rethrow;

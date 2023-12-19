@@ -188,16 +188,27 @@ class _SignIn extends State<SignInPage> {
 
                                 final jsonResponse = json.decode(response.data);
                                 String message = jsonResponse['message'];
+                                String username =
+                                    jsonResponse['data']['username'];
 
-                                if (message == 'OK') {
+                                if (message == 'OK' && username != '') {
+                                  if (!context.mounted) return;
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomeScreen()),
+                                  );
+                                } else {
                                   if (!context.mounted) return;
 
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              // const SetUsernamePage()),
-                                              const HomeScreen()));
+                                              const SetUsernamePage()));
+                                  // const HomeScreen()));
                                 }
                               } catch (e) {
                                 print("Đăng nhập không thành công");

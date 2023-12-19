@@ -1,12 +1,16 @@
 // Example: ImageCarousel.dart
 import 'package:flutter/material.dart';
+import 'package:it4788/model/post_response.dart';
+import 'package:it4788/service/post_sevice.dart';
 
 class ImageCarousel extends StatefulWidget {
-  final List<String> imageUrls;
+  // final List<String> imageUrls;
+  final List<PostImage?> images;
   final int initialPage;
-  final Function(int) onImageRemoved;
+  final Function(int, String) onImageRemoved;
   ImageCarousel({
-    required this.imageUrls,
+    // required this.imageUrls,
+    required this.images,
     required this.initialPage,
     required this.onImageRemoved,
   });
@@ -18,11 +22,8 @@ class ImageCarousel extends StatefulWidget {
 class _ImageCarouselState extends State<ImageCarousel> {
   late PageController _pageController;
 
-  void _onImageRemoved(int removedIndex) {
-    // Call the callback function to remove the current image
-    widget.onImageRemoved(removedIndex);
-
-    // Close the image list screen
+  void _onImageRemoved(removedIndex) {
+    widget.onImageRemoved(removedIndex, widget.images[removedIndex]!.id);
     Navigator.pop(context);
   }
 
@@ -38,9 +39,10 @@ class _ImageCarouselState extends State<ImageCarousel> {
       children: [
         PageView.builder(
           controller: _pageController,
-          itemCount: widget.imageUrls.length,
+          itemCount: widget.images.map((image) => image!.url).toList().length,
           itemBuilder: (context, index) {
-            return Image.network(widget.imageUrls[index]);
+            return Image.network(
+                widget.images.map((image) => image!.url).toList()[index]);
           },
         ),
         Align(

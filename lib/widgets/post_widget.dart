@@ -82,14 +82,13 @@ class _PostWidgetState extends State<PostWidget> {
     Duration difference = to.difference(from);
 
     if (difference.inSeconds < 60) {
-      return '${difference.inSeconds} seconds ago';
+      return '${difference.inSeconds} giây trước';
     } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes} minutes ago';
+      return '${difference.inMinutes} phút trước';
     } else if (difference.inHours < 24) {
-      return '${difference.inHours} hours ago';
+      return '${difference.inHours} giờ trước';
     } else {
-      int days = difference.inDays;
-      return '$days ${days == 1 ? 'day' : 'days'} ago';
+      return '${difference.inDays} ngày trước';
     }
   }
 
@@ -302,7 +301,9 @@ class _PostWidgetState extends State<PostWidget> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CommentPage()),
+                                builder: (context) => CommentPage(
+                                      postID: post.id,
+                                    )),
                           );
                         },
                         child: const Row(

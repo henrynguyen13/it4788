@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/model/edit_post.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/post_response.dart';
@@ -22,10 +25,10 @@ class _EditPostArticleState extends State<EditPostArticle> {
   final TextEditingController _descriptionController = TextEditingController();
   late Future<PostResponse> _futures;
   String feelingState = "";
-  File? _selectedImage;
   String? username;
   PostResponse? post;
-
+  List<XFile?> selectedImages = [];
+  List<String?> removedImageIndexes = [];
   void getData() async {
     _futures = PostSevice().getPostById(widget.id);
   }
@@ -36,9 +39,9 @@ class _EditPostArticleState extends State<EditPostArticle> {
     getData();
   }
 
-  Widget _buildImageSection(List<PostImage> images) {
+  Widget _buildImageSection(List<PostImage?> images) {
     if (images.length == 1) {
-      return Image.network(images[0].url,
+      return Image.network(images[0]!.url,
           height: 400, width: double.infinity, fit: BoxFit.cover);
     } else if (images.length == 2 || images.length == 4) {
       return GridView.builder(
@@ -55,11 +58,13 @@ class _EditPostArticleState extends State<EditPostArticle> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ImageDetailScreen(
-                    imageUrls: images.map((image) => image.url).toList(),
+                    // imageUrls: images.map((image) => image!.url).toList(),
+                    images: images,
                     initialPage: index,
-                    onImageRemoved: (removedIndex) {
+                    onImageRemoved: (removedIndex, id) {
                       setState(() {
                         images.removeAt(removedIndex);
+                        removedImageIndexes.add(id);
                       });
                     },
                   ),
@@ -68,7 +73,7 @@ class _EditPostArticleState extends State<EditPostArticle> {
             },
             child: Padding(
               padding: const EdgeInsets.all(1),
-              child: Image.network(images[index].url,
+              child: Image.network(images[index]!.url,
                   height: 200, width: double.infinity, fit: BoxFit.cover),
             ),
           );
@@ -85,11 +90,13 @@ class _EditPostArticleState extends State<EditPostArticle> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ImageDetailScreen(
-                      imageUrls: images.map((image) => image.url).toList(),
+                      // imageUrls: images.map((image) => image!.url).toList(),
+                      images: images,
                       initialPage: 0,
-                      onImageRemoved: (removedIndex) {
+                      onImageRemoved: (removedIndex, id) {
                         setState(() {
                           images.removeAt(removedIndex);
+                          removedImageIndexes.add(id);
                         });
                       },
                     ),
@@ -97,7 +104,7 @@ class _EditPostArticleState extends State<EditPostArticle> {
                 );
               },
               child:
-                  Image.network(images[0].url, height: 400, fit: BoxFit.cover),
+                  Image.network(images[0]!.url, height: 400, fit: BoxFit.cover),
             ),
           ),
           Expanded(
@@ -112,19 +119,20 @@ class _EditPostArticleState extends State<EditPostArticle> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ImageDetailScreen(
-                            imageUrls:
-                                images.map((image) => image.url).toList(),
+                            // imageUrls: images.map((image) => image!.url).toList(),
+                            images: images,
                             initialPage: 1,
-                            onImageRemoved: (removedIndex) {
+                            onImageRemoved: (removedIndex, id) {
                               setState(() {
                                 images.removeAt(removedIndex);
+                                removedImageIndexes.add(id);
                               });
                             },
                           ),
                         ),
                       );
                     },
-                    child: Image.network(images[1].url,
+                    child: Image.network(images[1]!.url,
                         height: 198, width: double.infinity, fit: BoxFit.cover),
                   ),
                 ),
@@ -137,19 +145,20 @@ class _EditPostArticleState extends State<EditPostArticle> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ImageDetailScreen(
-                            imageUrls:
-                                images.map((image) => image.url).toList(),
+                            // imageUrls: images.map((image) => image!.url).toList(),
+                            images: images,
                             initialPage: 2,
-                            onImageRemoved: (removedIndex) {
+                            onImageRemoved: (removedIndex, id) {
                               setState(() {
                                 images.removeAt(removedIndex);
+                                removedImageIndexes.add(id);
                               });
                             },
                           ),
                         ),
                       );
                     },
-                    child: Image.network(images[2].url,
+                    child: Image.network(images[2]!.url,
                         height: 198, width: double.infinity, fit: BoxFit.cover),
                   ),
                 ),
@@ -174,8 +183,41 @@ class _EditPostArticleState extends State<EditPostArticle> {
           actions: [
             TextButton(
               onPressed: () async {
-                final response = await PostSevice().editPost(EditPostDto(
-                    id: post!.data.id, described: _descriptionController.text));
+                try {
+                  print(
+                      "selectImage ${selectedImages.map((image) => image?.path).toList()} ${selectedImages.length} ");
+                  // final cleanedRemovedIndexes = removedImageIndexes
+                  //     .map((index) => index == 0 ? 1 : index)
+                  //     .toList();
+                  print("imageDel ${removedImageIndexes}");
+
+                  final Response<dynamic> response =
+                      await PostSevice().editPost(EditPostDto(
+                    id: post!.data.id,
+                    images: selectedImages,
+                    described: _descriptionController.text,
+                    imageDel: removedImageIndexes,
+                  ));
+
+                  final jsonResponse = json.decode(response.data);
+
+                  print("BUGGGGGG $jsonResponse");
+
+                  String resMessage = jsonResponse['message'];
+
+                  if (resMessage == 'OK') {
+                    if (!context.mounted) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Sửa bài viết thành công !'),
+                    ));
+                  }
+                } catch (e) {
+                  print('Error: $e');
+                }
               },
               child: const Text(
                 'Sửa',
@@ -193,6 +235,7 @@ class _EditPostArticleState extends State<EditPostArticle> {
                     child: CircularProgressIndicator());
               } else if (snapshot.hasData) {
                 post = snapshot.data;
+
                 _descriptionController.text = post?.data.described ?? '';
                 return Column(children: [
                   Padding(
@@ -302,7 +345,7 @@ class _EditPostArticleState extends State<EditPostArticle> {
                                                 child: const Text(
                                                     "Chọn ảnh từ máy"),
                                                 onPressed: () {
-                                                  _pickImageFromGallery();
+                                                  _pickImagesFromGallery();
                                                 },
                                               ),
                                             )),
@@ -448,13 +491,19 @@ class _EditPostArticleState extends State<EditPostArticle> {
             }));
   }
 
-  Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future _pickImagesFromGallery() async {
+    final pickedImages = await ImagePicker().pickMultiImage(imageQuality: 100);
 
-    if (returnedImage == null) return;
+    if (pickedImages.isEmpty) return;
+
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      if (pickedImages.length <= 4) {
+        selectedImages.addAll(pickedImages);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bạn chỉ được chọn tối đa 4 ảnh !')));
+        return;
+      }
     });
   }
 
@@ -464,7 +513,7 @@ class _EditPostArticleState extends State<EditPostArticle> {
 
     if (returnedImage == null) return;
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      selectedImages.add(returnedImage);
     });
   }
 
@@ -473,7 +522,7 @@ class _EditPostArticleState extends State<EditPostArticle> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PickerFeelings(),
+          builder: (context) => const PickerFeelings(),
         ));
 
     // after the feelingState comes back update the Text widget with it

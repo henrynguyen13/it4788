@@ -8,7 +8,10 @@ class CommentBox extends StatelessWidget {
   dynamic formKey;
   dynamic sendButtonMethod;
   dynamic onTapMethod;
+  dynamic onCloseReplyText;
   dynamic commentController;
+  bool isVisibleReply;
+  String? userReplying;
   ImageProvider? userImage;
   String? labelText;
   String? placeHolder;
@@ -24,9 +27,12 @@ class CommentBox extends StatelessWidget {
     this.header,
     this.sendButtonMethod,
     this.onTapMethod,
+    this.onCloseReplyText,
     this.formKey,
     this.commentController,
+    required this.isVisibleReply,
     this.sendWidget,
+    this.userReplying,
     this.userImage,
     this.labelText,
     this.placeHolder,
@@ -42,6 +48,34 @@ class CommentBox extends StatelessWidget {
     return Column(
       children: [
         Expanded(child: child!),
+        Visibility(
+          visible: isVisibleReply,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Divider(
+                height: 1,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                        onPressed: onCloseReplyText,
+                        icon: const Icon(Icons.close)),
+                    Text(
+                      "Đang trả lời $userReplying",
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
         const Divider(
           height: 1,
         ),
@@ -104,11 +138,7 @@ class CommentBox extends StatelessWidget {
     try {
       //check if imageURLorPath
       if (imageURLorPath is String) {
-        if (imageURLorPath.startsWith('http')) {
-          return NetworkImage(imageURLorPath);
-        } else {
-          return AssetImage(imageURLorPath);
-        }
+        return AssetImage(imageURLorPath);
       } else {
         return imageURLorPath;
       }

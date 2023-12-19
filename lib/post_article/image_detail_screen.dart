@@ -1,13 +1,15 @@
 // Example: ImageListScreen.dart
 import 'package:flutter/material.dart';
+import 'package:it4788/model/post_response.dart';
 import 'package:it4788/post_article/image_carousel.dart';
 
 class ImageDetailScreen extends StatelessWidget {
-  final List<String> imageUrls;
+  final List<PostImage?> images;
+  // final List<String> imageIndex;
   final int initialPage;
-  final Function(int) onImageRemoved;
+  final Function(int, String) onImageRemoved;
   const ImageDetailScreen({
-    required this.imageUrls,
+    required this.images,
     required this.initialPage,
     required this.onImageRemoved,
   });
@@ -24,7 +26,8 @@ class ImageDetailScreen extends StatelessWidget {
         ),
       ),
       body: ImageCarousel(
-        imageUrls: imageUrls,
+        // imageUrls: imageUrls,
+        images: images,
         initialPage: initialPage,
         onImageRemoved: onImageRemoved,
       ),

@@ -4,6 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:it4788/service/authStorage.dart';
 import 'api_service.dart';
 
+Future<String?> _getToken() async {
+  return await Storage().getToken();
+}
+
 Future<Response> signUp(String email, String password, String uuid) async {
   Map<String, dynamic> request = {
     'email': email,
@@ -63,12 +67,20 @@ Future<Response> checkVerifyCode(String email, String verifyCode) async {
   return response;
 }
 
-Future<Response> setUsername(String username) async {
-  Map<String, dynamic> request = {'username': username};
+Future<Response> setUsername(String username, File? avatar) async {
+  var token = await _getToken();
+  FormData formData = FormData.fromMap({
+    'username': username,
+    'avatar': MultipartFile.fromFile(avatar!.path,
+        filename: avatar.path.split('/').last)
+  });
   final dio = ApiService.createDio();
-  final response = await dio.post('change_profile_after_signup', data: request);
-  print('Xác nhận set username thành công !');
+  final response = await dio.post('change_profile_after_signup',
+      data: formData,
+      options: Options(headers: {"Authorization": "Bearer $token"}));
+  print('Bạn đã đặt tên thành công !');
   return response;
+}
 
 Future<bool> emailIsExisted(String email) async {
   Map<String, dynamic> request = {
