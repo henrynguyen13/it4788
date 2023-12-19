@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:it4788/comment/commentPage.dart';
 import 'package:it4788/model/post.dart';
+import 'package:it4788/post_article/edit_post_article.dart';
 import 'package:it4788/report.dart';
 import 'package:it4788/service/profile_sevice.dart';
 
@@ -81,14 +82,13 @@ class _PostWidgetState extends State<PostWidget> {
     Duration difference = to.difference(from);
 
     if (difference.inSeconds < 60) {
-      return '${difference.inSeconds} seconds ago';
+      return '${difference.inSeconds} giây trước';
     } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes} minutes ago';
+      return '${difference.inMinutes} phút trước';
     } else if (difference.inHours < 24) {
-      return '${difference.inHours} hours ago';
+      return '${difference.inHours} giờ trước';
     } else {
-      int days = difference.inDays;
-      return '$days ${days == 1 ? 'day' : 'days'} ago';
+      return '${difference.inDays} ngày trước';
     }
   }
 
@@ -404,7 +404,16 @@ class BottomPopup extends StatelessWidget {
                               Text('Chỉnh sửa bài viết'),
                             ],
                           ),
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditPostArticle(id: post.id),
+                              ),
+                            );
+                          },
                         ),
                         TextButton(
                           child: const Row(
