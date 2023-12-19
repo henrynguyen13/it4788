@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
-      home: const SignUpPage(),
+      home: const HomeScreen(),
       // routes: <String, WidgetBuilder>{
       //   '/home': (BuildContext context) => new HomeScreen(),
       // },

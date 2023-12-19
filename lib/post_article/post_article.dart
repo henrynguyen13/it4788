@@ -6,6 +6,8 @@ import 'package:it4788/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
+import 'package:it4788/post_article/image_detail_add_screen.dart';
+import 'package:it4788/post_article/image_detail_screen.dart';
 import 'package:it4788/post_article/post_draft.dart';
 import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/post_sevice.dart';
@@ -567,10 +569,29 @@ class _PostArticleState extends State<PostArticle> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: images.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 1),
-            child: Image.file(File(images[index]!.path),
-                height: 400, width: double.infinity, fit: BoxFit.cover),
+          return GestureDetector(
+            onTap: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ImageDetailAddScreen(
+                    // imageUrls: images.map((image) => image!.url).toList(),
+                    images: images,
+                    initialPage: index,
+                    onImageRemoved: (removedIndex, id) {
+                      setState(() {
+                        images.removeAt(removedIndex);
+                      });
+                    },
+                  ),
+                ),
+              )
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 1),
+              child: Image.file(File(images[index]!.path),
+                  height: 400, width: double.infinity, fit: BoxFit.cover),
+            ),
           );
         },
       );
