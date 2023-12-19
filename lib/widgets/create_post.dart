@@ -34,7 +34,8 @@ class CreatePostContainer extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PostArticle()))
+                                  builder: (context) => PostArticle(),
+                                  settings: const RouteSettings(name: '/home')))
                         },
                     child: const Text('What\'s on your mind?'))
               ],

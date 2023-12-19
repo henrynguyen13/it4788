@@ -18,14 +18,14 @@ class PostSevice {
     return await Storage().getToken();
   }
 
-  Future<ListPost?> getPostList(String id) async {
+  Future<ListPost?> getPostList(int index, int count) async {
     ListPost listPost;
     var token = await _getToken();
 
     try {
       Map<String, dynamic> request = {
-        "index": 0,
-        'count': 50,
+        "index": index,
+        'count': count,
         'last_id': 0,
         "in_campaign": "1",
         "campaign_id": "1",
@@ -178,6 +178,28 @@ class PostSevice {
             "Authorization": "Bearer $token",
           }));
 
+      print(response.data);
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<Response> reportPost(
+      int postID, String subject, String details) async {
+    var token = await _getToken();
+
+    try {
+      Map<String, dynamic> request = {
+        "id": postID,
+        'subject': subject,
+        'details': details,
+      };
+      final dio = ApiService.createDio();
+      final response = await dio.post('report_post',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
       print(response.data);
       return response;
     } catch (e) {
