@@ -35,13 +35,13 @@ class ProfileSevice {
     }
   }
 
-  Future<UserFriends?> getUserFriend(String id, int count) async {
+  Future<UserFriends?> getUserFriend(String id, int index, int count) async {
     UserFriends userFriends;
     var token = await _getToken();
 
     try {
       Map<String, dynamic> request = {
-        'index': 0,
+        'index': index,
         'user_id': id,
         'count': count
       };
@@ -58,12 +58,13 @@ class ProfileSevice {
     }
   }
 
-  Future<List<dynamic>> getDataForPersonalPage(String id) async {
+  Future<List<dynamic>> getDataForPersonalPage(
+      String id, int index, int count) async {
     try {
       List<Future<dynamic>> futures = [
         getUserInfor(id),
-        getUserFriend(id, 6),
-        getMyListPost(id)
+        getUserFriend(id, 0, 10),
+        getMyListPost(id, index, count)
       ];
 
       Future<List<dynamic>> results = Future.wait(futures);
@@ -125,20 +126,20 @@ class ProfileSevice {
     }
   }
 
-  Future<ListPost?> getMyListPost(String id) async {
+  Future<ListPost?> getMyListPost(String id, int index, int count) async {
     ListPost listPost;
     var token = await _getToken();
 
     try {
       Map<String, dynamic> request = {
         'user_id': id,
-        'count': 50,
+        'count': count,
         'last_id': 0,
         'in_campaign': 1,
         'campaign_id': 1,
         'latitude': 1.0,
         'longitude': 1.0,
-        'index': 0
+        'index': index
       };
       final dio = ApiService.createDio();
       final response = await dio.post('get_list_posts',
