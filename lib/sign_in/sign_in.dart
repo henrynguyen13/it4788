@@ -205,11 +205,11 @@ class _SignIn extends State<SignInPage> {
                                   if (!context.mounted) return;
 
                                   Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SetUsernamePage()),
-                                  );
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SetUsernamePage()));
+                                  // const HomeScreen()));
                                 }
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
