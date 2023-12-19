@@ -9,6 +9,7 @@ import 'package:it4788/post_article/feelings_activities/feelings_activities_pick
 import 'package:it4788/post_article/post_draft.dart';
 import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/post_sevice.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PostArticle extends StatefulWidget {
   const PostArticle({super.key});
@@ -203,21 +204,23 @@ class _PostArticleState extends State<PostArticle> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    ClipOval(
-                      child: avatar != ""
-                          ? Image.network(
-                              avatar!,
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                            )
-                          : const Image(
-                              image: AssetImage(
-                                  'assets/images/icons/avatar_icon.png'),
-                              width: 60,
-                              height: 60,
-                            ),
-                    ),
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                        child: ClipOval(
+                          child: avatar != ""
+                              ? Image.network(
+                                  avatar!,
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                )
+                              : const Image(
+                                  image: AssetImage(
+                                      'assets/images/icons/avatar_icon.png'),
+                                  width: 60,
+                                  height: 60,
+                                ),
+                        )),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -565,12 +568,38 @@ class _PostArticleState extends State<PostArticle> {
     return await Storage().getAvatar();
   }
 
-  void exportPostDraft(List<PostDraft> postDrafts) {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/draft.txt');
+  }
+
+  Future<File> writePostContent(String content) async {
+    final file = await _localFile;
+
+    // Write the file
+    return file.writeAsString(content);
+  }
+
+  void exportPostDraft(List<PostDraft> postDrafts) async {
     try {
-      List jsonList = [];
-      postDrafts.forEach(
-          (postDraft) => jsonList.add(json.encode(postDraft.toJson())));
-      File(exportFilePath).writeAsStringSync(jsonList.toString());
+      // List jsonList = [];
+      // postDrafts.forEach(
+      //     (postDraft) => jsonList.add(json.encode(postDraft.toJson())));
+      // File(exportFilePath).writeAsStringSync(jsonList.toString());
+      final directory = await getApplicationDocumentsDirectory();
+
+      Future<File> writeCounter(int counter) async {
+        final file = await _localFile;
+
+        // Write the file
+        return file.writeAsString('$counter');
+      }
     } catch (e) {
       print("Error: $e");
     }
