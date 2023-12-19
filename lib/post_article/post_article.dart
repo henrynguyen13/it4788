@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:convert' show json;
 import 'dart:io';
-import 'package:it4788/model/user_infor_profile.dart';
+import 'dart:io' show File;
+import 'package:it4788/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
+import 'package:it4788/post_article/post_draft.dart';
+import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/post_sevice.dart';
 
 class PostArticle extends StatefulWidget {
@@ -14,9 +18,9 @@ class PostArticle extends StatefulWidget {
 }
 
 class _PostArticleState extends State<PostArticle> {
-  late UserInfor userInfor;
-
   String feelingState = "";
+  String? username = "";
+  String? avatar;
 
   List<XFile?> selectedImages = [];
   File? video;
@@ -24,10 +28,30 @@ class _PostArticleState extends State<PostArticle> {
   String status = "Hyped";
   String auto_accept = "1";
 
+  String exportFilePath = "D:/20231/DNT/it4788/assets/post_draft.json";
+  List<PostDraft> drafts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getUsername().then((value) {
+      setState(() {
+        username = value ?? "";
+      });
+    });
+
+    _getAvatar().then((value) {
+      setState(() {
+        avatar = value ?? "";
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Row(
             children: [
               MaterialButton(
@@ -36,13 +60,29 @@ class _PostArticleState extends State<PostArticle> {
                     showModalBottomSheet<void>(
                       context: context,
                       builder: (BuildContext context) {
-                        return SizedBox(
-                          height: 300,
-                          child: Center(
+                        return Container(
+                          height: MediaQuery.of(context).size.height / 3,
+                          padding: EdgeInsets.all(8.0),
+                          child: SizedBox(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
+                                const Padding(
+                                  padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
+                                  child: Text(
+                                      "Bạn muốn hoàn thành bài viết của mình sau ?"),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
+                                  child: Text(
+                                    "Lưu làm bản nháp hoặc bạn có thể tiếp tục chỉnh sửa",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 12),
+                                  ),
+                                ),
+                                const SizedBox(height: 20.0),
                                 TextButton(
                                   child: const Row(
                                     children: [
@@ -51,46 +91,60 @@ class _PostArticleState extends State<PostArticle> {
                                             horizontal: 10),
                                         child: Icon(Icons.save_alt_rounded),
                                       ),
-                                      Text('Lưu bản nháp'),
+                                      Text('Lưu làm bản nháp'),
                                     ],
                                   ),
-                                  onPressed: () => Navigator.pop(context),
+                                  onPressed: () {
+                                    PostDraft newPostDraft = PostDraft(
+                                        selectedImages
+                                            .map((image) => image?.path ?? "")
+                                            .toList(),
+                                        postContent,
+                                        status,
+                                        auto_accept);
+                                    drafts.add(newPostDraft);
+                                    exportPostDraft(drafts);
+                                    setState(() {
+                                      selectedImages = [];
+                                      postContent = "";
+                                      status = 'Hyped';
+                                      auto_accept = '1';
+                                    });
+
+                                    Navigator.pop(context);
+                                  },
                                 ),
+                                TextButton(
+                                    child: const Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Icon(Icons.delete),
+                                        ),
+                                        Text('Bỏ bài viết'),
+                                      ],
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const HomeScreen(),
+                                          ));
+                                      // Navigator.popUntil(context,
+                                      //     ModalRoute.withName("/home"));
+                                    }),
                                 TextButton(
                                   child: const Row(
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10),
-                                        child: Icon(Icons.delete),
+                                        child: Icon(Icons.check),
                                       ),
-                                      Text('Hủy bài viết'),
-                                    ],
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                                TextButton(
-                                  child: const Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Icon(Icons.edit),
-                                      ),
-                                      Text('Chỉnh sửa bài viết'),
-                                    ],
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                                TextButton(
-                                  child: const Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Icon(Icons.link),
-                                      ),
-                                      Text('Sao chép liên kết'),
+                                      Text('Tiếp tục chỉnh sửa'),
                                     ],
                                   ),
                                   onPressed: () => Navigator.pop(context),
@@ -118,14 +172,17 @@ class _PostArticleState extends State<PostArticle> {
 
                   final jsonResponse = json.decode(addPostResponse.data);
 
-                  print("BUGGGGGG $jsonResponse");
-
                   String message = jsonResponse['message'];
 
                   if (message == 'OK') {
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Đăng bài viết thành công !')));
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()));
                   }
                 } catch (e) {
                   print(e);
@@ -146,16 +203,26 @@ class _PostArticleState extends State<PostArticle> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Image(
-                      image: AssetImage('assets/images/icons/avatar_icon.png'),
-                      width: 60,
-                      height: 60,
+                    ClipOval(
+                      child: avatar != ""
+                          ? Image.network(
+                              avatar!,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            )
+                          : const Image(
+                              image: AssetImage(
+                                  'assets/images/icons/avatar_icon.png'),
+                              width: 60,
+                              height: 60,
+                            ),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "pidk ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
+                            "${username} ${feelingState != "" ? "-- cảm thấy ${feelingState}" : ""}",
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                         Padding(
@@ -487,6 +554,25 @@ class _PostArticleState extends State<PostArticle> {
       );
     } else {
       return Container();
+    }
+  }
+
+  Future<String?> _getUsername() async {
+    return await Storage().getUsername();
+  }
+
+  Future<String?> _getAvatar() async {
+    return await Storage().getAvatar();
+  }
+
+  void exportPostDraft(List<PostDraft> postDrafts) {
+    try {
+      List jsonList = [];
+      postDrafts.forEach(
+          (postDraft) => jsonList.add(json.encode(postDraft.toJson())));
+      File(exportFilePath).writeAsStringSync(jsonList.toString());
+    } catch (e) {
+      print("Error: $e");
     }
   }
 }
