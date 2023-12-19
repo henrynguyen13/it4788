@@ -1,15 +1,14 @@
 import 'dart:convert';
+import 'dart:convert' show json;
 import 'dart:io';
+import 'dart:io' show File;
 import 'package:it4788/home/home_screen.dart';
-import 'package:it4788/model/user_infor_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
 import 'package:it4788/post_article/post_draft.dart';
 import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/post_sevice.dart';
-import 'package:it4788/service/profile_sevice.dart';
-import 'package:path_provider/path_provider.dart';
 
 class PostArticle extends StatefulWidget {
   const PostArticle({super.key});
@@ -19,8 +18,6 @@ class PostArticle extends StatefulWidget {
 }
 
 class _PostArticleState extends State<PostArticle> {
-  late PostDraft postDraft;
-
   String feelingState = "";
   String? username = "";
   String? avatar;
@@ -31,12 +28,21 @@ class _PostArticleState extends State<PostArticle> {
   String status = "Hyped";
   String auto_accept = "1";
 
+  String exportFilePath = "D:/20231/DNT/it4788/assets/post_draft.json";
+  List<PostDraft> drafts = [];
+
   @override
   void initState() {
     super.initState();
     _getUsername().then((value) {
       setState(() {
         username = value ?? "";
+      });
+    });
+
+    _getAvatar().then((value) {
+      setState(() {
+        avatar = value ?? "";
       });
     });
   }
@@ -85,21 +91,26 @@ class _PostArticleState extends State<PostArticle> {
                                             horizontal: 10),
                                         child: Icon(Icons.save_alt_rounded),
                                       ),
-                                      Text('Lưu bản nháp'),
+                                      Text('Lưu làm bản nháp'),
                                     ],
                                   ),
-                                  onPressed: () async {
-                                    postDraft.status = 'Hyped';
-                                    postDraft.autoAccept = '1';
-
-                                    await _savePostDraft(postDraft);
+                                  onPressed: () {
+                                    PostDraft newPostDraft = PostDraft(
+                                        selectedImages
+                                            .map((image) => image?.path ?? "")
+                                            .toList(),
+                                        postContent,
+                                        status,
+                                        auto_accept);
+                                    drafts.add(newPostDraft);
+                                    exportPostDraft(drafts);
                                     setState(() {
                                       selectedImages = [];
-                                      video = null;
                                       postContent = "";
                                       status = 'Hyped';
                                       auto_accept = '1';
                                     });
+
                                     Navigator.pop(context);
                                   },
                                 ),
@@ -161,8 +172,6 @@ class _PostArticleState extends State<PostArticle> {
 
                   final jsonResponse = json.decode(addPostResponse.data);
 
-                  print("BUGGGGGG $jsonResponse");
-
                   String message = jsonResponse['message'];
 
                   if (message == 'OK') {
@@ -194,14 +203,21 @@ class _PostArticleState extends State<PostArticle> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    avatar != null
-                        ? Image.network("$avatar")
-                        : const Image(
-                            image: AssetImage(
-                                'assets/images/icons/avatar_icon.png'),
-                            width: 60,
-                            height: 60,
-                          ),
+                    ClipOval(
+                      child: avatar != ""
+                          ? Image.network(
+                              avatar!,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            )
+                          : const Image(
+                              image: AssetImage(
+                                  'assets/images/icons/avatar_icon.png'),
+                              width: 60,
+                              height: 60,
+                            ),
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -261,7 +277,6 @@ class _PostArticleState extends State<PostArticle> {
                           onChanged: (text) {
                             setState(() {
                               postContent = text;
-                              postDraft.postContent = text;
                             });
                           },
                         ),
@@ -443,8 +458,6 @@ class _PostArticleState extends State<PostArticle> {
 
     setState(() {
       if (pickedImages.length <= 4) {
-        postDraft.selectedImages = pickedImages;
-
         selectedImages.addAll(pickedImages);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -461,7 +474,6 @@ class _PostArticleState extends State<PostArticle> {
     if (returnedImage == null) return;
     setState(() {
       selectedImages.add(returnedImage);
-      postDraft.selectedImages.add(returnedImage);
     });
   }
 
@@ -545,10 +557,6 @@ class _PostArticleState extends State<PostArticle> {
     }
   }
 
-  Future<String?> _getUserId() async {
-    return await Storage().getUserId();
-  }
-
   Future<String?> _getUsername() async {
     return await Storage().getUsername();
   }
@@ -557,27 +565,14 @@ class _PostArticleState extends State<PostArticle> {
     return await Storage().getAvatar();
   }
 
-  Future<void> _savePostDraft(PostDraft draft) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/post_draft.json');
-    await file.writeAsString(draft.toJson().toString());
-  }
-
-  Future<PostDraft> _loadPostDraft() async {
+  void exportPostDraft(List<PostDraft> postDrafts) {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/post_draft.json');
-      final jsonString = await file.readAsString();
-      final jsonMap = Map<String, dynamic>.from(json.decode(jsonString));
-      return PostDraft.fromJson(jsonMap);
+      List jsonList = [];
+      postDrafts.forEach(
+          (postDraft) => jsonList.add(json.encode(postDraft.toJson())));
+      File(exportFilePath).writeAsStringSync(jsonList.toString());
     } catch (e) {
-      return PostDraft(
-        selectedImages: [],
-        video: null,
-        postContent: '',
-        status: 'Hyped',
-        autoAccept: '1',
-      );
+      print("Error: $e");
     }
   }
 }
