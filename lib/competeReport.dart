@@ -1,14 +1,15 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:it4788/model/post.dart';
+import 'package:it4788/service/block_service.dart';
 import 'package:it4788/service/post_sevice.dart';
 
 import 'report.dart';
 
 class ComleteReportPage extends StatefulWidget {
   final List<String> selectedContents;
-  ComleteReportPage(
-      {super.key, required this.selectedContents, required this.postID});
-  int postID;
+  const ComleteReportPage(
+      {super.key, required this.selectedContents, required this.post});
+  final Post post;
   @override
   State<ComleteReportPage> createState() => _ComleteReportPageState();
 }
@@ -83,19 +84,51 @@ class _ComleteReportPageState extends State<ComleteReportPage> {
               height: 10,
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: Text(
+                    'Chặn ${widget.post.author.name} ?',
+                    textAlign: TextAlign.center,
+                  ),
+                  content: Text(
+                    'Bạn và ${widget.post.author.name} sẽ không còn nhìn thấy nhau cũng như tương tác trên AntiFacebook!',
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, 'Cancel');
+                      },
+                      child: const Text('Hủy'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setBlock(int.parse(widget.post.author.id));
+                        Navigator.pop(context, 'OK');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content:
+                              Text('Bạn đã chặn ${widget.post.author.name}'),
+                        ));
+                      },
+                      child: const Text('Đồng ý'),
+                    ),
+                  ],
+                  surfaceTintColor: const Color.fromARGB(255, 162, 162, 162),
+                ),
+              ),
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll<Color>(
                       Color.fromARGB(255, 242, 242, 242))),
-              child: const Row(
+              child: Row(
                 children: [
-                  Image(
+                  const Image(
                     image:
                         AssetImage("assets/images/icons/user_block_icon.png"),
                     width: 40,
                     height: 40,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   SizedBox(
@@ -104,14 +137,14 @@ class _ComleteReportPageState extends State<ComleteReportPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Chặn User",
-                          style: TextStyle(
+                          "Chặn ${widget.post.author.name}",
+                          style: const TextStyle(
                             fontSize: 18,
                             color: Colors.black,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Text(
+                        const Text(
                           "Các bạn sẽ không thể nhìn thấy hoặc liên hệ với nhau",
                           softWrap: true,
                           style: TextStyle(
@@ -135,8 +168,12 @@ class _ComleteReportPageState extends State<ComleteReportPage> {
                   for (var i = 0; i < widget.selectedContents.length; i++) {
                     subject += "${widget.selectedContents[i]} ";
                   }
-                  PostSevice().reportPost(
-                      widget.postID, subject, detailsController.text);
+                  PostSevice().reportPost(int.parse(widget.post.id), subject,
+                      detailsController.text);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Đã báo cáo bài viết!'),
+                  ));
                 },
                 style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll<Color>(

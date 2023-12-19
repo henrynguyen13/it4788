@@ -121,7 +121,6 @@ class PostSevice {
 
   Future<Response> reportPost(
       int postID, String subject, String details) async {
-    ListPost listPost;
     var token = await _getToken();
 
     try {

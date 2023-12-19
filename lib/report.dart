@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/model/post.dart';
 
 import 'competeReport.dart';
 
 class ReportPage extends StatefulWidget {
-  const ReportPage({super.key, required this.postID});
-  final postID;
+  ReportPage({super.key, required this.post});
+  Post post;
   @override
   State<ReportPage> createState() => _ReportPageState();
 }
@@ -129,7 +130,7 @@ class _ReportPageState extends State<ReportPage> {
                         MaterialPageRoute(
                             builder: (context) => ComleteReportPage(
                                   selectedContents: listContents,
-                                  postID: widget.postID,
+                                  post: widget.post,
                                 )),
                       );
                     }

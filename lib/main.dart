@@ -19,9 +19,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
-      home: const ReportPage(
-        postID: 1,
-      ),
+      home: const SignUpPage(),
     );
   }
 }
