@@ -214,8 +214,11 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
               ),
               // const Spacer(),
-              const Padding(
-                  padding: EdgeInsets.only(right: 8), child: BottomPopup())
+              Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: BottomPopup(
+                    post: post,
+                  ))
             ],
           ),
           Padding(
@@ -334,8 +337,8 @@ class _PostWidgetState extends State<PostWidget> {
 }
 
 class BottomPopup extends StatelessWidget {
-  const BottomPopup({super.key});
-
+  BottomPopup({super.key, required this.post});
+  Post post;
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -429,8 +432,9 @@ class BottomPopup extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ReportPage()),
+                                        builder: (context) => ReportPage(
+                                              post: post,
+                                            )),
                                   ),
                                 }),
                       ],
