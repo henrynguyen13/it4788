@@ -29,7 +29,7 @@ Future<List<BlockedUser>> getBlockList(int index, int count) async {
   var token = await Storage().getToken();
   Map<String, dynamic> request = {'index': index, 'count': count};
   final dio = ApiService.createDio();
-  final response = await dio.post('set_block',
+  final response = await dio.post('get_list_blocks',
       data: request,
       options: Options(headers: {"Authorization": "Bearer $token"}));
 
