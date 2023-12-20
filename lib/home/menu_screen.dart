@@ -59,7 +59,7 @@ class _MenuScreenState extends State<MenuScreen> {
           if (index == 0) {
             return MenuItem(
               icon: Icons.person,
-              text: "Profile",
+              text: "Trang cá nhân",
               function: () {
                 handleNavToPersonalPage();
               },
@@ -75,7 +75,7 @@ class _MenuScreenState extends State<MenuScreen> {
           if (index == 2) {
             return MenuItem(
               icon: Icons.settings,
-              text: "Settings",
+              text: "Cài đặt",
               function: () {},
             );
           }
@@ -89,7 +89,7 @@ class _MenuScreenState extends State<MenuScreen> {
           if (index == 4) {
             return MenuItem(
               icon: Icons.logout,
-              text: "Logout",
+              text: "Đăng xuất",
               function: () {
                 _logOut();
               },

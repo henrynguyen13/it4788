@@ -20,8 +20,9 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
   final TextEditingController commentController = TextEditingController();
   final FocusNode focusNode = FocusNode();
 
+  var newestCommentKey;
   Future<List<Mark>?>? _future;
-  List<Mark>? listMark = <Mark>[];
+  List<Mark> listMark = <Mark>[];
 
   int replyingMarkId = -1;
   String repylingUsername = "";
@@ -30,8 +31,12 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
   String truthText = "Tin chính xác";
   var _avatar;
 
+  int currentIndex = 0;
+  int defaultCount = 3;
+
   Future<void> getAllMark() async {
-    _future = getMarkComment(widget.postID, '0', '20');
+    _future = getMarkComment(
+        widget.postID, '0', ((currentIndex + 1) * defaultCount).toString());
     _avatar = await Storage().getAvatar();
   }
 
@@ -43,6 +48,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
     isShowingReplyComment = false;
     repylingUsername = "";
     isTruth = 1;
+    currentIndex = 0;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -110,11 +116,15 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                           widget.postID,
                           commentController.text,
                           '0',
-                          '20',
+                          ((currentIndex + 1) * defaultCount).toString(),
                           replyingMarkId.toString());
                     } else {
-                      _future = setMark(widget.postID, commentController.text,
-                          '0', '20', isTruth.toString());
+                      _future = setMark(
+                          widget.postID,
+                          commentController.text,
+                          '0',
+                          ((currentIndex + 1) * defaultCount).toString(),
+                          isTruth.toString());
                     }
                     setState(() {
                       isShowingReplyComment = false;
@@ -148,7 +158,18 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                     truthText = "Tin giả";
                   });
                 },
+                showMoreMethod: () {
+                  currentIndex++;
+                  getAllMark();
+                  setState(() {
+                    isShowingReplyComment = false;
+                    replyingMarkId = -1;
+                    repylingUsername = "";
+                  });
+                },
                 isVisibleReply: isShowingReplyComment,
+                isVisibleShowMoreComment:
+                    listMark.length >= (currentIndex + 1) * defaultCount,
                 backgroundColor: Colors.white,
                 textColor: Colors.black,
                 truthText: truthText,
@@ -205,7 +226,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
+                padding: const EdgeInsetsDirectional.fromSTEB(15, 0, 15, 10),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,

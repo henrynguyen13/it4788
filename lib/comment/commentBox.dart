@@ -12,6 +12,8 @@ class CommentBox extends StatelessWidget {
   dynamic commentController;
   dynamic selectTruth;
   dynamic selectFake;
+  dynamic showMoreMethod;
+  bool isVisibleShowMoreComment;
   bool isVisibleReply;
   String? userReplying;
   String truthText;
@@ -35,7 +37,9 @@ class CommentBox extends StatelessWidget {
     this.commentController,
     this.selectTruth,
     this.selectFake,
+    this.showMoreMethod,
     required this.isVisibleReply,
+    required this.isVisibleShowMoreComment,
     this.sendWidget,
     this.userReplying,
     this.userImage,
@@ -54,12 +58,14 @@ class CommentBox extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextButton(
-            onPressed: () {},
-            child: const Text(
-              "Xem thêm bình luận",
-              style: TextStyle(color: Colors.black),
-            )),
+        Visibility(
+            visible: isVisibleShowMoreComment,
+            child: TextButton(
+                onPressed: showMoreMethod,
+                child: const Text(
+                  "Xem thêm bình luận",
+                  style: TextStyle(color: Colors.black),
+                ))),
         Expanded(child: child!),
         Visibility(
           visible: isVisibleReply,
