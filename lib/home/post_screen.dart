@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:it4788/data/data.dart';
+import 'package:it4788/home/post_detail_screen.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/service/authStorage.dart';
