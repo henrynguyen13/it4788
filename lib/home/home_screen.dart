@@ -1,7 +1,9 @@
 import 'package:it4788/core/pallete.dart';
+import 'package:it4788/firebase_api/firebase_api.dart';
 import 'package:it4788/home/add_friend_screen.dart';
 import 'package:it4788/home/notice_screen.dart';
 import 'package:it4788/home/post_screen.dart';
+import 'package:it4788/service/profile_sevice.dart';
 import 'package:it4788/widgets/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'menu_screen.dart';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/service/authStorage.dart';
-import 'package:it4788/service/friend_service.dart';
 import 'package:it4788/service/profile_sevice.dart';
 
 class AllFriendPage extends StatefulWidget {
@@ -22,12 +21,10 @@ class _AllFriendPageState extends State<AllFriendPage> {
   int index = 0;
   int count = 20;
   bool isLoading = false;
-  String? curId;
 
   @override
   void initState() {
     super.initState();
-    curId = widget.id;
     getData();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -51,17 +48,6 @@ class _AllFriendPageState extends State<AllFriendPage> {
     setState(() {
       _future = ProfileSevice().getUserFriend(widget.id, index, count);
     });
-  }
-
-  Future handleUnfriend(Friend friend) async {
-    try {
-      await FriendService().unFriend(friend.id);
-      setState(() {
-        friend.isUnfriend = true;
-      });
-    } catch (e) {
-      rethrow;
-    }
   }
 
   @override
@@ -174,9 +160,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                 15, 0, 0, 0),
                                             child: Text(
                                               textAlign: TextAlign.left,
-                                              (!item.isUnfriend)
-                                                  ? "${item.sameFriends} người bạn chung"
-                                                  : "Đã hủy kết bạn",
+                                              item.sameFriends,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 14,
@@ -241,9 +225,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: GestureDetector(
-                                                      onTap: () => {
-                                                        Navigator.pop(context)
-                                                      },
+                                                      onTap: () => {},
                                                       child: Row(
                                                         children: [
                                                           const Icon(
@@ -367,10 +349,7 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: GestureDetector(
-                                                      onTap: () => {
-                                                        handleUnfriend(item),
-                                                        Navigator.pop(context)
-                                                      },
+                                                      onTap: () => {},
                                                       child: Row(
                                                         children: [
                                                           const Icon(
