@@ -67,26 +67,12 @@ class _MenuScreenState extends State<MenuScreen> {
           }
           if (index == 1) {
             return MenuItem(
-              icon: Icons.payment,
-              text: "Deposit",
-              function: () {},
-            );
-          }
-          if (index == 2) {
-            return MenuItem(
               icon: Icons.settings,
               text: "Cài đặt",
               function: () {},
             );
           }
-          if (index == 3) {
-            return MenuItem(
-              icon: Icons.history,
-              text: "History",
-              function: () {},
-            );
-          }
-          if (index == 4) {
+          if (index == 2) {
             return MenuItem(
               icon: Icons.logout,
               text: "Đăng xuất",
