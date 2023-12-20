@@ -56,6 +56,7 @@ class Post {
   String id;
   String name;
   List<ImagePost> image;
+  // Video video;
   String described;
   DateTime created;
   String feel;
@@ -71,6 +72,7 @@ class Post {
     required this.id,
     required this.name,
     required this.image,
+    // required this.video,
     required this.described,
     required this.created,
     required this.feel,
@@ -88,6 +90,7 @@ class Post {
         name: json["name"],
         image: List<ImagePost>.from(
             json["image"].map((x) => ImagePost.fromJson(x))),
+        // video: Video.fromJson(json["video"]),
         described: json["described"],
         created: DateTime.parse(json["created"]),
         feel: json["feel"],
@@ -104,6 +107,7 @@ class Post {
         "id": id,
         "name": name,
         "image": List<dynamic>.from(image.map((x) => x.toJson())),
+        // "video": video,
         "described": described,
         "created": created.toIso8601String(),
         "feel": feel,
@@ -140,6 +144,20 @@ class Author {
         "avatar": avatar,
       };
 }
+
+// class Video {
+//   String url;
+
+//   Video({required this.url});
+
+//   factory Video.fromJson(Map<String, dynamic> json) => Video(
+//         url: json["url"],
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "url": url,
+//       };
+// }
 
 class ImagePost {
   String id;
