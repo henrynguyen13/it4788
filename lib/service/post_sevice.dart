@@ -1,5 +1,12 @@
+import 'dart:convert';
+// import 'dart:ffi';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:it4788/model/edit_post.dart';
+import 'package:it4788/model/post.dart';
+import 'package:it4788/model/post_response.dart';
+import 'package:it4788/model/user_friends.dart';
+import 'package:it4788/model/user_infor_profile.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/model/post.dart';
@@ -73,7 +80,7 @@ class PostSevice {
     }
   }
 
-  Future<Response> addPost(List<XFile?> images, File? video, String described,
+  Future<Response> addPost(List<XFile?> images, XFile? video, String described,
       String status, String auto_accept) async {
     try {
       var token = await _getToken();
@@ -106,6 +113,66 @@ class PostSevice {
 
       final dio = ApiService.createDio();
       final response = await dio.post('add_post',
+          data: formData,
+          options: Options(headers: {
+            "Authorization": "Bearer $token",
+          }));
+
+      print(response.data);
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<PostResponse> getPostById(String id) async {
+    var token = await _getToken();
+    PostResponse postResponse;
+
+    try {
+      Map<String, dynamic> request = {
+        'id': id,
+      };
+
+      final dio = ApiService.createDio();
+      final response = await dio.post('get_post',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print(response.data);
+      postResponse = postResponseFromJson(response.data);
+      return postResponse;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> editPost(EditPostDto postDto) async {
+    try {
+      var token = await _getToken();
+
+      FormData formData = FormData.fromMap(postDto.toJson());
+
+      for (XFile? image in postDto.images) {
+        if (image != null) {
+          File file = File(image.path);
+          formData.files.add(MapEntry(
+              'image',
+              (await MultipartFile.fromFile(file.path,
+                  filename: file.path.split('/').last,
+                  contentType: MediaType("image", "jpeg")))));
+        }
+      }
+      if (postDto.video != null) {
+        formData.files.add(MapEntry(
+            'video',
+            (await MultipartFile.fromFile(postDto.video!.path,
+                filename: postDto.video!.path.split('/').last,
+                contentType: MediaType("video", "mp4")))));
+      }
+
+      final dio = ApiService.createDio();
+      final response = await dio.post('edit_post',
           data: formData,
           options: Options(headers: {
             "Authorization": "Bearer $token",
