@@ -1,8 +1,12 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:it4788/core/pallete.dart';
 import 'package:it4788/data/data.dart';
+import 'package:it4788/firebase_api/firebase_api.dart';
+import 'package:it4788/model/notification.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/user_infor_profile.dart';
+import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/profile_sevice.dart';
 import 'package:it4788/widgets/post_widget.dart';
@@ -27,6 +31,15 @@ class _PostScreenState extends State<PostScreen> {
   int count = 20;
   bool isLoading = false;
 
+  void handleOnMessageOpenedApp(RemoteMessage message) async {
+    var data = notificationFromJson(message.data['json']);
+    print('TESTTTT ${data.notificationId}');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PersonalPage(id: data.user.id)),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +51,13 @@ class _PostScreenState extends State<PostScreen> {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       }
     });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      handleOnMessageOpenedApp(message);
+    });
+  }
+
+  void setDevToken() async {
+    FirebaseApi().setDevTokenFirebase();
   }
 
   void loadMoreData() async {
@@ -72,6 +92,7 @@ class _PostScreenState extends State<PostScreen> {
             })
           });
     }
+    setDevToken();
   }
 
   @override
