@@ -20,7 +20,7 @@ class _VerifyResetPasswordPageState extends State<VerifyResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Xác nhận email')),
+      appBar: AppBar(title: Text('Quên mật khẩu')),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
