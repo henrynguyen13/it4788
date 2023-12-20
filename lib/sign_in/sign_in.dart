@@ -5,6 +5,7 @@ import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/reset_password.dart';
 import 'package:it4788/sign_in/set_username.dart';
+import 'package:it4788/sign_in/verify_reset_password.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 import 'package:it4788/sign_up/verify_email.dart';
 
@@ -235,32 +236,8 @@ class _SignIn extends State<SignInPage> {
                     ),
                     Center(
                       child: MaterialButton(
-                        onPressed: () async {
-                          String email = _emailController.text;
-                          emailData = email;
-                          final response = await _getVerifyCodeResponse(email);
-
-                          if (response.statusCode == 200) {
-                            try {
-                              // Nếu không có lỗi, chuyển đổi nội dung JSON thành đối tượng Dart
-                              final jsonResponse = json.decode(response.data);
-
-                              // Truy cập thuộc tính của đối tượng Dart
-                              verifyCodeData =
-                                  jsonResponse['data']['verify_code'];
-
-                              // In giá trị ra console
-                              print("Verify Code: $verifyCodeData");
-
-                              if (!context.mounted) return;
-                              _sendVerifyCode(context);
-                            } catch (e) {
-                              print("Error parsing JSON: $e");
-                            }
-                          } else {
-                            // Xử lý lỗi nếu có
-                            print("Lỗi khi lấy verify code");
-                          }
+                        onPressed: () {
+                          _navigateToVerifyResetPasswordPage(context);
                         },
                         child: const Padding(
                           padding: EdgeInsets.all(0),
@@ -339,8 +316,15 @@ class _SignIn extends State<SignInPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ResetPasswordPage(email: emailData),
+        builder: (context) => VerifyEmailPage(email: emailData),
       ),
     );
+  }
+
+  void _navigateToVerifyResetPasswordPage(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const VerifyResetPasswordPage()));
   }
 }
