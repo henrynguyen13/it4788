@@ -80,7 +80,7 @@ class PostSevice {
     }
   }
 
-  Future<Response> addPost(List<XFile?> images, File? video, String described,
+  Future<Response> addPost(List<XFile?> images, XFile? video, String described,
       String status, String auto_accept) async {
     try {
       var token = await _getToken();

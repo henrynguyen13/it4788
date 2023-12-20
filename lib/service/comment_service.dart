@@ -15,13 +15,19 @@ Future<List<Mark>> setMark(String postId, String content, String index,
     'count': count,
     'type': markType,
   };
-
-  final dio = ApiService.createDio();
-  final response = await dio.post('set_mark_comment',
-      data: request,
-      options: Options(headers: {"Authorization": "Bearer $token"}));
-
-  return commentResponseHandler(response);
+  if (token != null) {
+    print("OK : $request");
+    final dio = ApiService.createDio();
+    final response = await dio.post('set_mark_comment',
+        data: request,
+        options: Options(headers: {"Authorization": "Bearer $token"}));
+    final jsonResponse = json.decode(response.data);
+    print(jsonResponse);
+    return commentResponseHandler(response);
+  } else {
+    print("Error token");
+    return <Mark>[];
+  }
 }
 
 Future<List<Mark>> setComment(String postId, String content, String index,

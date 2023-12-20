@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 
 void main() {

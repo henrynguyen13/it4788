@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:it4788/comment/commentBox.dart';
 import 'package:it4788/model/mark_comment.dart';
+import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/comment_service.dart';
 
 class CommentPage extends StatefulWidget {
@@ -25,9 +26,13 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
   int replyingMarkId = -1;
   String repylingUsername = "";
   bool isShowingReplyComment = false;
+  int isTruth = 1;
+  String truthText = "Tin chính xác";
+  var _avatar;
 
-  void getAllMark() {
+  Future<void> getAllMark() async {
     _future = getMarkComment(widget.postID, '0', '20');
+    _avatar = await Storage().getAvatar();
   }
 
   @override
@@ -37,7 +42,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
     replyingMarkId = -1;
     isShowingReplyComment = false;
     repylingUsername = "";
-
+    isTruth = 1;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -58,7 +63,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
         ),
         scrollDirection: Axis.vertical,
         children: [
-          for (var i = data.length - 1; i >= 0; i--) markWidget(data, i, 50),
+          for (var i = data.length - 1; i >= 0; i--) markWidget(data, i, 40),
         ]);
   }
 
@@ -70,7 +75,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
                 appBar: AppBar(
-                  title: const Text("(React count)"),
+                  title: const Text("Bình luận"),
                   backgroundColor: Colors.white,
                 ),
                 body: ListView(
@@ -86,14 +91,15 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                     ]));
           } else if (snapshot.hasData) {
             listMark = snapshot.data!;
+
             return Scaffold(
               appBar: AppBar(
-                title: const Text("(React count)"),
+                title: const Text("Bình luận"),
                 backgroundColor: Colors.white,
               ),
               body: CommentBox(
                 userImage: CommentBox.commentImageParser(
-                    imageURLorPath: "assets/images/icons/avatar_icon.png"),
+                    imageURLorPath: NetworkImage(_avatar)),
                 placeHolder: 'Viết bình luận...',
                 errorText: 'Comment cannot be blank',
                 withBorder: false,
@@ -108,7 +114,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                           replyingMarkId.toString());
                     } else {
                       _future = setMark(widget.postID, commentController.text,
-                          '0', '20', '0');
+                          '0', '20', isTruth.toString());
                     }
                     setState(() {
                       isShowingReplyComment = false;
@@ -129,9 +135,23 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                 formKey: formKey,
                 focusNode: focusNode,
                 commentController: commentController,
+                selectTruth: () {
+                  setState(() {
+                    isTruth = 1;
+                    truthText = "Tin chính xác";
+                  });
+                },
+
+                selectFake: () {
+                  setState(() {
+                    isTruth = 0;
+                    truthText = "Tin giả";
+                  });
+                },
                 isVisibleReply: isShowingReplyComment,
                 backgroundColor: Colors.white,
                 textColor: Colors.black,
+                truthText: truthText,
                 sendWidget: const Visibility(
                   visible: true,
                   child: Icon(
@@ -179,6 +199,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+              constraints: const BoxConstraints(minWidth: 100, maxWidth: 300),
               decoration: BoxDecoration(
                 color: const Color(0x72DDDDDD),
                 borderRadius: BorderRadius.circular(20),
@@ -189,18 +210,67 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      data[index].poster.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          data[index].poster.name,
+                          //"${data[index].poster.name}  ${(data[index].typeOfMark == "1") ? "   Đánh giá: Tin chính xác" : "   Đánh giá: Tin giả"}",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Chip(
+                          backgroundColor: (data[index].typeOfMark == "1")
+                              ? const Color.fromARGB(255, 205, 255, 219)
+                              : const Color.fromARGB(255, 255, 183, 183),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          labelPadding: EdgeInsets.all(0),
+                          avatar: Container(
+                            height: 14,
+                            width: 14,
+                            decoration: BoxDecoration(
+                                color: (data[index].typeOfMark == "1")
+                                    ? Colors.greenAccent[400]
+                                    : Colors.red,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(14))),
+                            child: Icon(
+                              (data[index].typeOfMark == "1")
+                                  ? Icons.check
+                                  : Icons.close,
+                              color: (data[index].typeOfMark == "1")
+                                  ? const Color.fromARGB(255, 205, 255, 219)
+                                  : const Color.fromARGB(255, 255, 183, 183),
+                              size: 14,
+                            ),
+                          ),
+                          label: Text(
+                            (data[index].typeOfMark == "1")
+                                ? "Tin thật"
+                                : "Tin giả",
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: (data[index].typeOfMark == "1")
+                                  ? Colors.greenAccent[400]
+                                  : Colors.red,
+                            ),
+                          ), //Text
+                        ), //Chip
+                      ],
                     ),
                     Text(
                       data[index].markContent,
                       style: const TextStyle(
                         fontSize: 14,
                       ),
+                      softWrap: true,
                     ),
                   ],
                 ),
@@ -235,6 +305,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
             ]),
             if (data[index].comments.length > 0)
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   for (int i = 0; i < data[index].comments.length; i++)
                     commentWidget(data[index].comments, i, avatarSize)
@@ -267,10 +338,10 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
           ),
         ),
         Column(
-          mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+              constraints: const BoxConstraints(minWidth: 100, maxWidth: 250),
               decoration: BoxDecoration(
                 color: const Color(0x72DDDDDD),
                 borderRadius: BorderRadius.circular(20),
@@ -278,7 +349,6 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
                 child: Column(
-                  mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -293,6 +363,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                       style: const TextStyle(
                         fontSize: 14,
                       ),
+                      softWrap: true,
                     ),
                   ],
                 ),
