@@ -13,6 +13,7 @@ import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/post_sevice.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:video_player/video_player.dart';
 
 class PostArticle extends StatefulWidget {
   const PostArticle({super.key});
@@ -27,7 +28,7 @@ class _PostArticleState extends State<PostArticle> {
   String? avatar;
 
   List<XFile?> selectedImages = [];
-  File? video;
+  XFile? video;
   String postContent = "";
   String status = "Hyped";
   String auto_accept = "1";
@@ -36,6 +37,8 @@ class _PostArticleState extends State<PostArticle> {
   List<PostDraft> drafts = [];
 
   bool isKeyboardVisible = false;
+
+  late VideoPlayerController _videoPlayerController;
 
   @override
   void initState() {
@@ -301,15 +304,29 @@ class _PostArticleState extends State<PostArticle> {
               if (!isKeyboardVisible)
                 Column(
                   children: [
-                    Container(
-                      child: selectedImages.isNotEmpty
-                          ? _buildImageSection(selectedImages)
-                          : Padding(
-                              padding: EdgeInsets.all(0),
-                              child: SizedBox(
-                                height: MediaQuery.of(context).size.height / 3,
-                              )),
-                    ),
+                    video == null
+                        ? Container(
+                            child: selectedImages.isNotEmpty
+                                ? _buildImageSection(selectedImages)
+                                : Padding(
+                                    padding: const EdgeInsets.all(0),
+                                    child: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              3,
+                                    )),
+                          )
+                        : Container(
+                            child: video != null
+                                ? _buildVideoSection(video)
+                                : Padding(
+                                    padding: const EdgeInsets.all(0),
+                                    child: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              3,
+                                    )),
+                          ),
                     Padding(
                         padding: const EdgeInsets.all(0),
                         child: InkWell(
@@ -379,7 +396,7 @@ class _PostArticleState extends State<PostArticle> {
                                   color: Colors.green,
                                   size: 28,
                                 ),
-                                Text("Ảnh/Video")
+                                Text("Ảnh")
                               ],
                             ),
                           ),
@@ -433,23 +450,76 @@ class _PostArticleState extends State<PostArticle> {
                         )),
                     Padding(
                         padding: const EdgeInsets.all(0),
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              border: BorderDirectional(
-                                  top: BorderSide(
-                                      color: Colors.grey, width: 0.5))),
-                          child: const Row(
-                            children: [
-                              Icon(
-                                Icons.photo_camera,
-                                color: Colors.lightBlueAccent,
-                                size: 28,
-                              ),
-                              Text("Máy ảnh")
-                            ],
+                        child: InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: ((context) => Container(
+                                    height: 200,
+                                    color: Colors.white,
+                                    child: Center(
+                                        child: ListView(
+                                      padding: const EdgeInsets.all(8),
+                                      children: <Widget>[
+                                        Container(
+                                          height: 80,
+                                          color: Colors.green[500],
+                                          child: Center(
+                                              child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.8,
+                                            height: 40,
+                                            child: ElevatedButton(
+                                              child: const Text(
+                                                  "Chọn video từ máy"),
+                                              onPressed: () {
+                                                _pickVideoFromGallery();
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          )),
+                                        ),
+                                        Container(
+                                            height: 80,
+                                            color: Colors.green[100],
+                                            child: Center(
+                                                child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.8,
+                                                    height: 40,
+                                                    child: ElevatedButton(
+                                                      child: Text("Quay video"),
+                                                      onPressed: () {
+                                                        _pickVideoFromCamera();
+                                                        Navigator.pop(context);
+                                                      },
+                                                    )))),
+                                      ],
+                                    )))));
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(10.0),
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                border: BorderDirectional(
+                                    top: BorderSide(
+                                        color: Colors.grey, width: 0.5))),
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.photo_camera,
+                                  color: Colors.blue,
+                                  size: 28,
+                                ),
+                                Text("Video")
+                              ],
+                            ),
                           ),
                         )),
                     Padding(
@@ -476,41 +546,62 @@ class _PostArticleState extends State<PostArticle> {
                   ],
                 ),
               if (isKeyboardVisible)
-                const Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Icon(
-                        Icons.image,
-                        color: Colors.green,
-                        size: 28,
+                video == null
+                    ? Container(
+                        child: selectedImages.isNotEmpty
+                            ? _buildImageSection(selectedImages)
+                            : Padding(
+                                padding: const EdgeInsets.all(0),
+                                child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 3,
+                                )),
+                      )
+                    : Container(
+                        child: video != null
+                            ? _buildVideoSection(video)
+                            : Padding(
+                                padding: const EdgeInsets.all(0),
+                                child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 3,
+                                )),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Icon(
-                        Icons.emoji_emotions_outlined,
-                        color: Colors.yellow,
-                        size: 28,
-                      ),
-                    ),
-                    Icon(
-                      Icons.person,
-                      color: Colors.blue,
+              const Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Icon(
+                      Icons.image,
+                      color: Colors.green,
                       size: 28,
                     ),
-                    Icon(
-                      Icons.photo_camera,
-                      color: Colors.lightBlueAccent,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Icon(
+                      Icons.emoji_emotions_outlined,
+                      color: Colors.yellow,
                       size: 28,
                     ),
-                    Icon(
-                      Icons.gif_box_rounded,
-                      color: Colors.pinkAccent,
-                      size: 28,
-                    ),
-                  ],
-                )
+                  ),
+                  Icon(
+                    Icons.person,
+                    color: Colors.blue,
+                    size: 28,
+                  ),
+                  Icon(
+                    Icons.photo_camera,
+                    color: Colors.lightBlueAccent,
+                    size: 28,
+                  ),
+                  Icon(
+                    Icons.gif_box_rounded,
+                    color: Colors.pinkAccent,
+                    size: 28,
+                  ),
+                ],
+              )
             ],
           ),
         ));
@@ -542,6 +633,25 @@ class _PostArticleState extends State<PostArticle> {
     });
   }
 
+  Future _pickVideoFromGallery() async {
+    final pickedVideo =
+        await ImagePicker().pickVideo(source: ImageSource.gallery);
+
+    if (pickedVideo == null) return;
+
+    video = pickedVideo;
+
+    _videoPlayerController = VideoPlayerController.file(File(video!.path))
+      ..initialize().then((_) => {setState(() => {})});
+
+    _videoPlayerController.play();
+  }
+
+  Future _pickVideoFromCamera() async {
+    final pickedVideo =
+        await ImagePicker().pickVideo(source: ImageSource.camera);
+  }
+
   void _awaitReturnValueFromPickerFeelings(BuildContext context) async {
     // start PickerFeelings screen and wait for it to finish with a result
     final result = await Navigator.push(
@@ -554,6 +664,18 @@ class _PostArticleState extends State<PostArticle> {
     setState(() {
       feelingState = result;
     });
+  }
+
+  Widget _buildVideoSection(XFile? video) {
+    if (video != null) {
+      return _videoPlayerController.value.isInitialized
+          ? AspectRatio(
+              aspectRatio: _videoPlayerController.value.aspectRatio,
+              child: VideoPlayer(_videoPlayerController))
+          : Container();
+    } else {
+      return const SizedBox();
+    }
   }
 
   Widget _buildImageSection(List<XFile?> images) {
@@ -665,23 +787,5 @@ class _PostArticleState extends State<PostArticle> {
 
     // Write the file
     return file.writeAsString(content);
-  }
-
-  void exportPostDraft(List<PostDraft> postDrafts) async {
-    try {
-      // List jsonList = [];
-      // postDrafts.forEach(
-      //     (postDraft) => jsonList.add(json.encode(postDraft.toJson())));
-      // File(exportFilePath).writeAsStringSync(jsonList.toString());
-
-      Future<File> writeCounter(int counter) async {
-        final file = await _localFile;
-
-        // Write the file
-        return file.writeAsString('$counter');
-      }
-    } catch (e) {
-      print("Error: $e");
-    }
   }
 }

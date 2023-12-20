@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
-      home: const HomeScreen(),
+      home: const SignUpPage(),
       // routes: <String, WidgetBuilder>{
       //   '/home': (BuildContext context) => new HomeScreen(),
       // },
