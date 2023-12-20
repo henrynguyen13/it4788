@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "368299366684",
+    "project_id": "sns-api-a968a",
+    "storage_bucket": "sns-api-a968a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368299366684:android:30f49360684a9d645c02d9",
+        "android_client_info": {
+          "package_name": "vn.io.catan.antifakebook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-UMFmnqg1p1sW9pA_nxz0EE547opVg2E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
