@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:it4788/core/pallete.dart';
 import 'package:it4788/data/data.dart';
 import 'package:it4788/firebase_api/firebase_api.dart';
 import 'package:it4788/model/notification.dart';
@@ -102,7 +103,10 @@ class _PostScreenState extends State<PostScreen> {
         if (snapshot.connectionState == ConnectionState.waiting &&
             postList.isEmpty) {
           return const Align(
-              alignment: Alignment.center, child: CircularProgressIndicator());
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(
+                color: Palette.facebookBlue,
+              ));
         } else if (snapshot.hasData) {
           if (postList.isEmpty) {
             listPostResponse = snapshot.data!;

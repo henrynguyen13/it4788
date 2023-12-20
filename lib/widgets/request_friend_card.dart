@@ -71,10 +71,7 @@ class _RequestFriendCardState extends State<RequestFriendCard> {
                         fontWeight: FontWeight.w700, fontSize: 20),
                     textAlign: TextAlign.start,
                   ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(friend!.sameFriends),
+                  Text("${friend!.sameFriends} bạn chung"),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
