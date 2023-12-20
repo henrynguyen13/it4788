@@ -451,8 +451,10 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
   String formatTimeDifferenceToNow(DateTime from) {
     Duration difference = DateTime.now().difference(from);
 
-    if (difference.inSeconds < 60) {
-      return '${difference.inSeconds} giây trước';
+    if (difference.inSeconds < 0) {
+      return 'Vừa xong';
+    } else if (difference.inSeconds < 60) {
+      return 'Vừa xong';
     } else if (difference.inMinutes < 60) {
       return '${difference.inMinutes} phút trước';
     } else if (difference.inHours < 24) {
