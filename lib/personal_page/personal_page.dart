@@ -62,7 +62,7 @@ class _PersonalPageState extends State<PersonalPage> {
     if (!isLoading) {
       setState(() {
         isLoading = true;
-        index += count; // Increment the index to load the next set of data
+        index += count;
       });
       var tmp = await ProfileSevice().getMyListPost(curId!, index, count);
 

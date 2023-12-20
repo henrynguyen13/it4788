@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 ListPost listPostFromJson(String str) => ListPost.fromJson(json.decode(str));
+Post postDetailFromJson(String str) => Post.fromJson(json.decode(str));
 
 String listPostToJson(ListPost data) => json.encode(data.toJson());
 
