@@ -522,6 +522,9 @@ class _PersonalPageState extends State<PersonalPage> {
                                                         ),
                                                         child: SizedBox(
                                                           child: TextFormField(
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
                                                             decoration:
                                                                 InputDecoration(
                                                               border:

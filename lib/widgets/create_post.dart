@@ -37,7 +37,19 @@ class CreatePostContainer extends StatelessWidget {
                                   builder: (context) => PostArticle(),
                                   settings: const RouteSettings(name: '/home')))
                         },
-                    child: const Text('What\'s on your mind?'))
+                    child: Container(
+                      width: 250,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 2,
+                              color: const Color.fromARGB(255, 107, 107, 107)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20))),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("Bạn đang nghĩ gì?"),
+                      ),
+                    ))
               ],
             ),
           ),
