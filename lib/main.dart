@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:it4788/home/home_screen.dart';
+import 'package:it4788/sign_in/reset_password.dart';
+import 'package:it4788/sign_in/verify_reset_password.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 
 void main() {
