@@ -180,8 +180,8 @@ class _ComleteReportPageState extends State<ComleteReportPage> {
                   );
                 },
                 style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll<Color>(
-                        Color.fromARGB(255, 58, 72, 255))),
+                    backgroundColor:
+                        MaterialStatePropertyAll<Color>(Color(0xFF1878F2))),
                 child: const Text(
                   "Báo cáo",
                   style: TextStyle(color: Colors.white, fontSize: 18),
