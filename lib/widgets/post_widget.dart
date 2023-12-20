@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:it4788/comment/commentPage.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/post_article/edit_post_article.dart';
@@ -37,18 +38,25 @@ class _PostWidgetState extends State<PostWidget> {
   }
 
   void handleClickKudos() async {
-    if (isClickDisappointed) return;
     if (post.isFelt == '1') {
       ProfileSevice().deleteFeelPost(post.id);
     } else {
       ProfileSevice().feelPost(post.id, "1");
     }
     setState(() {
-      isClickKudos = !isClickKudos;
+      if (isClickDisappointed) {
+        isClickDisappointed = false;
+        isClickKudos = true;
+      } else {
+        isClickKudos = !isClickKudos;
+      }
+
       if (post.isFelt == '1') {
         int feelInt = int.parse(post.feel) - 1;
         post.isFelt = '-1';
         post.feel = feelInt.toString();
+      } else if (post.isFelt == '0') {
+        post.isFelt = '1';
       } else {
         int feelInt = int.parse(post.feel) + 1;
         post.isFelt = '1';
@@ -58,18 +66,25 @@ class _PostWidgetState extends State<PostWidget> {
   }
 
   void handleClickDisappointed() async {
-    if (isClickKudos) return;
     if (post.isFelt == '0') {
       ProfileSevice().deleteFeelPost(post.id);
     } else {
       ProfileSevice().feelPost(post.id, "0");
     }
     setState(() {
-      isClickDisappointed = !isClickDisappointed;
+      if (isClickKudos == true) {
+        isClickDisappointed = true;
+        isClickKudos = false;
+      } else {
+        isClickDisappointed = !isClickDisappointed;
+      }
+
       if (post.isFelt == '0') {
         int feelInt = int.parse(post.feel) - 1;
         post.isFelt = '-1';
         post.feel = feelInt.toString();
+      } else if (post.isFelt == '1') {
+        post.isFelt = '0';
       } else {
         int feelInt = int.parse(post.feel) + 1;
         post.isFelt = '0';
@@ -214,11 +229,11 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
               ),
               // const Spacer(),
-              Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: BottomPopup(
-                    post: post,
-                  ))
+              Expanded(
+                child: BottomPopup(
+                  post: post,
+                ),
+              )
             ],
           ),
           Padding(
@@ -238,16 +253,28 @@ class _PostWidgetState extends State<PostWidget> {
           Padding(
             padding: const EdgeInsets.all(10),
             child: Row(children: [
-              const Icon(
-                Icons.favorite,
-                color: Color.fromARGB(255, 232, 43, 29),
+              const Stack(
+                alignment: AlignmentDirectional.centerStart,
+                children: [
+                  Image(
+                    image: AssetImage("assets/images/icons/heart.png"),
+                    width: 24,
+                    height: 24,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Image(
+                      image: AssetImage("assets/images/icons/sad.png"),
+                      width: 21,
+                      height: 21,
+                    ),
+                  ),
+                ],
               ),
-              const Icon(
-                Icons.mood_bad_rounded,
-              ),
+              const Padding(padding: EdgeInsets.only(right: 4)),
               Text(post.feel),
               const Spacer(),
-              Text("${post.commentMark} comments")
+              Text("${post.commentMark} bình luận")
             ]),
           ),
           const Divider(
@@ -269,12 +296,22 @@ class _PostWidgetState extends State<PostWidget> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.favorite,
-                                color: isClickKudos
-                                    ? Color.fromARGB(255, 232, 43, 29)
-                                    : Colors.black),
-                            const Padding(padding: EdgeInsets.only(right: 4)),
-                            const Text('kudos'),
+                            const Image(
+                              image:
+                                  AssetImage("assets/images/icons/heart.png"),
+                              width: 26,
+                              height: 26,
+                            ),
+                            const Padding(padding: EdgeInsets.only(right: 8)),
+                            Text(
+                              'Yêu thích',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: isClickKudos
+                                      ? const Color.fromARGB(255, 232, 43, 29)
+                                      : Colors.black),
+                            ),
                           ],
                         ),
                       ),
@@ -287,12 +324,21 @@ class _PostWidgetState extends State<PostWidget> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.mood_bad_outlined,
-                                color: isClickDisappointed
-                                    ? Color.fromARGB(255, 232, 208, 29)
-                                    : Colors.black),
-                            const Padding(padding: EdgeInsets.only(right: 4)),
-                            Text('disappointed'),
+                            const Image(
+                              image: AssetImage("assets/images/icons/sad.png"),
+                              width: 24,
+                              height: 24,
+                            ),
+                            const Padding(padding: EdgeInsets.only(right: 8)),
+                            Text(
+                              'Buồn',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: isClickDisappointed
+                                      ? const Color.fromARGB(255, 255, 187, 1)
+                                      : Colors.black),
+                            ),
                           ],
                         ),
                       ),
@@ -311,9 +357,16 @@ class _PostWidgetState extends State<PostWidget> {
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.message_outlined),
-                            Padding(padding: EdgeInsets.only(right: 4)),
-                            Text('comment'),
+                            FaIcon(
+                              FontAwesomeIcons.comment,
+                              size: 24,
+                            ),
+                            Padding(padding: EdgeInsets.only(right: 8)),
+                            Text('Bình luận',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                )),
                           ],
                         ),
                       ),
@@ -336,6 +389,7 @@ class _PostWidgetState extends State<PostWidget> {
   }
 }
 
+// ignore: must_be_immutable
 class BottomPopup extends StatelessWidget {
   BottomPopup({super.key, required this.post});
   Post post;
