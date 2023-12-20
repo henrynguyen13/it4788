@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/model/post.dart';
 
 import 'competeReport.dart';
 
 class ReportPage extends StatefulWidget {
-  const ReportPage({super.key});
-
+  ReportPage({super.key, required this.post});
+  Post post;
   @override
   State<ReportPage> createState() => _ReportPageState();
 }
@@ -110,9 +111,11 @@ class _ReportPageState extends State<ReportPage> {
               ]),
             ),
             const Divider(),
+            const Expanded(child: Row()),
             Center(
               child: SizedBox(
                 width: 500,
+                height: 50,
                 child: FilledButton(
                   onPressed: () {
                     if (isCanContinue) {
@@ -126,24 +129,30 @@ class _ReportPageState extends State<ReportPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ComleteReportPage(
-                                selectedContents: listContents)),
+                                  selectedContents: listContents,
+                                  post: widget.post,
+                                )),
                       );
                     }
                   },
                   style: ButtonStyle(
                       backgroundColor: isCanContinue
                           ? const MaterialStatePropertyAll<Color>(
-                              Color.fromARGB(255, 58, 72, 255))
+                              Color(0xFF1878F2))
                           : const MaterialStatePropertyAll<Color>(
                               Color.fromARGB(255, 226, 226, 226))),
                   child: Text(
                     "Tiếp",
                     style: TextStyle(
-                        color: isCanContinue ? Colors.white : Colors.black),
+                        color: isCanContinue ? Colors.white : Colors.black,
+                        fontSize: 18),
                   ),
                 ),
               ),
             ),
+            const SizedBox(
+              height: 50,
+            )
           ],
         ),
       ),
@@ -168,8 +177,7 @@ class Button extends StatelessWidget {
       onPressed: selectMethod,
       style: ButtonStyle(
           backgroundColor: isSelected
-              ? const MaterialStatePropertyAll<Color>(
-                  Color.fromARGB(255, 58, 72, 255))
+              ? const MaterialStatePropertyAll<Color>(Color(0xFF1878F2))
               : const MaterialStatePropertyAll<Color>(
                   Color.fromARGB(255, 226, 226, 226))),
       child: Text(

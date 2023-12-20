@@ -54,7 +54,7 @@ class _SuggestedFriendCardState extends State<SuggestedFriendCard> {
         child: Row(
           children: [
             CircleAvatar(
-              radius: 45.0,
+              radius: 35.0,
               backgroundImage: NetworkImage(friend!.avatar),
             ),
             const SizedBox(
@@ -70,11 +70,7 @@ class _SuggestedFriendCardState extends State<SuggestedFriendCard> {
                         fontWeight: FontWeight.w700, fontSize: 18),
                     textAlign: TextAlign.start,
                   ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       !friend!.isRequested
                           ? (FilledButton(
@@ -87,13 +83,14 @@ class _SuggestedFriendCardState extends State<SuggestedFriendCard> {
                               child: const Row(
                                 children: [
                                   Icon(Icons.add),
-                                  SizedBox(
-                                    width: 8.0,
+                                  Text(
+                                    "Thêm bạn bè",
+                                    style: TextStyle(fontSize: 14),
                                   ),
-                                  Text("Thêm bạn bè"),
                                 ],
                               )))
                           : const Text("Đã gửi lời mời"),
+                      const Expanded(child: SizedBox()),
                       !friend!.isCancel
                           ? FilledButton(
                               onPressed: () {
@@ -125,6 +122,9 @@ class _SuggestedFriendCardState extends State<SuggestedFriendCard> {
                                 ],
                               ))
                           : const Text("Đã gỡ"),
+                      const SizedBox(
+                        width: 20,
+                      )
                     ],
                   )
                 ],

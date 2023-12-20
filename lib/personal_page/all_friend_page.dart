@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:it4788/model/user_friends.dart';
 import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/service/authStorage.dart';
+import 'package:it4788/service/block_service.dart';
+import 'package:it4788/service/friend_service.dart';
 import 'package:it4788/service/profile_sevice.dart';
 
 class AllFriendPage extends StatefulWidget {
@@ -128,10 +130,10 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                       Container(
                                           child: ClipRRect(
                                         borderRadius: BorderRadius.circular(
-                                            60), // Image border
+                                            30), // Image border
                                         child: SizedBox.fromSize(
                                           size: const Size.fromRadius(
-                                              56), // Image radius
+                                              30), // Image radius
                                           child: Image.network(
                                               item.avatar.isNotEmpty
                                                   ? item.avatar
@@ -311,7 +313,62 @@ class _AllFriendPageState extends State<AllFriendPage> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: GestureDetector(
-                                                      onTap: () => {},
+                                                      onTap: () {
+                                                        showDialog<String>(
+                                                            context: context,
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                AlertDialog(
+                                                                  title: Text(
+                                                                    'Chặn ${item.username} ?',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                  ),
+                                                                  content: Text(
+                                                                    'Bạn và ${item.username} sẽ không còn nhìn thấy nhau cũng như tương tác trên AntiFacebook!',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                  ),
+                                                                  actions: <Widget>[
+                                                                    TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context,
+                                                                            'Cancel');
+                                                                      },
+                                                                      child: const Text(
+                                                                          'Hủy'),
+                                                                    ),
+                                                                    TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        setBlock(
+                                                                            int.parse(item.id));
+                                                                        Navigator.pop(
+                                                                            context,
+                                                                            'OK');
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(SnackBar(
+                                                                          content:
+                                                                              Text('Bạn đã chặn ${item.username}'),
+                                                                        ));
+                                                                      },
+                                                                      child: const Text(
+                                                                          'Đồng ý'),
+                                                                    ),
+                                                                  ],
+                                                                  surfaceTintColor:
+                                                                      const Color
+                                                                          .fromARGB(
+                                                                          255,
+                                                                          162,
+                                                                          162,
+                                                                          162),
+                                                                ));
+                                                      },
                                                       child: Row(
                                                         children: [
                                                           const Icon(

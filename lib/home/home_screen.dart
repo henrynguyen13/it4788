@@ -4,6 +4,7 @@ import 'package:it4788/home/add_friend_screen.dart';
 import 'package:it4788/home/notice_screen.dart';
 import 'package:it4788/home/post_screen.dart';
 import 'package:it4788/service/profile_sevice.dart';
+import 'package:it4788/home/search.dart';
 import 'package:it4788/widgets/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'menu_screen.dart';
@@ -54,12 +55,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icons.search,
                 iconSize: 25.0,
                 onPressed: () {
-                  print("Search is clicked");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SearchPage(),
+                      ));
                 }),
           ),
         ],
       ),
-      body: PageView(controller: _pageController, children: [
+      body: PageView(controller: _pageController, children: const [
         PostScreen(key: PageStorageKey('postScreen')),
         AddFriendScreen(key: PageStorageKey('addFriendScreen')),
         NotificationScreen(key: PageStorageKey('notificationScreen')),
@@ -68,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // Allows more than 3 items
         currentIndex: _selectedIndex,
+        selectedItemColor: Palette.facebookBlue,
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
@@ -77,19 +83,21 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Trang chủ',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
-            label: 'Friends',
+            label: 'Bạn bè',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            label: 'Notifications',
+            label: 'Thông báo',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.menu),
-            label: 'Menu',
+            icon: Icon(
+              Icons.menu,
+            ),
+            label: 'Tùy chọn',
           ),
         ],
       ),

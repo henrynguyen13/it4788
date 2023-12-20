@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:it4788/personal_page/personal_page.dart';
+import 'package:it4788/service/auth.dart';
+import 'package:it4788/sign_in/sign_in.dart';
 import 'package:it4788/widgets/menu_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,6 +28,20 @@ class _MenuScreenState extends State<MenuScreen> {
     }
   }
 
+  void _logOut() async {
+    final logOutResponse = await logOut();
+    final jsonResponse = json.decode(logOutResponse.data);
+    String message = jsonResponse['message'];
+
+    if (message == 'OK') {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Đăng xuất thành công !')));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SignInPage()));
+    }
+  }
+
   void conheo(String userId) {
     Navigator.push(
       context,
@@ -38,39 +56,42 @@ class _MenuScreenState extends State<MenuScreen> {
         SliverList(
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
-          if (index == 0)
+          if (index == 0) {
             return MenuItem(
               icon: Icons.person,
-              text: "Profile",
+              text: "Trang cá nhân",
               function: () {
                 handleNavToPersonalPage();
               },
             );
-          if (index == 1)
+          }
+          if (index == 1) {
             return MenuItem(
               icon: Icons.payment,
               text: "Deposit",
               function: () {},
             );
-          if (index == 2)
+          }
+          if (index == 2) {
             return MenuItem(
               icon: Icons.settings,
-              text: "Settings",
+              text: "Cài đặt",
               function: () {},
             );
-          if (index == 3)
+          }
+          if (index == 3) {
             return MenuItem(
               icon: Icons.history,
               text: "History",
               function: () {},
             );
+          }
           if (index == 4) {
             return MenuItem(
               icon: Icons.logout,
-              text: "Logout",
+              text: "Đăng xuất",
               function: () {
-                print("Logout");
-                Navigator.pushNamed(context, "/login");
+                _logOut();
               },
             );
           }

@@ -15,6 +15,7 @@ class SetUsernamePage extends StatefulWidget {
 class _SetUsernamePageState extends State<SetUsernamePage> {
   String username = '';
   File? avatar;
+  bool hasSelectedImage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,12 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                           height: 400,
                           fit: BoxFit.cover,
                         )
-                      : const SizedBox(height: 15.0),
+                      : const Image(
+                          image:
+                              AssetImage('assets/images/icons/avatar_icon.png'),
+                          width: 60,
+                          height: 60,
+                        ),
                 ),
               )),
               const SizedBox(height: 15.0),
@@ -147,6 +153,7 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
 
     setState(() {
       avatar = imageTemporary;
+      hasSelectedImage = true;
     });
   }
 }
