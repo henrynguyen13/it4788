@@ -71,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // Allows more than 3 items
         currentIndex: _selectedIndex,
+        selectedItemColor: Palette.facebookBlue,
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
@@ -91,7 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Thông báo',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.menu),
+            icon: Icon(
+              Icons.menu,
+            ),
             label: 'Tùy chọn',
           ),
         ],
