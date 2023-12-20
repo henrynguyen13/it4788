@@ -26,6 +26,8 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
   int replyingMarkId = -1;
   String repylingUsername = "";
   bool isShowingReplyComment = false;
+  int isTruth = 1;
+  String truthText = "Tin chính xác";
   var _avatar;
 
   Future<void> getAllMark() async {
@@ -40,7 +42,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
     replyingMarkId = -1;
     isShowingReplyComment = false;
     repylingUsername = "";
-
+    isTruth = 1;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -73,7 +75,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
                 appBar: AppBar(
-                  title: const Text("(React count)"),
+                  title: const Text("Bình luận"),
                   backgroundColor: Colors.white,
                 ),
                 body: ListView(
@@ -92,7 +94,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
 
             return Scaffold(
               appBar: AppBar(
-                title: const Text("(React count)"),
+                title: const Text("Bình luận"),
                 backgroundColor: Colors.white,
               ),
               body: CommentBox(
@@ -112,7 +114,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                           replyingMarkId.toString());
                     } else {
                       _future = setMark(widget.postID, commentController.text,
-                          '0', '20', '0');
+                          '0', '20', isTruth.toString());
                     }
                     setState(() {
                       isShowingReplyComment = false;
@@ -133,9 +135,23 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                 formKey: formKey,
                 focusNode: focusNode,
                 commentController: commentController,
+                selectTruth: () {
+                  setState(() {
+                    isTruth = 1;
+                    truthText = "Tin chính xác";
+                  });
+                },
+
+                selectFake: () {
+                  setState(() {
+                    isTruth = 0;
+                    truthText = "Tin giả";
+                  });
+                },
                 isVisibleReply: isShowingReplyComment,
                 backgroundColor: Colors.white,
                 textColor: Colors.black,
+                truthText: truthText,
                 sendWidget: const Visibility(
                   visible: true,
                   child: Icon(
@@ -194,12 +210,60 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      data[index].poster.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          data[index].poster.name,
+                          //"${data[index].poster.name}  ${(data[index].typeOfMark == "1") ? "   Đánh giá: Tin chính xác" : "   Đánh giá: Tin giả"}",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Chip(
+                          backgroundColor: (data[index].typeOfMark == "1")
+                              ? const Color.fromARGB(255, 205, 255, 219)
+                              : const Color.fromARGB(255, 255, 183, 183),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          labelPadding: EdgeInsets.all(0),
+                          avatar: Container(
+                            height: 14,
+                            width: 14,
+                            decoration: BoxDecoration(
+                                color: (data[index].typeOfMark == "1")
+                                    ? Colors.greenAccent[400]
+                                    : Colors.red,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(14))),
+                            child: Icon(
+                              (data[index].typeOfMark == "1")
+                                  ? Icons.check
+                                  : Icons.close,
+                              color: (data[index].typeOfMark == "1")
+                                  ? const Color.fromARGB(255, 205, 255, 219)
+                                  : const Color.fromARGB(255, 255, 183, 183),
+                              size: 14,
+                            ),
+                          ),
+                          label: Text(
+                            (data[index].typeOfMark == "1")
+                                ? "Tin thật"
+                                : "Tin giả",
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: (data[index].typeOfMark == "1")
+                                  ? Colors.greenAccent[400]
+                                  : Colors.red,
+                            ),
+                          ), //Text
+                        ), //Chip
+                      ],
                     ),
                     Text(
                       data[index].markContent,
