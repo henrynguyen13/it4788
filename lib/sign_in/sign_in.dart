@@ -196,11 +196,12 @@ class _SignIn extends State<SignInPage> {
                                 if (message == 'OK' && username != '') {
                                   if (!context.mounted) return;
 
-                                  Navigator.push(
+                                  Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             const HomeScreen()),
+                                    (Route<dynamic> route) => false,
                                   );
                                 } else {
                                   if (!context.mounted) return;
