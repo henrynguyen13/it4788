@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:it4788/model/buy_coins.dart';
 import 'package:it4788/service/api_service.dart';
 import 'package:it4788/service/authStorage.dart';
 
