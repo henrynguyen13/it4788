@@ -40,7 +40,7 @@ dependencies:
   webview_flutter: ^4.4.1
   expandable_text: ^2.3.0
   image_picker: ^0.8.6
-  font_awesome_flutter: ">= 4.7.0"
+  font_awesome_flutter: ^10.6.0
   provider: ^6.0.5
   charts_flutter: ^0.12.0
   smoothie: ^0.3.0+1
@@ -78,7 +78,8 @@ flutter:
     - assets/images/icons/
     - assets/images/icons/avatar_icon.png
     - assets/images/auth_facebook.png
-
+    - assets/images/icons/sad.png
+    - assets/images/icons/heart.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

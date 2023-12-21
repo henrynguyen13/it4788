@@ -10,8 +10,13 @@ class CommentBox extends StatelessWidget {
   dynamic onTapMethod;
   dynamic onCloseReplyText;
   dynamic commentController;
+  dynamic selectTruth;
+  dynamic selectFake;
+  dynamic showMoreMethod;
+  bool isVisibleShowMoreComment;
   bool isVisibleReply;
   String? userReplying;
+  String truthText;
   ImageProvider? userImage;
   String? labelText;
   String? placeHolder;
@@ -30,7 +35,11 @@ class CommentBox extends StatelessWidget {
     this.onCloseReplyText,
     this.formKey,
     this.commentController,
+    this.selectTruth,
+    this.selectFake,
+    this.showMoreMethod,
     required this.isVisibleReply,
+    required this.isVisibleShowMoreComment,
     this.sendWidget,
     this.userReplying,
     this.userImage,
@@ -41,12 +50,22 @@ class CommentBox extends StatelessWidget {
     this.withBorder = true,
     this.backgroundColor,
     this.textColor,
+    required this.truthText,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Visibility(
+            visible: isVisibleShowMoreComment,
+            child: TextButton(
+                onPressed: showMoreMethod,
+                child: const Text(
+                  "Xem thêm bình luận",
+                  style: TextStyle(color: Colors.black),
+                ))),
         Expanded(child: child!),
         Visibility(
           visible: isVisibleReply,
@@ -73,6 +92,73 @@ class CommentBox extends StatelessWidget {
                   ],
                 ),
               )
+            ],
+          ),
+        ),
+        Visibility(
+          visible: !isVisibleReply,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Divider(
+                height: 1,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextButton(
+                    onPressed: selectTruth,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check,
+                          color: Colors.greenAccent[400],
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Tin chính xác",
+                          style: TextStyle(
+                            color: Colors.greenAccent[400],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 1,
+                    height: 50,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 169, 169, 169)),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: selectFake,
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.close,
+                          color: Color.fromARGB(255, 255, 0, 0),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Tin giả        ",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 255, 0, 0),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -124,6 +210,10 @@ class CommentBox extends StatelessWidget {
               validator: (value) => value!.isEmpty ? errorText : null,
               onTap: onTapMethod,
             ),
+          ),
+          subtitle: Visibility(
+            visible: !isVisibleReply,
+            child: Text(truthText),
           ),
           trailing: GestureDetector(
             onTap: sendButtonMethod,

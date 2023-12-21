@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/home/home_screen.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/service/block_service.dart';
 import 'package:it4788/service/post_sevice.dart';
@@ -170,14 +171,17 @@ class _ComleteReportPageState extends State<ComleteReportPage> {
                   }
                   PostSevice().reportPost(int.parse(widget.post.id), subject,
                       detailsController.text);
-                  Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text('Đã báo cáo bài viết!'),
                   ));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  );
                 },
                 style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll<Color>(
-                        Color.fromARGB(255, 58, 72, 255))),
+                    backgroundColor:
+                        MaterialStatePropertyAll<Color>(Color(0xFF1878F2))),
                 child: const Text(
                   "Báo cáo",
                   style: TextStyle(color: Colors.white, fontSize: 18),

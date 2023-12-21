@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:it4788/core/pallete.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/reset_password.dart';
 import 'package:it4788/sign_in/sign_in.dart';
@@ -24,34 +25,15 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text(
+          "Xác thực email",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Palette.facebookBlue,
+      ),
       body: Column(
-        children: <Widget>[
-          Container(
-            color: Color.fromRGBO(57, 104, 214, 1),
-            //color: Colors.black,
-            height: 60,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Back"),
-                    ),
-                  ),
-                  Text(
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                    "Xác thực email",
-                  )
-                ],
-              ),
-            ),
-          ),
+        children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
             child: Text(
@@ -72,11 +54,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  "FB-",
-                ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
                   child: SizedBox(
@@ -84,7 +61,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Color.fromRGBO(57, 104, 214, 1),
+                          color: Palette.facebookBlue,
                           width: 1,
                         ),
                         borderRadius: BorderRadius.circular(8),
@@ -93,6 +70,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
                           controller: _inputCodeController,
+                          keyboardType: TextInputType.number,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -115,7 +93,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color?>(
                     (Set<MaterialState> states) {
-                      return Color.fromRGBO(57, 104, 214, 1);
+                      return Palette.facebookBlue;
                     },
                   ),
                 ),
@@ -153,30 +131,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             color: Color.fromARGB(68, 23, 23, 23),
             indent: 30,
             endIndent: 30,
-          ),
-          SizedBox(
-            width: 300,
-            height: 110,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                      return Color.fromRGBO(192, 192, 192, 1);
-                    },
-                  ),
-                ),
-                onPressed: () {},
-                child: Text(
-                  "Gửi lại mã",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),
           ),
         ],
       ),

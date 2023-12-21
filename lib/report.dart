@@ -138,7 +138,7 @@ class _ReportPageState extends State<ReportPage> {
                   style: ButtonStyle(
                       backgroundColor: isCanContinue
                           ? const MaterialStatePropertyAll<Color>(
-                              Color.fromARGB(255, 58, 72, 255))
+                              Color(0xFF1878F2))
                           : const MaterialStatePropertyAll<Color>(
                               Color.fromARGB(255, 226, 226, 226))),
                   child: Text(
@@ -177,8 +177,7 @@ class Button extends StatelessWidget {
       onPressed: selectMethod,
       style: ButtonStyle(
           backgroundColor: isSelected
-              ? const MaterialStatePropertyAll<Color>(
-                  Color.fromARGB(255, 58, 72, 255))
+              ? const MaterialStatePropertyAll<Color>(Color(0xFF1878F2))
               : const MaterialStatePropertyAll<Color>(
                   Color.fromARGB(255, 226, 226, 226))),
       child: Text(

@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: PageView(controller: _pageController, children: [
+      body: PageView(controller: _pageController, children: const [
         PostScreen(key: PageStorageKey('postScreen')),
         AddFriendScreen(key: PageStorageKey('addFriendScreen')),
         NotificationScreen(key: PageStorageKey('notificationScreen')),
@@ -71,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // Allows more than 3 items
         currentIndex: _selectedIndex,
+        selectedItemColor: Palette.facebookBlue,
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
@@ -80,19 +81,21 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Trang chủ',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
-            label: 'Friends',
+            label: 'Bạn bè',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            label: 'Notifications',
+            label: 'Thông báo',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.menu),
-            label: 'Menu',
+            icon: Icon(
+              Icons.menu,
+            ),
+            label: 'Tùy chọn',
           ),
         ],
       ),
