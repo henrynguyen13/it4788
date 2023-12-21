@@ -186,7 +186,9 @@ class _PersonalPageState extends State<PersonalPage> {
               userInfor = snapshot.data!.elementAt(0);
               userFriends = snapshot.data!.elementAt(1);
               listPost ??= snapshot.data!.elementAt(2);
-              coins = userInfor.data.coins;
+              coins = int.parse(userInfor.data.coins) > 0
+                  ? userInfor.data.coins
+                  : '0';
               return SingleChildScrollView(
                   controller: _scrollController,
                   physics: const ScrollPhysics(),

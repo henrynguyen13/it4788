@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -5,8 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:it4788/comment/commentPage.dart';
 import 'package:it4788/home/post_detail_screen.dart';
 import 'package:it4788/model/post.dart';
+import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/post_article/edit_post_article.dart';
 import 'package:it4788/report.dart';
+import 'package:it4788/service/post_sevice.dart';
 import 'package:it4788/service/profile_sevice.dart';
 // import 'package:video_player/video_player.dart';
 
@@ -537,17 +541,75 @@ class BottomPopup extends StatelessWidget {
                           onPressed: () => Navigator.pop(context),
                         ),
                         TextButton(
-                          child: const Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: Icon(Icons.delete),
-                              ),
-                              Text('Xóa'),
-                            ],
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                        ),
+                            child: const Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Icon(Icons.delete),
+                                ),
+                                Text('Xóa'),
+                              ],
+                            ),
+                            onPressed: () => {
+                                  Navigator.pop(context),
+                                  showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                            title: const Text(
+                                                'Bạn có chắc muốn xóa bài này?'),
+                                            content: const Text(
+                                                'Bạn sẽ không thể khôi phục'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'Hủy'),
+                                                child: const Text('Hủy'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  try {
+                                                    final response =
+                                                        await PostSevice()
+                                                            .deletePost(
+                                                                post.id);
+
+                                                    final jsonResponse = json
+                                                        .decode(response.data);
+                                                    String message =
+                                                        jsonResponse['message'];
+
+                                                    if (message == 'OK') {
+                                                      if (!context.mounted)
+                                                        return;
+                                                      Navigator.pop(
+                                                          context, 'Xóa');
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                              const SnackBar(
+                                                                  content: Text(
+                                                                      'Xóa bài viết thành công!')));
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                PersonalPage(
+                                                                    id: post
+                                                                        .author
+                                                                        .id)),
+                                                      );
+                                                    }
+                                                    ;
+                                                  } catch (e) {
+                                                    print(e);
+                                                  }
+                                                },
+                                                child: const Text('Xóa'),
+                                              ),
+                                            ],
+                                          )),
+                                }),
                         TextButton(
                           child: const Row(
                             children: [
