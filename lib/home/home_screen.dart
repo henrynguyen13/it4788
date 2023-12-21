@@ -38,15 +38,15 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        title: const Text(
-          'Facebook',
-          style: TextStyle(
-            color: Palette.facebookBlue,
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 10.0),
+          child: Image(
+            image: AssetImage(
+              'assets/images/icons/anti-facebook.png',
+            ),
           ),
         ),
+        leadingWidth: 170,
         centerTitle: false,
         actions: [
           Padding(
