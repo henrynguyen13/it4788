@@ -10,6 +10,8 @@ import 'package:it4788/model/edit_post.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/post_response.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
+import 'package:it4788/post_article/image_detail_add_screen.dart';
+import 'package:it4788/post_article/image_detail_edit_screen.dart';
 import 'package:it4788/post_article/image_detail_screen.dart';
 import 'package:it4788/service/post_sevice.dart';
 import 'package:it4788/model/post_response.dart';
@@ -194,6 +196,156 @@ class _EditPostArticleState extends State<EditPostArticle> {
     }
   }
 
+  Widget _buildImageXFileSection(List<XFile?> images) {
+    if (images.length == 1) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ImageDetailEditScreen(
+                images: images,
+                initialPage: 0,
+                onImageRemoved: (removedIndex) {
+                  setState(() {
+                    images.removeAt(removedIndex);
+                    // removedImageIndexes.add(id);
+                  });
+                },
+              ),
+            ),
+          );
+        },
+        child: Image.file(File(images[0]!.path),
+            height: 400, width: double.infinity, fit: BoxFit.cover),
+      );
+    } else if (images.length == 2 || images.length == 4) {
+      return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: images.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ImageDetailEditScreen(
+                    // imageUrls: images.map((image) => image!.url).toList(),
+                    images: images,
+                    initialPage: index,
+                    onImageRemoved: (removedIndex) {
+                      setState(() {
+                        images.removeAt(removedIndex);
+                        // removedImageIndexes.add(id);
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(1),
+              child: Image.file(File(images[index]!.path),
+                  height: 200, width: double.infinity, fit: BoxFit.cover),
+            ),
+          );
+        },
+      );
+    } else if (images.length == 3) {
+      return Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageDetailEditScreen(
+                      images: images,
+                      initialPage: 0,
+                      onImageRemoved: (removedIndex) {
+                        setState(() {
+                          images.removeAt(removedIndex);
+                          // removedImageIndexes.add(id);
+                        });
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: Image.file(File(images[0]!.path),
+                  height: 400, fit: BoxFit.cover),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, bottom: 2),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Handle onTap for the second image
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageDetailEditScreen(
+                            // imageUrls: images.map((image) => image!.url).toList(),
+                            images: images,
+                            initialPage: 1,
+                            onImageRemoved: (removedIndex) {
+                              setState(() {
+                                images.removeAt(removedIndex);
+                                // removedImageIndexes.add(id);
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.file(File(images[1]!.path),
+                        height: 198, width: double.infinity, fit: BoxFit.cover),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, top: 2),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Handle onTap for the third image
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageDetailEditScreen(
+                            // imageUrls: images.map((image) => image!.url).toList(),
+                            images: images,
+                            initialPage: 2,
+                            onImageRemoved: (removedIndex) {
+                              setState(() {
+                                images.removeAt(removedIndex);
+                                // removedImageIndexes.add(id);
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.file(File(images[2]!.path),
+                        height: 198, width: double.infinity, fit: BoxFit.cover),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -332,6 +484,9 @@ class _EditPostArticleState extends State<EditPostArticle> {
                         // _selectedImage != null
                         //     ? Image.file(_selectedImage!) // Hiển thị ảnh đã chọn
                         //     : Container(), // Khoảng trắng nếu không có ảnh
+                        selectedImages.isNotEmpty
+                            ? _buildImageXFileSection(selectedImages)
+                            : const SizedBox.shrink(),
                         const SizedBox(height: 20),
                         Padding(
                             padding: const EdgeInsets.all(0),
@@ -514,7 +669,10 @@ class _EditPostArticleState extends State<EditPostArticle> {
     if (pickedImages.isEmpty) return;
 
     setState(() {
-      if (pickedImages.length <= 4) {
+      if (pickedImages.length +
+              selectedImages.length +
+              post!.data.image.length <=
+          4) {
         selectedImages.addAll(pickedImages);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

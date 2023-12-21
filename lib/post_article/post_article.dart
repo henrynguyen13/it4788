@@ -617,7 +617,7 @@ class _PostArticleState extends State<PostArticle> {
     if (pickedImages.isEmpty) return;
 
     setState(() {
-      if (pickedImages.length <= 4) {
+      if (pickedImages.length + selectedImages.length <= 4) {
         selectedImages.addAll(pickedImages);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
