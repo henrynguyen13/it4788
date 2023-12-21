@@ -248,7 +248,7 @@ class _SignIn extends State<SignInPage> {
                           padding: EdgeInsets.all(0),
                           child: Text(
                             "Quên mật khẩu?",
-                            style: TextStyle(color: Colors.blue),
+                            style: TextStyle(color: Color(0xFF1878F2)),
                           ),
                         ),
                       ),
