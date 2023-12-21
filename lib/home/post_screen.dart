@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:it4788/core/pallete.dart';
+import 'package:it4788/firebase_api/firebase_api.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/user_infor_profile.dart';
 import 'package:it4788/service/authStorage.dart';
@@ -25,10 +28,31 @@ class _PostScreenState extends State<PostScreen> {
   int index = 0;
   int count = 20;
   bool isLoading = false;
+  bool isConnection = false;
+
+  Future<void> checkConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          isConnection = true;
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        isConnection = false;
+      });
+    }
+  }
+
+  void setDevToken() async {
+    FirebaseApi().setDevTokenFirebase();
+  }
 
   @override
   void initState() {
     super.initState();
+    checkConnection();
     getData();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -37,6 +61,7 @@ class _PostScreenState extends State<PostScreen> {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       }
     });
+    setDevToken();
   }
 
   void loadMoreData() async {

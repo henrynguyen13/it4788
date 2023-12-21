@@ -7,7 +7,7 @@ class ApiService {
     return Dio(
       BaseOptions(
         baseUrl: 'https://it4788.catan.io.vn/',
-        connectTimeout: Duration(seconds: 5),
+        connectTimeout: Duration(seconds: 10),
         receiveTimeout: Duration(seconds: 10),
         headers: {
           HttpHeaders.userAgentHeader: 'dio',

@@ -229,16 +229,16 @@ class _PostArticleState extends State<PostArticle> {
                     Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                         child: ClipOval(
-                            child: MaterialButton(
-                          onPressed: () => {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PersonalPage(
-                                    id: id,
-                                  ),
-                                ))
-                          },
+                          //   child: MaterialButton(
+                          // onPressed: () => {
+                          //   Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder: (context) => PersonalPage(
+                          //           id: id,
+                          //         ),
+                          //       ))
+                          // },
                           child: avatar != ""
                               ? Image.network(
                                   avatar!,
@@ -252,7 +252,7 @@ class _PostArticleState extends State<PostArticle> {
                                   width: 60,
                                   height: 60,
                                 ),
-                        ))),
+                        )),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -320,27 +320,27 @@ class _PostArticleState extends State<PostArticle> {
               // if (!isKeyboardVisible)
               Column(
                 children: [
-                  // video == null && selectedImages.isEmpty
-                  Container(
-                    child: selectedImages.isNotEmpty
-                        ? _buildImageSection(selectedImages)
-                        : Padding(
-                            padding: const EdgeInsets.all(0),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height / 3,
-                            )),
-                  ),
-                  // : Container(
-                  //     child: video != null && selectedImages.isEmpty
-                  //         ? _buildVideoSection(video)
-                  //         : Padding(
-                  //             padding: const EdgeInsets.all(0),
-                  //             child: SizedBox(
-                  //               height:
-                  //                   MediaQuery.of(context).size.height /
-                  //                       3,
-                  //             )),
-                  //   ),
+                  video == null && selectedImages.isNotEmpty
+                      ? Container(
+                          child: selectedImages.isNotEmpty
+                              ? _buildImageSection(selectedImages)
+                              : Padding(
+                                  padding: const EdgeInsets.all(0),
+                                  child: SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.height / 3,
+                                  )),
+                        )
+                      : Container(
+                          child: video != null && selectedImages.isEmpty
+                              ? _buildVideoSection(video)
+                              : Padding(
+                                  padding: const EdgeInsets.all(0),
+                                  child: SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.height / 3,
+                                  )),
+                        ),
                   Padding(
                       padding: const EdgeInsets.all(0),
                       child: InkWell(
@@ -691,17 +691,17 @@ class _PostArticleState extends State<PostArticle> {
     });
   }
 
-  // Widget _buildVideoSection(XFile? video) {
-  //   if (video != null) {
-  //     return _videoPlayerController.value.isInitialized
-  //         ? AspectRatio(
-  //             aspectRatio: _videoPlayerController.value.aspectRatio,
-  //             child: VideoPlayer(_videoPlayerController))
-  //         : Container();
-  //   } else {
-  //     return const SizedBox();
-  //   }
-  // }
+  Widget _buildVideoSection(XFile? video) {
+    if (video != null) {
+      return _videoPlayerController.value.isInitialized
+          ? AspectRatio(
+              aspectRatio: _videoPlayerController.value.aspectRatio,
+              child: VideoPlayer(_videoPlayerController))
+          : Container();
+    } else {
+      return const SizedBox();
+    }
+  }
 
   Widget _buildImageSection(List<XFile?> images) {
     if (images.length == 1) {
