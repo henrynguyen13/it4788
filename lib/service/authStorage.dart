@@ -26,6 +26,10 @@ class Storage {
     await storage.write(key: "user_id", value: userId);
   }
 
+  Future<void> saveCoins(String coins) async {
+    await storage.write(key: "coins", value: coins);
+  }
+
   Future<String?> getToken() async {
     return await storage.read(key: "token");
   }
@@ -56,5 +60,9 @@ class Storage {
 
   Future<String?> getUserId() async {
     return await storage.read(key: "user_id");
+  }
+
+  Future<String?> getCoins() async {
+    return await storage.read(key: "coins");
   }
 }

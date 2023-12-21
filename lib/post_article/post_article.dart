@@ -5,9 +5,9 @@ import 'dart:io' show File;
 import 'package:it4788/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
 import 'package:it4788/post_article/image_detail_add_screen.dart';
-import 'package:it4788/post_article/image_detail_screen.dart';
 import 'package:it4788/post_article/post_draft.dart';
 import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/post_sevice.dart';
@@ -26,6 +26,7 @@ class _PostArticleState extends State<PostArticle> {
   String feelingState = "";
   String? username = "";
   String? avatar;
+  String id = "";
 
   List<XFile?> selectedImages = [];
   XFile? video;
@@ -39,6 +40,7 @@ class _PostArticleState extends State<PostArticle> {
   bool isKeyboardVisible = false;
 
   late VideoPlayerController _videoPlayerController;
+  List<String?> removedImageIndexes = [];
 
   @override
   void initState() {
@@ -52,6 +54,12 @@ class _PostArticleState extends State<PostArticle> {
     _getAvatar().then((value) {
       setState(() {
         avatar = value ?? "";
+      });
+
+      _getUserId().then((value) {
+        setState(() {
+          id = value ?? "";
+        });
       });
     });
 
@@ -221,6 +229,16 @@ class _PostArticleState extends State<PostArticle> {
                     Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                         child: ClipOval(
+                          //   child: MaterialButton(
+                          // onPressed: () => {
+                          //   Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder: (context) => PersonalPage(
+                          //           id: id,
+                          //         ),
+                          //       ))
+                          // },
                           child: avatar != ""
                               ? Image.network(
                                   avatar!,
@@ -302,27 +320,27 @@ class _PostArticleState extends State<PostArticle> {
               // if (!isKeyboardVisible)
               Column(
                 children: [
-                  // video == null && selectedImages.isEmpty
-                  Container(
-                    child: selectedImages.isNotEmpty
-                        ? _buildImageSection(selectedImages)
-                        : Padding(
-                            padding: const EdgeInsets.all(0),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height / 3,
-                            )),
-                  ),
-                  // : Container(
-                  //     child: video != null && selectedImages.isEmpty
-                  //         ? _buildVideoSection(video)
-                  //         : Padding(
-                  //             padding: const EdgeInsets.all(0),
-                  //             child: SizedBox(
-                  //               height:
-                  //                   MediaQuery.of(context).size.height /
-                  //                       3,
-                  //             )),
-                  //   ),
+                  video == null && selectedImages.isNotEmpty
+                      ? Container(
+                          child: selectedImages.isNotEmpty
+                              ? _buildImageSection(selectedImages)
+                              : Padding(
+                                  padding: const EdgeInsets.all(0),
+                                  child: SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.height / 3,
+                                  )),
+                        )
+                      : Container(
+                          child: video != null && selectedImages.isEmpty
+                              ? _buildVideoSection(video)
+                              : Padding(
+                                  padding: const EdgeInsets.all(0),
+                                  child: SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.height / 3,
+                                  )),
+                        ),
                   Padding(
                       padding: const EdgeInsets.all(0),
                       child: InkWell(
@@ -334,7 +352,7 @@ class _PostArticleState extends State<PostArticle> {
                                   color: Colors.white,
                                   child: Center(
                                       child: ListView(
-                                    padding: const EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8.0),
                                     children: <Widget>[
                                       Container(
                                         height: 80,
@@ -358,7 +376,7 @@ class _PostArticleState extends State<PostArticle> {
                                       ),
                                       Container(
                                           height: 80,
-                                          color: Color.fromARGB(
+                                          color: const Color.fromARGB(
                                               255, 153, 189, 237),
                                           child: Center(
                                               child: Container(
@@ -455,7 +473,7 @@ class _PostArticleState extends State<PostArticle> {
                                   color: Colors.white,
                                   child: Center(
                                       child: ListView(
-                                    padding: const EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8.0),
                                     children: <Widget>[
                                       Container(
                                         height: 80,
@@ -673,23 +691,41 @@ class _PostArticleState extends State<PostArticle> {
     });
   }
 
-  // Widget _buildVideoSection(XFile? video) {
-  //   if (video != null) {
-  //     return _videoPlayerController.value.isInitialized
-  //         ? AspectRatio(
-  //             aspectRatio: _videoPlayerController.value.aspectRatio,
-  //             child: VideoPlayer(_videoPlayerController))
-  //         : Container();
-  //   } else {
-  //     return const SizedBox();
-  //   }
-  // }
+  Widget _buildVideoSection(XFile? video) {
+    if (video != null) {
+      return _videoPlayerController.value.isInitialized
+          ? AspectRatio(
+              aspectRatio: _videoPlayerController.value.aspectRatio,
+              child: VideoPlayer(_videoPlayerController))
+          : Container();
+    } else {
+      return const SizedBox();
+    }
+  }
 
   Widget _buildImageSection(List<XFile?> images) {
     if (images.length == 1) {
-      return Image.file(File(images[0]!.path),
-          height: 400, width: double.infinity, fit: BoxFit.cover);
-    } else if (images.length == 2) {
+      return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ImageDetailAddScreen(
+                  images: images,
+                  initialPage: 0,
+                  onImageRemoved: (removedIndex, id) {
+                    setState(() {
+                      images.removeAt(removedIndex);
+                    });
+                  },
+                  type: "edit",
+                ),
+              ),
+            );
+          },
+          child: Image.file(File(images[0]!.path),
+              height: 400, width: double.infinity, fit: BoxFit.cover));
+    } else if (images.length == 2 || images.length == 4) {
       return GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -699,7 +735,7 @@ class _PostArticleState extends State<PostArticle> {
         itemCount: images.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () => {
+            onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -712,15 +748,15 @@ class _PostArticleState extends State<PostArticle> {
                         images.removeAt(removedIndex);
                       });
                     },
+                    type: "edit",
                   ),
                 ),
-              )
+              );
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 1),
-              child: Image.file(File(images[index]!.path),
-                  height: 400, width: double.infinity, fit: BoxFit.cover),
-            ),
+                padding: const EdgeInsets.all(1),
+                child: Image.file(File(images[index]!.path),
+                    height: 400, width: double.infinity, fit: BoxFit.cover)),
           );
         },
       );
@@ -728,46 +764,172 @@ class _PostArticleState extends State<PostArticle> {
       return Row(
         children: [
           Expanded(
-            child: Image.file(File(images[0]!.path),
-                height: 400, fit: BoxFit.cover),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageDetailAddScreen(
+                      images: images,
+                      initialPage: 0,
+                      onImageRemoved: (removedIndex, id) {
+                        setState(() {
+                          images.removeAt(removedIndex);
+                        });
+                      },
+                      type: "edit",
+                    ),
+                  ),
+                );
+              },
+              child: Image.file(File(images[0]!.path),
+                  height: 400, fit: BoxFit.cover),
+            ),
           ),
           Expanded(
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 4, bottom: 2),
-                  child: Image.file(File(images[1]!.path),
-                      height: 198, width: double.infinity, fit: BoxFit.cover),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Handle onTap for the second image
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageDetailAddScreen(
+                            images: images,
+                            initialPage: 1,
+                            onImageRemoved: (removedIndex, id) {
+                              setState(() {
+                                images.removeAt(removedIndex);
+                              });
+                            },
+                            type: "edit",
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.file(File(images[1]!.path),
+                        height: 198, width: double.infinity, fit: BoxFit.cover),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4, top: 2),
-                  child: Image.file(File(images[2]!.path),
-                      height: 198, width: double.infinity, fit: BoxFit.cover),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Handle onTap for the third image
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageDetailAddScreen(
+                            // imageUrls: images.map((image) => image!.url).toList(),
+                            images: images,
+                            initialPage: 2,
+                            onImageRemoved: (removedIndex, id) {
+                              setState(() {
+                                images.removeAt(removedIndex);
+                              });
+                            },
+                            type: "edit",
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.file(File(images[2]!.path),
+                        height: 198, width: double.infinity, fit: BoxFit.cover),
+                  ),
                 ),
               ],
             ),
           ),
         ],
       );
-    } else if (images.length >= 4) {
-      return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(1),
-            child: Image.file(File(images[index]!.path),
-                height: 200, width: double.infinity, fit: BoxFit.cover),
-          );
-        },
-      );
     } else {
       return Container();
     }
+    // if (images.length == 1) {
+    //   return Image.file(File(images[0]!.path),
+    //       height: 400, width: double.infinity, fit: BoxFit.cover);
+    // } else if (images.length == 2) {
+    //   return GridView.builder(
+    //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    //       crossAxisCount: 2,
+    //     ),
+    //     shrinkWrap: true,
+    //     physics: const NeverScrollableScrollPhysics(),
+    //     itemCount: images.length,
+    //     itemBuilder: (context, index) {
+    //       return GestureDetector(
+    //         onTap: () => {
+    //           Navigator.push(
+    //             context,
+    //             MaterialPageRoute(
+    //               builder: (context) => ImageDetailAddScreen(
+    //                 images: images,
+    //                 initialPage: index,
+    //                 onImageRemoved: (removedIndex, id) {
+    //                   setState(() {
+    //                     images.removeAt(removedIndex);
+    //                   });
+    //                 },
+    //                 type: "edit",
+    //               ),
+    //             ),
+    //           )
+    //         },
+    //         child: Padding(
+    //           padding: const EdgeInsets.symmetric(horizontal: 1),
+    //           child: Image.file(File(images[index]!.path),
+    //               height: 400, width: double.infinity, fit: BoxFit.cover),
+    //         ),
+    //       );
+    //     },
+    //   );
+    // } else if (images.length == 3) {
+    //   return Row(
+    //     children: [
+    //       Expanded(
+    //         child: Image.file(File(images[0]!.path),
+    //             height: 400, fit: BoxFit.cover),
+    //       ),
+    //       Expanded(
+    //         child: Column(
+    //           children: [
+    //             Padding(
+    //               padding: const EdgeInsets.only(left: 4, bottom: 2),
+    //               child: Image.file(File(images[1]!.path),
+    //                   height: 198, width: double.infinity, fit: BoxFit.cover),
+    //             ),
+    //             Padding(
+    //               padding: const EdgeInsets.only(left: 4, top: 2),
+    //               child: Image.file(File(images[2]!.path),
+    //                   height: 198, width: double.infinity, fit: BoxFit.cover),
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ],
+    //   );
+    // } else if (images.length >= 4) {
+    //   return GridView.builder(
+    //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    //       crossAxisCount: 2,
+    //     ),
+    //     shrinkWrap: true,
+    //     physics: const NeverScrollableScrollPhysics(),
+    //     itemCount: images.length,
+    //     itemBuilder: (context, index) {
+    //       return Padding(
+    //         padding: const EdgeInsets.all(1),
+    //         child: Image.file(File(images[index]!.path),
+    //             height: 200, width: double.infinity, fit: BoxFit.cover),
+    //       );
+    //     },
+    //   );
+    // } else {
+    //   return Container();
+    // }
   }
 
   Future<String?> _getUsername() async {
@@ -776,6 +938,10 @@ class _PostArticleState extends State<PostArticle> {
 
   Future<String?> _getAvatar() async {
     return await Storage().getAvatar();
+  }
+
+  Future<String?> _getUserId() async {
+    return await Storage().getUserId();
   }
 
   Future<String> get _localPath async {

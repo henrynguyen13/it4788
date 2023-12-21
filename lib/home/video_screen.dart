@@ -23,7 +23,7 @@ class _VideoScreenState extends State<VideoScreen> {
   ListVideo? listVideoResponse;
   PostSevice? postSevice;
   UserInfor? userInfor;
-  List<Post> videoList = <Post>[];
+  List<PostVideo> videoList = <PostVideo>[];
   int index = 0;
   int count = 20;
   bool isLoading = false;
@@ -41,10 +41,6 @@ class _VideoScreenState extends State<VideoScreen> {
     });
   }
 
-  void setDevToken() async {
-    FirebaseApi().setDevTokenFirebase();
-  }
-
   void loadMoreData() async {
     if (!isLoading) {
       setState(() {
@@ -54,30 +50,15 @@ class _VideoScreenState extends State<VideoScreen> {
       var tmp = await postSevice?.getListVideos(index, count);
 
       setState(() {
-        videoList.addAll(tmp!.data.post);
+        videoList.addAll(tmp!.data!.post!);
         isLoading = false;
       });
     }
   }
 
-  Future<String?> _getUserId() async {
-    return await Storage().getUserId();
-  }
-
   void getData() async {
     postSevice = PostSevice();
-    var userId = await _getUserId();
-
-    if (userId != null) {
-      _future = postSevice?.getListVideos(index, count);
-      Future<UserInfor?> user = ProfileSevice().getUserInfor(userId);
-      user.then((value) => {
-            setState(() {
-              userInfor = value;
-            })
-          });
-    }
-    setDevToken();
+    _future = postSevice?.getListVideos(index, count);
   }
 
   @override
@@ -95,7 +76,7 @@ class _VideoScreenState extends State<VideoScreen> {
         } else if (snapshot.hasData) {
           if (videoList.isEmpty) {
             listVideoResponse = snapshot.data!;
-            videoList.addAll(listVideoResponse!.data.post);
+            videoList.addAll(listVideoResponse!.data!.post!);
           }
 
           return CustomScrollView(
