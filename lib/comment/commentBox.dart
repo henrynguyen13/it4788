@@ -130,7 +130,7 @@ class CommentBox extends StatelessWidget {
                   ),
                   const SizedBox(
                     width: 1,
-                    height: 50,
+                    height: 30,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                           color: Color.fromARGB(255, 169, 169, 169)),

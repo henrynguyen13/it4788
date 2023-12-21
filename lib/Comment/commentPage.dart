@@ -195,8 +195,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
         });
   }
 
-  Row markWidget(List data, int index, double avatarSize) {
-    //GlobalKey childKey = GlobalKey();
+  Widget markWidget(List data, int index, double avatarSize) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,8 +337,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
     );
   }
 
-  Row commentWidget(List data, int index, double avatarSize) {
-    //GlobalKey childKey = GlobalKey();
+  Widget commentWidget(List data, int index, double avatarSize) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -404,7 +402,7 @@ class _CommentPageState extends State<CommentPage> with WidgetsBindingObserver {
     );
   }
 
-  Row emptyMarkWidget() {
+  Widget emptyMarkWidget() {
     var list = [40.0, 80.0, 120.0];
     double heightRandom = list[Random().nextInt(list.length)];
     return Row(

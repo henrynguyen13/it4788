@@ -2,8 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:it4788/firebase_api/firebase_api.dart';
-import 'package:it4788/home/post_detail_screen.dart';
-import 'package:it4788/model/notification.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 
 @pragma('vm:entry-point')
