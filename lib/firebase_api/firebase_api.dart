@@ -1,7 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:it4788/home/post_detail_screen.dart';
+import 'package:it4788/main.dart';
 import 'package:it4788/model/notification.dart';
-import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/service/profile_sevice.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -10,18 +11,11 @@ class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-  Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
-    print("NOTIFIIIII ${message.notification!.body}");
-    showFlutterNotification(message);
-  }
-
   Future<void> showFlutterNotification(RemoteMessage message) async {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
 
     if (notification != null && android != null) {
-      print("NOTIFIIIII ${message.notification!.body}");
       flutterLocalNotificationsPlugin.show(
           notification.hashCode,
           notification.title,
@@ -83,8 +77,6 @@ class FirebaseApi {
       },
     );
 
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
     FirebaseMessaging.onMessage.listen((event) {
       showFlutterNotification(event);
     });
@@ -93,7 +85,7 @@ class FirebaseApi {
   Future<void> setDevTokenFirebase() async {
     await FirebaseMessaging.instance.deleteToken();
     final token = await _firebaseMessaging.getToken();
-    print('TOKENNNNN $token');
+    print('TOKEN $token');
     ProfileSevice().setDevToken(token!);
   }
 
@@ -101,6 +93,9 @@ class FirebaseApi {
   Future<void> handleClickPushNotification(
       NotificationResponse notiResponse) async {
     var data = notificationFromJson(notiResponse.payload!);
-    print('TESTTTT ${data.notificationId}');
+    MyApp.navigatorKey.currentState?.push(
+      MaterialPageRoute(
+          builder: (context) => PostDetailScreen(id: data.post.id)),
+    );
   }
 }
