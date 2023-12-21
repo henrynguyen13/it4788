@@ -49,6 +49,10 @@ class _PostScreenState extends State<PostScreen> {
     FirebaseApi().setDevTokenFirebase();
   }
 
+  void setDevToken() async {
+    FirebaseApi().setDevTokenFirebase();
+  }
+
   @override
   void initState() {
     super.initState();
