@@ -38,8 +38,8 @@ class SettingService {
 
     try {
       Map<String, dynamic> request = {
-        'password': "123456",
-        'new_password': "123456",
+        'password': currentPassword,
+        'new_password': newPassword,
       };
       final dio = ApiService.createDio();
       final response = await dio.post('change_password',

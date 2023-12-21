@@ -27,6 +27,8 @@ class ProfileSevice {
           data: request,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       userInfor = userInforFromJson(response.data);
+      final jsonResponse = json.decode(response.data);
+      Storage().saveCoins(jsonResponse['data']['coins']);
       print(response.data);
       return userInfor;
     } catch (e) {

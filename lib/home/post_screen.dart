@@ -30,6 +30,7 @@ class _PostScreenState extends State<PostScreen> {
   int count = 20;
   bool isLoading = false;
   bool isConnection = false;
+  bool isGetFromCached = false;
   void setDevToken() async {
     FirebaseApi().setDevTokenFirebase();
   }
@@ -95,6 +96,7 @@ class _PostScreenState extends State<PostScreen> {
 
     setState(() {
       postList.addAll(tmp.data.post);
+      isGetFromCached = true;
     });
   }
 
@@ -111,6 +113,9 @@ class _PostScreenState extends State<PostScreen> {
                 color: Palette.facebookBlue,
               ));
         } else if (snapshot.hasData) {
+          if (isGetFromCached == true) {
+            postList.clear();
+          }
           if (postList.isEmpty) {
             listPostResponse = snapshot.data!;
             postList.addAll(listPostResponse!.data.post);
