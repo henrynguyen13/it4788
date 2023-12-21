@@ -10,9 +10,12 @@ import 'package:it4788/model/edit_post.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/post_response.dart';
 import 'package:it4788/post_article/feelings_activities/feelings_activities_picker.dart';
+import 'package:it4788/post_article/image_detail_add_screen.dart';
+import 'package:it4788/post_article/image_detail_edit_screen.dart';
 import 'package:it4788/post_article/image_detail_screen.dart';
 import 'package:it4788/service/post_sevice.dart';
 import 'package:it4788/model/post_response.dart';
+import 'package:video_player/video_player.dart';
 
 class EditPostArticle extends StatefulWidget {
   final String id;
@@ -27,6 +30,9 @@ class _EditPostArticleState extends State<EditPostArticle> {
   String feelingState = "";
   String? username;
   PostResponse? post;
+  XFile? video;
+  late VideoPlayerController _videoPlayerController;
+
   List<XFile?> selectedImages = [];
   List<String?> removedImageIndexes = [];
   void getData() async {
@@ -194,6 +200,168 @@ class _EditPostArticleState extends State<EditPostArticle> {
     }
   }
 
+  Widget _buildImageXFileSection(List<XFile?> images) {
+    if (images.length == 1) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ImageDetailEditScreen(
+                images: images,
+                initialPage: 0,
+                onImageRemoved: (removedIndex) {
+                  setState(() {
+                    images.removeAt(removedIndex);
+                    // removedImageIndexes.add(id);
+                  });
+                },
+              ),
+            ),
+          );
+        },
+        child: Image.file(File(images[0]!.path),
+            height: 400, width: double.infinity, fit: BoxFit.cover),
+      );
+    } else if (images.length == 2 || images.length == 4) {
+      return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: images.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ImageDetailEditScreen(
+                    // imageUrls: images.map((image) => image!.url).toList(),
+                    images: images,
+                    initialPage: index,
+                    onImageRemoved: (removedIndex) {
+                      setState(() {
+                        images.removeAt(removedIndex);
+                        // removedImageIndexes.add(id);
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(1),
+              child: Image.file(File(images[index]!.path),
+                  height: 200, width: double.infinity, fit: BoxFit.cover),
+            ),
+          );
+        },
+      );
+    } else if (images.length == 3) {
+      return Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageDetailEditScreen(
+                      images: images,
+                      initialPage: 0,
+                      onImageRemoved: (removedIndex) {
+                        setState(() {
+                          images.removeAt(removedIndex);
+                          // removedImageIndexes.add(id);
+                        });
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: Image.file(File(images[0]!.path),
+                  height: 400, fit: BoxFit.cover),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, bottom: 2),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Handle onTap for the second image
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageDetailEditScreen(
+                            // imageUrls: images.map((image) => image!.url).toList(),
+                            images: images,
+                            initialPage: 1,
+                            onImageRemoved: (removedIndex) {
+                              setState(() {
+                                images.removeAt(removedIndex);
+                                // removedImageIndexes.add(id);
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.file(File(images[1]!.path),
+                        height: 198, width: double.infinity, fit: BoxFit.cover),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, top: 2),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Handle onTap for the third image
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageDetailEditScreen(
+                            // imageUrls: images.map((image) => image!.url).toList(),
+                            images: images,
+                            initialPage: 2,
+                            onImageRemoved: (removedIndex) {
+                              setState(() {
+                                images.removeAt(removedIndex);
+                                // removedImageIndexes.add(id);
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.file(File(images[2]!.path),
+                        height: 198, width: double.infinity, fit: BoxFit.cover),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildVideoSection(XFile? video) {
+    if (video != null) {
+      return _videoPlayerController.value.isInitialized
+          ? AspectRatio(
+              aspectRatio: _videoPlayerController.value.aspectRatio,
+              child: VideoPlayer(_videoPlayerController))
+          : Container();
+    } else {
+      return const SizedBox();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,13 +374,13 @@ class _EditPostArticleState extends State<EditPostArticle> {
             TextButton(
               onPressed: () async {
                 try {
-                  final Response<dynamic> response =
-                      await PostSevice().editPost(EditPostDto(
-                    id: post!.data.id,
-                    images: selectedImages,
-                    described: _descriptionController.text,
-                    imageDel: removedImageIndexes,
-                  ));
+                  final Response<dynamic> response = await PostSevice()
+                      .editPost(EditPostDto(
+                          id: post!.data.id,
+                          images: selectedImages,
+                          described: _descriptionController.text,
+                          imageDel: removedImageIndexes,
+                          video: video));
 
                   final jsonResponse = json.decode(response.data);
                   String resMessage = jsonResponse['message'];
@@ -329,10 +497,33 @@ class _EditPostArticleState extends State<EditPostArticle> {
                         post?.data.image.isNotEmpty ?? false
                             ? _buildImageSection(post!.data.image)
                             : const SizedBox.shrink(),
+                        const SizedBox(height: 20),
+
                         // _selectedImage != null
                         //     ? Image.file(_selectedImage!) // Hiển thị ảnh đã chọn
                         //     : Container(), // Khoảng trắng nếu không có ảnh
+                        selectedImages.isNotEmpty
+                            ? _buildImageXFileSection(selectedImages)
+                            : const SizedBox.shrink(),
                         const SizedBox(height: 20),
+                        // video == null &&
+                        //         selectedImages.isNotEmpty &&
+                        //         post!.data.image.isNotEmpty
+                        //     ? Container(
+                        //         child: Column(children: [
+                        //           post?.data.image.isNotEmpty ?? false
+                        //               ? _buildImageSection(post!.data.image)
+                        //               : const SizedBox.shrink(),
+                        //           selectedImages.isNotEmpty
+                        //               ? _buildImageXFileSection(selectedImages)
+                        //               : const SizedBox.shrink(),
+                        //         ]),
+                        //       )
+                        Container(
+                          child: video != null && selectedImages.isEmpty
+                              ? _buildVideoSection(video)
+                              : const SizedBox.shrink(),
+                        ),
                         Padding(
                             padding: const EdgeInsets.all(0),
                             child: InkWell(
@@ -456,6 +647,82 @@ class _EditPostArticleState extends State<EditPostArticle> {
                             )),
                         Padding(
                             padding: const EdgeInsets.all(0),
+                            child: InkWell(
+                              onTap: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: ((context) => Container(
+                                        height: 200,
+                                        color: Colors.white,
+                                        child: Center(
+                                            child: ListView(
+                                          padding: const EdgeInsets.all(8.0),
+                                          children: <Widget>[
+                                            Container(
+                                              height: 80,
+                                              color: Colors.green[500],
+                                              child: Center(
+                                                  child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.8,
+                                                height: 40,
+                                                child: ElevatedButton(
+                                                  child: const Text(
+                                                      "Chọn video từ máy"),
+                                                  onPressed: () {
+                                                    _pickVideoFromGallery();
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              )),
+                                            ),
+                                            Container(
+                                                height: 80,
+                                                color: Colors.green[100],
+                                                child: Center(
+                                                    child: Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.8,
+                                                        height: 40,
+                                                        child: ElevatedButton(
+                                                          child: const Text(
+                                                              "Quay video"),
+                                                          onPressed: () {
+                                                            _pickVideoFromCamera();
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        )))),
+                                          ],
+                                        )))));
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(10.0),
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.rectangle,
+                                    border: BorderDirectional(
+                                        top: BorderSide(
+                                            color: Colors.grey, width: 0.5))),
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.photo_camera,
+                                      color: Colors.blue,
+                                      size: 28,
+                                    ),
+                                    Text("Video")
+                                  ],
+                                ),
+                              ),
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.all(0),
                             child: Container(
                               alignment: Alignment.center,
                               padding: const EdgeInsets.all(10.0),
@@ -514,7 +781,10 @@ class _EditPostArticleState extends State<EditPostArticle> {
     if (pickedImages.isEmpty) return;
 
     setState(() {
-      if (pickedImages.length <= 4) {
+      if (pickedImages.length +
+              selectedImages.length +
+              post!.data.image.length <=
+          4) {
         selectedImages.addAll(pickedImages);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -546,5 +816,27 @@ class _EditPostArticleState extends State<EditPostArticle> {
     setState(() {
       feelingState = result;
     });
+  }
+
+  Future _pickVideoFromGallery() async {
+    final pickedVideo =
+        await ImagePicker().pickVideo(source: ImageSource.gallery);
+
+    if (pickedVideo == null) return;
+
+    video = pickedVideo;
+    print(video);
+
+    _videoPlayerController = VideoPlayerController.file(File(video!.path))
+      ..initialize().then((_) => {setState(() => {})});
+
+    _videoPlayerController.play();
+  }
+
+  Future _pickVideoFromCamera() async {
+    final pickedVideo =
+        await ImagePicker().pickVideo(source: ImageSource.camera);
+
+    if (pickedVideo == null) return;
   }
 }
