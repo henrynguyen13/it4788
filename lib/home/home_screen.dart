@@ -3,6 +3,7 @@ import 'package:it4788/home/add_friend_screen.dart';
 import 'package:it4788/home/notice_screen.dart';
 import 'package:it4788/home/post_screen.dart';
 import 'package:it4788/home/search.dart';
+import 'package:it4788/home/video_screen.dart';
 import 'package:it4788/widgets/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'menu_screen.dart';
@@ -65,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: PageView(controller: _pageController, children: const [
         PostScreen(key: PageStorageKey('postScreen')),
         AddFriendScreen(key: PageStorageKey('addFriendScreen')),
+        VideoScreen(key: PageStorageKey('videoScreen')),
         NotificationScreen(key: PageStorageKey('notificationScreen')),
         MenuScreen(key: PageStorageKey('menuScreen')),
       ]),
@@ -86,6 +88,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: 'Bạn bè',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.ondemand_video),
+            label: 'Video',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
