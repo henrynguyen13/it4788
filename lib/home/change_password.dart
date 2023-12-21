@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:it4788/service/auth.dart';
+import 'package:it4788/service/authStorage.dart';
 
 import 'package:it4788/sign_in/sign_in.dart';
 import 'package:flutter/material.dart';
@@ -286,7 +287,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                               // }
                               final jsonResponse = json.decode(response.data);
                               String message = jsonResponse['message'];
-
+                              String token = jsonResponse['data']['token'];
+                              Storage().saveToken(token);
                               if (message == 'OK') {
                                 _logOut();
                                 print("OKKKKKKKKKKKKKKKKKKKKKKK");
