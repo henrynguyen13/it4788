@@ -58,18 +58,18 @@ class _PostArticleState extends State<PostArticle> {
         avatar = value ?? "";
       });
 
-    _getUserId().then((value) {
-      setState(() {
-        id = value ?? "";        
+      _getUserId().then((value) {
+        setState(() {
+          id = value ?? "";
+        });
       });
-    });
 
-    _getCoins().then((value) {
-      setState(() {
-        coins = value ?? "";        
+      _getCoins().then((value) {
+        setState(() {
+          coins = value ?? "";
+        });
       });
     });
-  });
 
     // KeyboardVisibilityController().onChange.listen((bool visible) {
     //   setState(() {
@@ -192,12 +192,17 @@ class _PostArticleState extends State<PostArticle> {
             MaterialButton(
               onPressed: () async {
                 try {
-                  if(int.parse(coins) < 10) {
+                  if (int.parse(coins) < 10) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Không đủ coins. Vào trang cá nhân để nạp !')));
+                        content: Text(
+                            'Không đủ coins. Vào trang cá nhân để nạp !')));
                   } else {
                     final addPostResponse = await PostSevice().addPost(
-                      selectedImages, video, postContent, status, auto_accept);
+                        selectedImages,
+                        video,
+                        postContent,
+                        status,
+                        auto_accept);
 
                     final jsonResponse = json.decode(addPostResponse.data);
 
@@ -213,10 +218,10 @@ class _PostArticleState extends State<PostArticle> {
                           MaterialPageRoute(
                               builder: (context) => const HomeScreen()));
                     }
-                  } 
-                } catch (e) {
-                    print(e);
                   }
+                } catch (e) {
+                  print(e);
+                }
               },
               child: const Text(
                 'Đăng',
@@ -874,8 +879,6 @@ class _PostArticleState extends State<PostArticle> {
   Future<String?> _getCoins() async {
     return await Storage().getCoins();
   }
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
 
   //   return directory.path;
   // }
