@@ -1218,7 +1218,20 @@ class _PersonalPageState extends State<PersonalPage> {
                     ],
                   ));
             } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              return const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      "Trang này hiện không tồn tại!",
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 123, 123, 123)),
+                    ),
+                  )
+                ],
+              );
             } else {
               return const Text('No data available');
             }
