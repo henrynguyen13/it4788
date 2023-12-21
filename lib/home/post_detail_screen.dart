@@ -83,142 +83,136 @@ class _PostDetailScreenState extends State<PostDetailScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Chi tiết bài viết",
-            style: TextStyle(fontSize: 18),
+      appBar: AppBar(
+        title: const Text(
+          "Chi tiết bài viết",
+          style: TextStyle(fontSize: 18),
+        ),
+      ),
+      body: CommentBox(
+        // userImage: CommentBox.commentImageParser(
+        //     imageURLorPath: NetworkImage(_avatar)),
+        placeHolder: 'Viết bình luận...',
+        errorText: 'Comment cannot be blank',
+        withBorder: false,
+        sendButtonMethod: () async {
+          if (formKey.currentState!.validate()) {
+            if (replyingMarkId != -1) {
+              _futureMark = setComment(
+                  widget.id,
+                  commentController.text,
+                  '0',
+                  ((currentIndex + 1) * defaultCount).toString(),
+                  replyingMarkId.toString());
+            } else {
+              _futureMark = setMark(
+                  widget.id,
+                  commentController.text,
+                  '0',
+                  ((currentIndex + 1) * defaultCount).toString(),
+                  isTruth.toString());
+            }
+            setState(() {
+              isShowingReplyComment = false;
+              replyingMarkId = -1;
+              repylingUsername = "";
+            });
+            commentController.clear();
+            FocusScope.of(context).unfocus();
+          }
+        },
+        onCloseReplyText: () {
+          setState(() {
+            isShowingReplyComment = false;
+            replyingMarkId = -1;
+          });
+        },
+        userReplying: repylingUsername,
+        formKey: formKey,
+        focusNode: focusNode,
+        commentController: commentController,
+        selectTruth: () {
+          setState(() {
+            isTruth = 1;
+            truthText = "Tin chính xác";
+          });
+        },
+
+        selectFake: () {
+          setState(() {
+            isTruth = 0;
+            truthText = "Tin giả";
+          });
+        },
+        showMoreMethod: () {
+          currentIndex++;
+          getAllMark();
+          setState(() {
+            isShowingReplyComment = false;
+            replyingMarkId = -1;
+            repylingUsername = "";
+          });
+        },
+        isVisibleReply: isShowingReplyComment,
+        isVisibleShowMoreComment:
+            listMark!.length >= (currentIndex + 1) * defaultCount,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        truthText: truthText,
+        sendWidget: const Visibility(
+          visible: true,
+          child: Icon(
+            Icons.send_sharp,
+            size: 30,
+            color: Color.fromRGBO(57, 104, 214, 1),
           ),
         ),
-        body: Column(
-          children: [
-            FutureBuilder<PostResponse>(
-                future: _futuresPost,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Expanded(
-                        child: Align(
-                            alignment: Alignment.center,
-                            child: CircularProgressIndicator()));
-                  } else if (snapshot.hasData) {
-                    post = snapshot.data;
+        //focusNode: focusNode,
+        child: ListView(children: [
+          FutureBuilder<PostResponse>(
+              future: _futuresPost,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                      height: 300,
+                      child: Align(
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator()));
+                } else if (snapshot.hasData) {
+                  post = snapshot.data;
 
-                    return PostDetailWidget(post: post!);
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return const Text('No data available');
-                  }
-                }),
-            Expanded(
-                child: FutureBuilder(
-                    future: _futureMark,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return ListView(
-                            padding: const EdgeInsets.fromLTRB(
-                              0,
-                              10,
-                              0,
-                              0,
-                            ),
-                            scrollDirection: Axis.vertical,
-                            children: [
-                              for (var i = 0; i < 5; i++) emptyMarkWidget(),
-                            ]);
-                      } else if (snapshot.hasData) {
-                        List<Mark>? listMark = snapshot.data;
+                  return PostDetailWidget(post: post!);
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return const Text('No data available');
+                }
+              }),
+          FutureBuilder(
+              future: _futureMark,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Column(children: [
+                    for (var i = 0; i < 5; i++) emptyMarkWidget(),
+                  ]);
+                } else if (snapshot.hasData) {
+                  List<Mark>? listMark = snapshot.data;
 
-                        return CommentBox(
-                          userImage: CommentBox.commentImageParser(
-                              imageURLorPath: NetworkImage(_avatar)),
-                          placeHolder: 'Viết bình luận...',
-                          errorText: 'Comment cannot be blank',
-                          withBorder: false,
-                          sendButtonMethod: () async {
-                            if (formKey.currentState!.validate()) {
-                              if (replyingMarkId != -1) {
-                                _futureMark = setComment(
-                                    widget.id,
-                                    commentController.text,
-                                    '0',
-                                    ((currentIndex + 1) * defaultCount)
-                                        .toString(),
-                                    replyingMarkId.toString());
-                              } else {
-                                _futureMark = setMark(
-                                    widget.id,
-                                    commentController.text,
-                                    '0',
-                                    ((currentIndex + 1) * defaultCount)
-                                        .toString(),
-                                    isTruth.toString());
-                              }
-                              setState(() {
-                                isShowingReplyComment = false;
-                                replyingMarkId = -1;
-                                repylingUsername = "";
-                              });
-                              commentController.clear();
-                              FocusScope.of(context).unfocus();
-                            }
-                          },
-                          onCloseReplyText: () {
-                            setState(() {
-                              isShowingReplyComment = false;
-                              replyingMarkId = -1;
-                            });
-                          },
-                          userReplying: repylingUsername,
-                          formKey: formKey,
-                          focusNode: focusNode,
-                          commentController: commentController,
-                          selectTruth: () {
-                            setState(() {
-                              isTruth = 1;
-                              truthText = "Tin chính xác";
-                            });
-                          },
-
-                          selectFake: () {
-                            setState(() {
-                              isTruth = 0;
-                              truthText = "Tin giả";
-                            });
-                          },
-                          showMoreMethod: () {
-                            currentIndex++;
-                            getAllMark();
-                            setState(() {
-                              isShowingReplyComment = false;
-                              replyingMarkId = -1;
-                              repylingUsername = "";
-                            });
-                          },
-                          isVisibleReply: isShowingReplyComment,
-                          isVisibleShowMoreComment: listMark!.length >=
-                              (currentIndex + 1) * defaultCount,
-                          backgroundColor: Colors.white,
-                          textColor: Colors.black,
-                          truthText: truthText,
-                          sendWidget: const Visibility(
-                            visible: true,
-                            child: Icon(
-                              Icons.send_sharp,
-                              size: 30,
-                              color: Color.fromRGBO(57, 104, 214, 1),
-                            ),
-                          ),
-                          //focusNode: focusNode,
-                          child: markList(listMark),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return const Text('No data available');
-                      }
-                    }))
-          ],
-        ));
+                  return Column(
+                    children: [
+                      for (var i = listMark!.length - 1; i >= 0; i--)
+                        markWidget(listMark, i, 40),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return const Text('No data available');
+                }
+              })
+        ]),
+      ),
+    );
   }
 
   Widget markWidget(List data, int index, double avatarSize) {
