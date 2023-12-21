@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:convert' show json;
 import 'dart:io';
 import 'dart:io' show File;
+import 'package:hive/hive.dart';
 import 'package:it4788/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -119,23 +120,17 @@ class _PostArticleState extends State<PostArticle> {
                                     ],
                                   ),
                                   onPressed: () {
-                                    PostDraft newPostDraft = PostDraft(
-                                      // selectedImages
-                                      //     .map((image) => image?.path ?? "")
-                                      //     .toList(),
-                                      postContent,
-                                      // status,
-                                      // auto_accept);
-                                      // drafts.add(newPostDraft);
-                                    );
-                                    writePostContent(postContent);
+                                    PostDraft newPostDraft =
+                                        PostDraft(postContent: postContent);
+
+                                    cachedPost(postDraftToJson(newPostDraft));
                                     setState(() {
                                       selectedImages = [];
                                       postContent = "";
                                       status = 'Hyped';
                                       auto_accept = '1';
                                     });
-
+                                    Navigator.pop(context);
                                     Navigator.pop(context);
                                   },
                                 ),
@@ -848,88 +843,6 @@ class _PostArticleState extends State<PostArticle> {
     } else {
       return Container();
     }
-    // if (images.length == 1) {
-    //   return Image.file(File(images[0]!.path),
-    //       height: 400, width: double.infinity, fit: BoxFit.cover);
-    // } else if (images.length == 2) {
-    //   return GridView.builder(
-    //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    //       crossAxisCount: 2,
-    //     ),
-    //     shrinkWrap: true,
-    //     physics: const NeverScrollableScrollPhysics(),
-    //     itemCount: images.length,
-    //     itemBuilder: (context, index) {
-    //       return GestureDetector(
-    //         onTap: () => {
-    //           Navigator.push(
-    //             context,
-    //             MaterialPageRoute(
-    //               builder: (context) => ImageDetailAddScreen(
-    //                 images: images,
-    //                 initialPage: index,
-    //                 onImageRemoved: (removedIndex, id) {
-    //                   setState(() {
-    //                     images.removeAt(removedIndex);
-    //                   });
-    //                 },
-    //                 type: "edit",
-    //               ),
-    //             ),
-    //           )
-    //         },
-    //         child: Padding(
-    //           padding: const EdgeInsets.symmetric(horizontal: 1),
-    //           child: Image.file(File(images[index]!.path),
-    //               height: 400, width: double.infinity, fit: BoxFit.cover),
-    //         ),
-    //       );
-    //     },
-    //   );
-    // } else if (images.length == 3) {
-    //   return Row(
-    //     children: [
-    //       Expanded(
-    //         child: Image.file(File(images[0]!.path),
-    //             height: 400, fit: BoxFit.cover),
-    //       ),
-    //       Expanded(
-    //         child: Column(
-    //           children: [
-    //             Padding(
-    //               padding: const EdgeInsets.only(left: 4, bottom: 2),
-    //               child: Image.file(File(images[1]!.path),
-    //                   height: 198, width: double.infinity, fit: BoxFit.cover),
-    //             ),
-    //             Padding(
-    //               padding: const EdgeInsets.only(left: 4, top: 2),
-    //               child: Image.file(File(images[2]!.path),
-    //                   height: 198, width: double.infinity, fit: BoxFit.cover),
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ],
-    //   );
-    // } else if (images.length >= 4) {
-    //   return GridView.builder(
-    //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    //       crossAxisCount: 2,
-    //     ),
-    //     shrinkWrap: true,
-    //     physics: const NeverScrollableScrollPhysics(),
-    //     itemCount: images.length,
-    //     itemBuilder: (context, index) {
-    //       return Padding(
-    //         padding: const EdgeInsets.all(1),
-    //         child: Image.file(File(images[index]!.path),
-    //             height: 200, width: double.infinity, fit: BoxFit.cover),
-    //       );
-    //     },
-    //   );
-    // } else {
-    //   return Container();
-    // }
   }
 
   Future<String?> _getUsername() async {
@@ -944,21 +857,37 @@ class _PostArticleState extends State<PostArticle> {
     return await Storage().getUserId();
   }
 
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
+  // Future<String> get _localPath async {
+  //   final directory = await getApplicationDocumentsDirectory();
 
-    return directory.path;
+  //   return directory.path;
+  // }
+
+  // Future<File> get _localFile async {
+  //   final path = await _localPath;
+  //   return File('$path/draft.txt');
+  // }
+
+  // Future<File> writePostContent(String content) async {
+  //   final file = await _localFile;
+
+  //   // Write the file
+  //   return file.writeAsString(content);
+  // }
+
+  Future<void> cachedPost(String json) async {
+    var box = await Hive.openBox('cached_post');
+    await box.put('post_draft', json);
+    print("CACHED POSTDRAFT");
+    print(box.get('post_draft'));
   }
 
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/draft.txt');
-  }
+  void getDataFromCached() async {
+    var box = await Hive.openBox('cached_post');
+    // var tmp = listPostFromJson(box.get('post_list'));
 
-  Future<File> writePostContent(String content) async {
-    final file = await _localFile;
-
-    // Write the file
-    return file.writeAsString(content);
+    // setState(() {
+    //   postList.addAll(tmp.data.post);
+    // });
   }
 }
