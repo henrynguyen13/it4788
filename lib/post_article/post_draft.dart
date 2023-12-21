@@ -1,39 +1,21 @@
+import 'dart:convert';
+
+PostDraft postDraftFromJson(String str) => PostDraft.fromJson(json.decode(str));
+
+String postDraftToJson(PostDraft data) => json.encode(data.toJson());
+
 class PostDraft {
-  // late List<String> images;
-  // late String video;
-  late String postContent;
-  // late String status;
-  // late String autoAccept;
+  String? postContent;
 
-  PostDraft(
-    // List<dynamic> images,
-    // String video,
-    String postContent,
-    // String status,
-    // String autoAccept,
-  ) {
-    // this.images = images.cast<String>();
-  }
+  PostDraft({
+    this.postContent,
+  });
 
-  factory PostDraft.fromJson(Map<String, dynamic> json) {
-    return PostDraft(
-      // json['images'] as List<dynamic>,
-      // json['video'] as String,
-      json['postContent'] as String,
-      // json['status'] as String,
-      // json['autoAccept'] as String,
-    );
-  }
+  factory PostDraft.fromJson(Map<String, dynamic> json) => PostDraft(
+        postContent: json["postContent"],
+      );
 
-  toJson() => {
-        // 'images': images.cast<dynamic>(),
-        // 'video': video,
-        'postContent': postContent,
-        // 'status': status,
-        // 'autoAccept': autoAccept
+  Map<String, dynamic> toJson() => {
+        "postContent": postContent,
       };
-
-  toPrint() {
-    print('post content: $postContent');
-  }
 }
