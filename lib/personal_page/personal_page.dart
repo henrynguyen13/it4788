@@ -387,14 +387,17 @@ class _PersonalPageState extends State<PersonalPage> {
                               )),
                         ],
                       ),
-                      Text(
-                        userInfor.data.username.isNotEmpty
-                            ? userInfor.data.username
-                            : "unknow",
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 24),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          userInfor.data.username.isNotEmpty
+                              ? userInfor.data.username
+                              : "unknow",
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -426,6 +429,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                       builder: (BuildContext context) =>
                                           AlertDialog(
                                         title: const Text('Mua coins'),
+                                        backgroundColor: Colors.white,
                                         content: SingleChildScrollView(
                                           child: Form(
                                               key: _formKey,
@@ -594,7 +598,9 @@ class _PersonalPageState extends State<PersonalPage> {
                                             onPressed: () =>
                                                 Navigator.pop(context, 'Hủy'),
                                             child: const Text('Hủy',
-                                                style: TextStyle(fontSize: 18)),
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Colors.black)),
                                           ),
                                           TextButton(
                                             onPressed: () async {
@@ -745,6 +751,20 @@ class _PersonalPageState extends State<PersonalPage> {
                               : Container(),
                         ],
                       ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Text(
+                          userInfor.data.description.isNotEmpty
+                              ? userInfor.data.description
+                              : '',
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
                       Align(
                         alignment: Alignment.center,
                         child: Padding(
@@ -857,11 +877,10 @@ class _PersonalPageState extends State<PersonalPage> {
                                   style: ButtonStyle(
                                     foregroundColor:
                                         MaterialStateProperty.all<Color>(
-                                            Colors.blue),
+                                            const Color(0xFF1878F2)),
                                     backgroundColor:
                                         MaterialStateProperty.all<Color>(
-                                            const Color.fromARGB(
-                                                255, 187, 226, 245)),
+                                            const Color(0xFF1878F2)),
                                     overlayColor: MaterialStateProperty
                                         .resolveWith<Color?>(
                                       (Set<MaterialState> states) {
@@ -889,9 +908,9 @@ class _PersonalPageState extends State<PersonalPage> {
                                     'Chỉnh sửa chi tiết công khai',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 18,
-                                    ),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18,
+                                        color: Colors.white),
                                   )),
                             )
                           : Container(),
@@ -937,7 +956,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 18,
-                                            color: Colors.blue),
+                                            color: Color(0xFF1878F2)),
                                       ),
                                     )),
                               ],
@@ -1079,7 +1098,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.all(5.0),
+                                            padding: const EdgeInsets.all(0.0),
                                             child: CircleAvatar(
                                               radius: 30,
                                               backgroundImage: NetworkImage(
@@ -1089,28 +1108,54 @@ class _PersonalPageState extends State<PersonalPage> {
                                                       : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'),
                                             ),
                                           ),
-                                          const SizedBox(
-                                            width: 300,
-                                            height: 60,
-                                            child: TextField(
-                                              decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                labelText: 'Bạn đang nghĩ gì?',
-                                              ),
-                                            ),
-                                          ),
+                                          MaterialButton(
+                                              onPressed: () => {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                const PostArticle(),
+                                                            settings:
+                                                                const RouteSettings(
+                                                                    name:
+                                                                        '/home')))
+                                                  },
+                                              child: Container(
+                                                width: 300,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: const Color
+                                                            .fromARGB(255, 140,
+                                                            139, 139)),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                20))),
+                                                child: const Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16.0,
+                                                      vertical: 16.0),
+                                                  child: Text(
+                                                    "Bạn đang nghĩ gì?",
+                                                    style: TextStyle(
+                                                        color: Color.fromARGB(
+                                                            255, 83, 83, 83)),
+                                                  ),
+                                                ),
+                                              ))
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: double.infinity,
-                                      height: 2,
-                                      child: DecoratedBox(
-                                        decoration: BoxDecoration(
-                                            color: Color.fromARGB(
-                                                255, 183, 180, 180)),
-                                      ),
-                                    ),
+                                    // const SizedBox(
+                                    //   width: double.infinity,
+                                    //   height: 2,
+                                    //   child: DecoratedBox(
+                                    //     decoration: BoxDecoration(
+                                    //         color: Color.fromARGB(
+                                    //             255, 183, 180, 180)),
+                                    //   ),
+                                    // ),
                                     const SizedBox(
                                       width: double.infinity,
                                       height: 30,

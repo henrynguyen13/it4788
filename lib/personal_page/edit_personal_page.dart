@@ -180,7 +180,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                               style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 18,
-                                  color: Colors.blue),
+                                  color: Color(0xFF1878F2)),
                             ),
                           )),
                     ],
@@ -228,7 +228,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 18,
-                                color: Colors.blue),
+                                color: Color(0xFF1878F2)),
                           ),
                         ),
                       ),
@@ -287,7 +287,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 18,
-                                color: Colors.blue),
+                                color: Color(0xFF1878F2)),
                           ),
                         ),
                       ),
@@ -339,7 +339,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 18,
-                                color: Colors.blue),
+                                color: Color(0xFF1878F2)),
                           ),
                         ),
                       ),

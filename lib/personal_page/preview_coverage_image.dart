@@ -38,28 +38,30 @@ class _PreviewCoverageImageState extends State<PreviewCoverageImage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Xem trước ảnh'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.save),
-              tooltip: 'Save image',
-              onPressed: () {
-                saveImage();
-              },
-            ),
-          ],
-        ),
-        body: Container(
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20), // Image border
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 400, // Image radius
-                  child: Image(
-                    image: FileImage(File(widget.imagePath)),
-                    fit: BoxFit.cover,
-                  ),
-                ))));
+      appBar: AppBar(
+        title: const Text('Xem trước ảnh'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save),
+            tooltip: 'Save image',
+            onPressed: () {
+              saveImage();
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20), // Image border
+              child: SizedBox(
+                width: double.infinity,
+                height: 400, // Image radius
+                child: Image(
+                  image: FileImage(File(widget.imagePath)),
+                  fit: BoxFit.cover,
+                ),
+              ))),
+    );
   }
 }

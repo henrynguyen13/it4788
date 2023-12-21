@@ -40,20 +40,27 @@ class _BlockListPageState extends State<BlockListPage> {
                 appBar: AppBar(
                   title: const Text("Danh sách chặn"),
                 ),
-                body: ListView(
-                    padding: const EdgeInsets.fromLTRB(
-                      0,
-                      10,
-                      0,
-                      0,
-                    ),
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      for (var i = listBlocked.length - 1; i >= 0; i--)
-                        BlockUserWidget(
-                          blockedUser: listBlocked[i],
+                body: listBlocked.isNotEmpty
+                    ? ListView(
+                        padding: const EdgeInsets.fromLTRB(
+                          0,
+                          10,
+                          0,
+                          0,
                         ),
-                    ]));
+                        scrollDirection: Axis.vertical,
+                        children: [
+                            for (var i = listBlocked.length - 1; i >= 0; i--)
+                              BlockUserWidget(
+                                blockedUser: listBlocked[i],
+                              ),
+                          ])
+                    : const Center(
+                        child: Text("Hiện bạn không chặn người dùng nào.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500)),
+                      ));
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {

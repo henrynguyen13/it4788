@@ -42,12 +42,12 @@ class CreatePostContainer extends StatelessWidget {
                       decoration: BoxDecoration(
                           border: Border.all(
                               width: 1,
-                              color: Color.fromARGB(255, 140, 139, 139)),
+                              color: const Color.fromARGB(255, 140, 139, 139)),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(20))),
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
+                            horizontal: 16.0, vertical: 12.0),
                         child: Text(
                           "Bạn đang nghĩ gì?",
                           style:

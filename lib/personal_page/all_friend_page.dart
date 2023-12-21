@@ -71,39 +71,48 @@ class _AllFriendPageState extends State<AllFriendPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: double.infinity,
-                      height: 60,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                            color: const Color.fromARGB(115, 173, 169, 169),
-                            borderRadius: BorderRadius.circular(30)),
-                        child: const Padding(
-                          padding: EdgeInsets.all(5.0),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.search,
-                                color: Colors.black45,
-                                size: 32.0,
-                              ),
-                              SizedBox(
-                                width: 350,
-                                height: 45,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: 'Tìm kiếm bạn bè',
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 60,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                              color: const Color.fromARGB(115, 173, 169, 169),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Expanded(
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 12.0),
+                                    child: Icon(
+                                      Icons.search,
+                                      color: Colors.black45,
+                                      size: 32.0,
+                                    ),
                                   ),
-                                ),
+                                  SizedBox(
+                                    width: 300,
+                                    height: 45,
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: 'Tìm kiếm bạn bè',
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Text(
                           textAlign: TextAlign.left,
                           '$total người bạn',
