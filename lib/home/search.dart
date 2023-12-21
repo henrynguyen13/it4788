@@ -91,13 +91,20 @@ class _SearchPageState extends State<SearchPage> {
                     return const Column();
                   } else if (snapshot.hasData) {
                     listPostId = snapshot.data!;
+
                     print(listPostId.length);
-                    return ListView(
-                      children: [
-                        for (int i = 0; i < listPostId.length; i++)
-                          postDetailWidgetList(listPostId[i])
-                      ],
-                    );
+                    if (listPostId.length > 0) {
+                      return ListView(
+                        children: [
+                          for (int i = 0; i < listPostId.length; i++)
+                            postDetailWidgetList(listPostId[i])
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: Text("Không tìm thấy kết quả"),
+                      );
+                    }
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
