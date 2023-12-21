@@ -993,7 +993,9 @@ class _PersonalPageState extends State<PersonalPage> {
                               crossAxisSpacing: 8.0, // Khoảng cách giữa các cột
                               mainAxisSpacing: 8.0, // Khoảng cách giữa các hàng
                             ),
-                            itemCount: userFriends.data.friends.length,
+                            itemCount: userFriends.data.friends.length >= 6
+                                ? 6
+                                : userFriends.data.friends.length,
                             itemBuilder: (context, index) {
                               var item = userFriends.data.friends[index];
 
