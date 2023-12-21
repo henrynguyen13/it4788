@@ -71,7 +71,7 @@ class _SearchPageState extends State<SearchPage> {
           }, suggestionsBuilder:
                   (BuildContext context, SearchController controller) {
             return List<ListTile>.generate(5, (int index) {
-              final String item = 'item $index';
+              final String item = 'hi';
               return ListTile(
                 title: Text(item),
                 onTap: () {
