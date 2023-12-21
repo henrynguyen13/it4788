@@ -8,6 +8,7 @@ import 'package:it4788/sign_in/set_username.dart';
 import 'package:it4788/sign_in/verify_reset_password.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 import 'package:it4788/sign_up/verify_email.dart';
+import 'package:it4788/firebase_api/firebase_api.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -26,6 +27,10 @@ class _SignIn extends State<SignInPage> {
 
   String verifyCodeData = "";
   String emailData = "";
+
+  void setDevToken() async {
+    FirebaseApi().setDevTokenFirebase();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +200,7 @@ class _SignIn extends State<SignInPage> {
 
                                 if (message == 'OK' && username != '') {
                                   if (!context.mounted) return;
-
+                                  setDevToken();
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
@@ -205,7 +210,7 @@ class _SignIn extends State<SignInPage> {
                                   );
                                 } else {
                                   if (!context.mounted) return;
-
+                                  setDevToken();
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
