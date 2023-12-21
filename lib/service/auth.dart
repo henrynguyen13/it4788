@@ -84,8 +84,10 @@ Future<Response> setUsername(String username, File? avatar) async {
   var token = await _getToken();
   FormData formData = FormData.fromMap({
     'username': username,
-    'avatar': MultipartFile.fromFile(avatar!.path,
-        filename: avatar.path.split('/').last)
+    'avatar': avatar != null
+        ? MultipartFile.fromFile(avatar.path,
+            filename: avatar.path.split('/').last)
+        : ""
   });
   final dio = ApiService.createDio();
   final response = await dio.post('change_profile_after_signup',

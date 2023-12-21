@@ -1095,8 +1095,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                             child: TextField(
                                               decoration: InputDecoration(
                                                 border: InputBorder.none,
-                                                labelText:
-                                                    'Enter your username',
+                                                labelText: 'Bạn đang nghĩ gì?',
                                               ),
                                             ),
                                           ),

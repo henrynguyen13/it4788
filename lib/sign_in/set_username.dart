@@ -80,7 +80,7 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                     await _pickImageFromGallery();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 147, 62, 181),
+                    backgroundColor: const Color(0xFF1878F2),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
@@ -104,7 +104,8 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                     ),
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
-                    backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                    backgroundColor:
+                        MaterialStateProperty.all(const Color(0xFF1878F2))),
                 onPressed: () async {
                   try {
                     final setUsernameResponse =
