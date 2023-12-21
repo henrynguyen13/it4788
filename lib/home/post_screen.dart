@@ -1,13 +1,7 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:it4788/core/pallete.dart';
-import 'package:it4788/data/data.dart';
-import 'package:it4788/home/post_detail_screen.dart';
-import 'package:it4788/firebase_api/firebase_api.dart';
-import 'package:it4788/model/notification.dart';
 import 'package:it4788/model/post.dart';
 import 'package:it4788/model/user_infor_profile.dart';
-import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/profile_sevice.dart';
 import 'package:it4788/widgets/post_widget.dart';
@@ -45,10 +39,6 @@ class _PostScreenState extends State<PostScreen> {
     });
   }
 
-  void setDevToken() async {
-    FirebaseApi().setDevTokenFirebase();
-  }
-
   void loadMoreData() async {
     if (!isLoading) {
       setState(() {
@@ -81,7 +71,6 @@ class _PostScreenState extends State<PostScreen> {
             })
           });
     }
-    setDevToken();
   }
 
   @override
