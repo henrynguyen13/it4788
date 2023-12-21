@@ -21,7 +21,7 @@ class _SettingPersonalPageState extends State<SettingPersonalPage> {
       ),
       body: Column(children: [
         Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: GestureDetector(
               onTap: () => {
                 Navigator.push(
@@ -56,7 +56,7 @@ class _SettingPersonalPageState extends State<SettingPersonalPage> {
               ),
             )),
         Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: GestureDetector(
               onTap: () => {
                 Navigator.push(
@@ -76,7 +76,7 @@ class _SettingPersonalPageState extends State<SettingPersonalPage> {
                   Padding(
                     padding: EdgeInsets.all(20),
                     child: Text(
-                      'Tìm kiếm trên trang cá nhan',
+                      'Tìm kiếm trên trang cá nhân',
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -89,7 +89,7 @@ class _SettingPersonalPageState extends State<SettingPersonalPage> {
               ),
             )),
         Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: GestureDetector(
               onTap: () => {
                 Navigator.push(

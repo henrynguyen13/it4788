@@ -62,7 +62,7 @@ class _PersonalPageState extends State<PersonalPage> {
     if (!isLoading) {
       setState(() {
         isLoading = true;
-        index += count; // Increment the index to load the next set of data
+        index += count;
       });
       var tmp = await ProfileSevice().getMyListPost(curId!, index, count);
 
@@ -522,6 +522,9 @@ class _PersonalPageState extends State<PersonalPage> {
                                                         ),
                                                         child: SizedBox(
                                                           child: TextFormField(
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
                                                             decoration:
                                                                 InputDecoration(
                                                               border:
@@ -1092,8 +1095,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                             child: TextField(
                                               decoration: InputDecoration(
                                                 border: InputBorder.none,
-                                                labelText:
-                                                    'Enter your username',
+                                                labelText: 'Bạn đang nghĩ gì?',
                                               ),
                                             ),
                                           ),

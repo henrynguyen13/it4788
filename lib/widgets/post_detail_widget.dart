@@ -2,34 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:it4788/comment/commentPage.dart';
-import 'package:it4788/home/post_detail_screen.dart';
 import 'package:it4788/model/post.dart';
+import 'package:it4788/model/post_response.dart';
 import 'package:it4788/post_article/edit_post_article.dart';
+import 'package:it4788/post_article/image_detail_screen.dart';
 import 'package:it4788/report.dart';
 import 'package:it4788/service/profile_sevice.dart';
-// import 'package:video_player/video_player.dart';
 
-class PostWidget extends StatefulWidget {
-  final Post post;
-
-  const PostWidget({super.key, required this.post});
+class PostDetailWidget extends StatefulWidget {
+  final PostResponse post;
+  final Function? click;
+  const PostDetailWidget({super.key, required this.post, this.click});
   @override
-  State<PostWidget> createState() {
-    return _PostWidgetState();
+  State<PostDetailWidget> createState() {
+    return _PostDetailWidgetState();
   }
 }
 
-class _PostWidgetState extends State<PostWidget> {
-  late Post post;
+class _PostDetailWidgetState extends State<PostDetailWidget> {
+  late PostResponseData post;
   late bool isClickKudos;
   late bool isClickDisappointed;
-  // late VideoPlayerController _videoPlayerController;
-
+  late String feel;
   @override
   void initState() {
     super.initState();
-
-    post = widget.post;
+    post = widget.post.data;
+    feel = (int.parse(post.disappointed) + int.parse(post.kudos)).toString();
     if (post.isFelt == "-1") {
       isClickKudos = false;
       isClickDisappointed = false;
@@ -40,15 +39,6 @@ class _PostWidgetState extends State<PostWidget> {
       isClickKudos = true;
       isClickDisappointed = false;
     }
-  }
-
-  void navigateToDetail() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PostDetailScreen(id: post.id),
-      ),
-    );
   }
 
   void handleClickKudos() async {
@@ -66,15 +56,15 @@ class _PostWidgetState extends State<PostWidget> {
       }
 
       if (post.isFelt == '1') {
-        int feelInt = int.parse(post.feel) - 1;
+        int feelInt = int.parse(feel) - 1;
         post.isFelt = '-1';
-        post.feel = feelInt.toString();
+        feel = feelInt.toString();
       } else if (post.isFelt == '0') {
         post.isFelt = '1';
       } else {
-        int feelInt = int.parse(post.feel) + 1;
+        int feelInt = int.parse(feel) + 1;
         post.isFelt = '1';
-        post.feel = feelInt.toString();
+        feel = feelInt.toString();
       }
     });
   }
@@ -94,15 +84,15 @@ class _PostWidgetState extends State<PostWidget> {
       }
 
       if (post.isFelt == '0') {
-        int feelInt = int.parse(post.feel) - 1;
+        int feelInt = int.parse(feel) - 1;
         post.isFelt = '-1';
-        post.feel = feelInt.toString();
+        feel = feelInt.toString();
       } else if (post.isFelt == '1') {
         post.isFelt = '0';
       } else {
-        int feelInt = int.parse(post.feel) + 1;
+        int feelInt = int.parse(feel) + 1;
         post.isFelt = '0';
-        post.feel = feelInt.toString();
+        feel = feelInt.toString();
       }
     });
   }
@@ -124,7 +114,7 @@ class _PostWidgetState extends State<PostWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => {navigateToDetail()},
+      onTap: () => {widget.click != null ? widget.click!() : null},
       child: Card(
           elevation: 0,
           color: Colors.transparent,
@@ -132,27 +122,28 @@ class _PostWidgetState extends State<PostWidget> {
     );
   }
 
-  // @override
-  // void dispose() {
-  //   _videoPlayerController.dispose();
-  //   super.dispose();
-  // }
-
-  // Widget _buildVideoSection(Video? video) {
-  //   print("videoa $video");
-
-  //   return _videoPlayerController.value.isInitialized
-  //       ? AspectRatio(
-  //           aspectRatio: _videoPlayerController.value.aspectRatio,
-  //           child: VideoPlayer(_videoPlayerController))
-  //       : Container();
-  // }
-
-  Widget _buildImageSection(List<ImagePost> images) {
+  Widget _buildImageSection(List<PostImage> images) {
     if (images.length == 1) {
-      return Image.network(images[0].url,
-          height: 400, width: double.infinity, fit: BoxFit.cover);
-    } else if (images.length == 2) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ImageDetailScreen(
+                // imageUrls: images.map((image) => image!.url).toList(),
+                images: images,
+                initialPage: 0,
+                onImageRemoved: (removedIndex, id) {
+                  setState(() {});
+                },
+              ),
+            ),
+          );
+        },
+        child: Image.network(images[0]!.url,
+            height: 400, width: double.infinity, fit: BoxFit.cover),
+      );
+    } else if (images.length == 2 || images.length == 4) {
       return GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -161,10 +152,27 @@ class _PostWidgetState extends State<PostWidget> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: images.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 1),
-            child: Image.network(images[index].url,
-                height: 400, width: double.infinity, fit: BoxFit.cover),
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ImageDetailScreen(
+                    // imageUrls: images.map((image) => image!.url).toList(),
+                    images: images,
+                    initialPage: index,
+                    onImageRemoved: (removedIndex, id) {
+                      setState(() {});
+                    },
+                  ),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(1),
+              child: Image.network(images[index]!.url,
+                  height: 200, width: double.infinity, fit: BoxFit.cover),
+            ),
           );
         },
       );
@@ -172,48 +180,81 @@ class _PostWidgetState extends State<PostWidget> {
       return Row(
         children: [
           Expanded(
-            child: Image.network(images[0].url, height: 400, fit: BoxFit.cover),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageDetailScreen(
+                      images: images,
+                      initialPage: 0,
+                      onImageRemoved: (removedIndex, id) {
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                );
+              },
+              child:
+                  Image.network(images[0]!.url, height: 400, fit: BoxFit.cover),
+            ),
           ),
           Expanded(
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 4, bottom: 2),
-                  child: Image.network(images[1].url,
-                      height: 198, width: double.infinity, fit: BoxFit.cover),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageDetailScreen(
+                            images: images,
+                            initialPage: 1,
+                            onImageRemoved: (removedIndex, id) {
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.network(images[1]!.url,
+                        height: 198, width: double.infinity, fit: BoxFit.cover),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4, top: 2),
-                  child: Image.network(images[1].url,
-                      height: 198, width: double.infinity, fit: BoxFit.cover),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageDetailScreen(
+                            images: images,
+                            initialPage: 2,
+                            onImageRemoved: (removedIndex, id) {
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.network(images[2]!.url,
+                        height: 198, width: double.infinity, fit: BoxFit.cover),
+                  ),
                 ),
               ],
             ),
           ),
         ],
       );
-    } else if (images.length >= 4) {
-      return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(1),
-            child: Image.network(images[index].url,
-                height: 200, width: double.infinity, fit: BoxFit.cover),
-          );
-        },
-      );
     } else {
       return Container();
     }
   }
 
-  Widget _buildArticleItem(Post post) {
+  Widget _buildArticleItem(PostResponseData post) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -282,12 +323,6 @@ class _PostWidgetState extends State<PostWidget> {
               ),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(0),
-          //   child: post.video.url == ""
-          //       ? _buildImageSection(post.image)
-          //       : _buildVideoSection(post.video),
-          // ),
           _buildImageSection(post.image),
           Padding(
             padding: const EdgeInsets.all(10),
@@ -311,9 +346,9 @@ class _PostWidgetState extends State<PostWidget> {
                 ],
               ),
               const Padding(padding: EdgeInsets.only(right: 4)),
-              Text(post.feel),
+              Text(feel),
               const Spacer(),
-              Text("${post.commentMark} bình luận")
+              Text("0 bình luận")
             ]),
           ),
           const Divider(
@@ -431,7 +466,7 @@ class _PostWidgetState extends State<PostWidget> {
 // ignore: must_be_immutable
 class BottomPopup extends StatelessWidget {
   BottomPopup({super.key, required this.post});
-  Post post;
+  PostResponseData post;
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -530,15 +565,7 @@ class BottomPopup extends StatelessWidget {
                                 Text('Báo cáo bài viết'),
                               ],
                             ),
-                            onPressed: () => {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ReportPage(
-                                              post: post,
-                                            )),
-                                  ),
-                                }),
+                            onPressed: () => {}),
                       ],
                     ),
                   ),

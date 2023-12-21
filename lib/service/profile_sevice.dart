@@ -188,4 +188,22 @@ class ProfileSevice {
       rethrow;
     }
   }
+
+  Future<void> setDevToken(String tokenUID) async {
+    var token = await _getToken();
+    try {
+      Map<String, dynamic> request = {
+        'devtoken': tokenUID,
+        'devtype': 1,
+      };
+      final dio = ApiService.createDio();
+      final response = await dio.post('set_devtoken',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print("DEVTOKEN ${response.data}");
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

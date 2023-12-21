@@ -8,18 +8,21 @@ class ImageCarousel extends StatefulWidget {
   final List<PostImage?> images;
   final int initialPage;
   final Function(int, String) onImageRemoved;
-  ImageCarousel({
-    // required this.imageUrls,
-    required this.images,
-    required this.initialPage,
-    required this.onImageRemoved,
-  });
+  final String? type;
+  ImageCarousel(
+      {
+      // required this.imageUrls,
+      required this.images,
+      required this.initialPage,
+      required this.onImageRemoved,
+      this.type});
 
   @override
   _ImageCarouselState createState() => _ImageCarouselState();
 }
 
 class _ImageCarouselState extends State<ImageCarousel> {
+  late String? type;
   late PageController _pageController;
 
   void _onImageRemoved(removedIndex) {
@@ -31,6 +34,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: widget.initialPage);
+    type = widget.type;
   }
 
   @override
@@ -45,26 +49,28 @@ class _ImageCarouselState extends State<ImageCarousel> {
                 widget.images.map((image) => image!.url).toList()[index]);
           },
         ),
-        Align(
-          alignment: Alignment.topRight,
-          child: GestureDetector(
-            onTap: () {
-              _onImageRemoved(_pageController.page!.toInt());
-            },
-            child: Container(
-              margin: EdgeInsets.all(16.0),
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black54,
-              ),
-              child: Icon(
-                Icons.close,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
+        type == 'edit'
+            ? Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                  onTap: () {
+                    _onImageRemoved(_pageController.page!.toInt());
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black54,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )
+            : const SizedBox(),
       ],
     );
   }

@@ -7,12 +7,13 @@ class ImageDetailScreen extends StatelessWidget {
   final List<PostImage?> images;
   // final List<String> imageIndex;
   final int initialPage;
+  final String? type;
   final Function(int, String) onImageRemoved;
-  const ImageDetailScreen({
-    required this.images,
-    required this.initialPage,
-    required this.onImageRemoved,
-  });
+  const ImageDetailScreen(
+      {required this.images,
+      required this.initialPage,
+      required this.onImageRemoved,
+      this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +27,11 @@ class ImageDetailScreen extends StatelessWidget {
         ),
       ),
       body: ImageCarousel(
-        // imageUrls: imageUrls,
-        images: images,
-        initialPage: initialPage,
-        onImageRemoved: onImageRemoved,
-      ),
+          // imageUrls: imageUrls,
+          images: images,
+          initialPage: initialPage,
+          onImageRemoved: onImageRemoved,
+          type: type),
     );
   }
 }

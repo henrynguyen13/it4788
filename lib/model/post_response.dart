@@ -1,11 +1,4 @@
-// To parse this JSON data, do
-//
-//     final postResponse = postResponseFromJson(jsonString);
-
 import 'dart:convert';
-
-import 'package:image_picker/image_picker.dart';
-import 'package:it4788/model/post.dart';
 
 PostResponse postResponseFromJson(String str) =>
     PostResponse.fromJson(json.decode(str));
@@ -15,7 +8,7 @@ String postResponseToJson(PostResponse data) => json.encode(data.toJson());
 class PostResponse {
   String code;
   String message;
-  Data data;
+  PostResponseData data;
 
   PostResponse({
     required this.code,
@@ -26,7 +19,7 @@ class PostResponse {
   factory PostResponse.fromJson(Map<String, dynamic> json) => PostResponse(
         code: json["code"],
         message: json["message"],
-        data: Data.fromJson(json["data"]),
+        data: PostResponseData.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -36,7 +29,7 @@ class PostResponse {
       };
 }
 
-class Data {
+class PostResponseData {
   String id;
   String name;
   DateTime created;
@@ -60,7 +53,7 @@ class Data {
   String url;
   String messages;
 
-  Data({
+  PostResponseData({
     required this.id,
     required this.name,
     required this.created,
@@ -85,7 +78,8 @@ class Data {
     required this.messages,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory PostResponseData.fromJson(Map<String, dynamic> json) =>
+      PostResponseData(
         id: json["id"],
         name: json["name"],
         created: DateTime.parse(json["created"]),
