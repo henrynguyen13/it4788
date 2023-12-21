@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
+
 ListPost listPostFromJson(String str) => ListPost.fromJson(json.decode(str));
 Post postDetailFromJson(String str) => Post.fromJson(json.decode(str));
 
@@ -53,27 +55,51 @@ class Data {
       };
 }
 
+@HiveType(typeId: 0)
 class Post {
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String name;
+
+  @HiveField(2)
   List<ImagePost> image;
-  // Video video;
+
+  @HiveField(3)
   String described;
+
+  @HiveField(4)
   DateTime created;
+
+  @HiveField(5)
   String feel;
+
+  @HiveField(6)
   String commentMark;
+
+  @HiveField(7)
   String isFelt;
+
+  @HiveField(8)
   String isBlocked;
+
+  @HiveField(9)
   String canEdit;
+
+  @HiveField(10)
   String banned;
+
+  @HiveField(11)
   String state;
+
+  @HiveField(12)
   Author author;
 
   Post({
     required this.id,
     required this.name,
     required this.image,
-    // required this.video,
     required this.described,
     required this.created,
     required this.feel,
@@ -91,7 +117,6 @@ class Post {
         name: json["name"],
         image: List<ImagePost>.from(
             json["image"].map((x) => ImagePost.fromJson(x))),
-        // video: Video.fromJson(json["video"]),
         described: json["described"],
         created: DateTime.parse(json["created"]),
         feel: json["feel"],
@@ -108,7 +133,6 @@ class Post {
         "id": id,
         "name": name,
         "image": List<dynamic>.from(image.map((x) => x.toJson())),
-        // "video": video,
         "described": described,
         "created": created.toIso8601String(),
         "feel": feel,
@@ -122,9 +146,15 @@ class Post {
       };
 }
 
+@HiveType(typeId: 1)
 class Author {
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String name;
+
+  @HiveField(2)
   String avatar;
 
   Author({
@@ -146,22 +176,12 @@ class Author {
       };
 }
 
-// class Video {
-//   String url;
-
-//   Video({required this.url});
-
-//   factory Video.fromJson(Map<String, dynamic> json) => Video(
-//         url: json["url"],
-//       );
-
-//   Map<String, dynamic> toJson() => {
-//         "url": url,
-//       };
-// }
-
+@HiveType(typeId: 2)
 class ImagePost {
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String url;
 
   ImagePost({

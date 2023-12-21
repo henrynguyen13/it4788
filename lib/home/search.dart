@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:it4788/core/pallete.dart';
+import 'package:it4788/model/post_response.dart';
+import 'package:it4788/service/post_sevice.dart';
+import 'package:it4788/service/search_service.dart';
+import 'package:it4788/widgets/post_detail_widget.dart';
+import 'package:it4788/widgets/post_widget.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -9,47 +15,58 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   bool isDark = false;
+  Future<List<String>?>? _future;
+  List<String> listPostId = <String>[];
+
+  Widget postDetailWidgetList(String postId) {
+    Future<PostResponse> _post = PostSevice().getPostById(postId);
+    return FutureBuilder(
+        future: _post,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              listPostId.isEmpty) {
+            return const Column();
+          } else if (snapshot.hasData) {
+            PostResponse post = snapshot.data!;
+            return PostDetailWidget(post: post);
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return SizedBox();
+          }
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = ThemeData(
-        useMaterial3: true,
-        brightness: isDark ? Brightness.dark : Brightness.light);
-
     return MaterialApp(
-      theme: themeData,
       home: Scaffold(
-        appBar: AppBar(title: const Text('Search Bar Sample')),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SearchAnchor(
+        appBar: AppBar(title: const Text('Tìm kiếm bài viết')),
+        body: Column(children: [
+          SearchAnchor(
               builder: (BuildContext context, SearchController controller) {
-            return SearchBar(
-              controller: controller,
-              padding: const MaterialStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.symmetric(horizontal: 16.0)),
-              onTap: () {
-                controller.openView();
-              },
-              onChanged: (_) {
-                controller.openView();
-              },
-              leading: const Icon(Icons.search),
-              trailing: <Widget>[
-                Tooltip(
-                  message: 'Change brightness mode',
-                  child: IconButton(
-                    isSelected: isDark,
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+              child: SearchBar(
+                controller: controller,
+                padding: const MaterialStatePropertyAll<EdgeInsets>(
+                    EdgeInsets.symmetric(horizontal: 16.0)),
+                onTap: () {
+                  controller.openView();
+                },
+                onChanged: (_) {
+                  controller.openView();
+                },
+                leading: IconButton(
+                    icon: Icon(Icons.search),
                     onPressed: () {
+                      print("search");
                       setState(() {
-                        isDark = !isDark;
+                        _future = SearchService()
+                            .searchPost(controller.text, "841", 0, 10);
                       });
-                    },
-                    icon: const Icon(Icons.wb_sunny_outlined),
-                    selectedIcon: const Icon(Icons.brightness_2_outlined),
-                  ),
-                )
-              ],
+                    }),
+              ),
             );
           }, suggestionsBuilder:
                   (BuildContext context, SearchController controller) {
@@ -65,7 +82,37 @@ class _SearchPageState extends State<SearchPage> {
               );
             });
           }),
-        ),
+          Expanded(
+            child: FutureBuilder(
+                future: _future,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting &&
+                      listPostId.isEmpty) {
+                    return const Column();
+                  } else if (snapshot.hasData) {
+                    listPostId = snapshot.data!;
+
+                    print(listPostId.length);
+                    if (listPostId.length > 0) {
+                      return ListView(
+                        children: [
+                          for (int i = 0; i < listPostId.length; i++)
+                            postDetailWidgetList(listPostId[i])
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: Text("Không tìm thấy kết quả"),
+                      );
+                    }
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return SizedBox();
+                  }
+                }),
+          )
+        ]),
       ),
     );
   }

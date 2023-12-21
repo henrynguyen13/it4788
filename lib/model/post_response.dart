@@ -42,6 +42,7 @@ class PostResponseData {
   String isFelt;
   String isMarked;
   List<PostImage> image;
+  Video? video;
   Author author;
   Category category;
   String state;
@@ -66,6 +67,7 @@ class PostResponseData {
     required this.isFelt,
     required this.isMarked,
     required this.image,
+    this.video,
     required this.author,
     required this.category,
     required this.state,
@@ -93,6 +95,7 @@ class PostResponseData {
         isMarked: json["is_marked"],
         image: List<PostImage>.from(
             json["image"].map((x) => PostImage.fromJson(x))),
+        video: json["video"] == null ? null : Video.fromJson(json["video"]),
         author: Author.fromJson(json["author"]),
         category: Category.fromJson(json["category"]),
         state: json["state"],
@@ -118,6 +121,7 @@ class PostResponseData {
         "is_felt": isFelt,
         "is_marked": isMarked,
         "image": List<PostImage>.from(image.map((x) => x.toJson())),
+        "video": video?.toJson(),
         "author": author.toJson(),
         "category": category.toJson(),
         "state": state,
@@ -195,6 +199,22 @@ class PostImage {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "url": url,
+      };
+}
+
+class Video {
+  String url;
+
+  Video({
+    required this.url,
+  });
+
+  factory Video.fromJson(Map<String, dynamic> json) => Video(
+        url: json["url"],
+      );
+
+  Map<String, dynamic> toJson() => {
         "url": url,
       };
 }

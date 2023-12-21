@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:it4788/core/pallete.dart';
 import 'package:it4788/firebase_api/firebase_api.dart';
 import 'package:it4788/model/post.dart';
@@ -29,22 +30,6 @@ class _PostScreenState extends State<PostScreen> {
   int count = 20;
   bool isLoading = false;
   bool isConnection = false;
-
-  Future<void> checkConnection() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        setState(() {
-          isConnection = true;
-        });
-      }
-    } on SocketException catch (_) {
-      setState(() {
-        isConnection = false;
-      });
-    }
-  }
-
   void setDevToken() async {
     FirebaseApi().setDevTokenFirebase();
   }
@@ -52,7 +37,6 @@ class _PostScreenState extends State<PostScreen> {
   @override
   void initState() {
     super.initState();
-    checkConnection();
     getData();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -98,6 +82,22 @@ class _PostScreenState extends State<PostScreen> {
     }
   }
 
+  Future<void> cachedPost(String json) async {
+    var box = await Hive.openBox('cached_post');
+    await box.put('post_list', json);
+    print("CACHED NEEEEEEE");
+    print(box.get('post_list'));
+  }
+
+  void getDataFromCached() async {
+    var box = await Hive.openBox('cached_post');
+    var tmp = listPostFromJson(box.get('post_list'));
+
+    setState(() {
+      postList.addAll(tmp.data.post);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -114,6 +114,7 @@ class _PostScreenState extends State<PostScreen> {
           if (postList.isEmpty) {
             listPostResponse = snapshot.data!;
             postList.addAll(listPostResponse!.data.post);
+            cachedPost(listPostToJson(snapshot.data!));
           }
 
           return CustomScrollView(
@@ -140,11 +141,32 @@ class _PostScreenState extends State<PostScreen> {
               ),
             ],
           );
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
         } else {
-          return const Align(
-              alignment: Alignment.center, child: CircularProgressIndicator());
+          getDataFromCached();
+          return CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverToBoxAdapter(
+                  child: userInfor != null
+                      ? CreatePostContainer(currentUser: userInfor!)
+                      : const SizedBox(width: double.infinity, height: 10)),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    if (index == postList.length) {
+                      return const SizedBox(
+                          height: 300,
+                          width: double.infinity,
+                          child: Center(child: CircularProgressIndicator()));
+                    } else {
+                      return PostWidget(post: postList[index]);
+                    }
+                  },
+                  childCount: postList.length + (isLoading ? 1 : 0),
+                ),
+              ),
+            ],
+          );
         }
       },
     );

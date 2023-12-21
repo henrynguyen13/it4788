@@ -119,6 +119,9 @@ class PostSevice {
             "Authorization": "Bearer $token",
           }));
 
+      final jsonResponse = json.decode(response.data);
+      Storage().saveCoins(jsonResponse['data']['coins']);
+
       print(response.data);
       return response;
     } catch (e) {
@@ -232,6 +235,25 @@ class PostSevice {
       return listVideo;
     } catch (e) {
       print(e);
+      rethrow;
+    }
+  }
+
+  Future<Response> deletePost(String id) async {
+    var token = await _getToken();
+
+    try {
+      Map<String, dynamic> request = {
+        'id': id,
+      };
+
+      final dio = ApiService.createDio();
+      final response = await dio.post('delete_post',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print(response.data);
+      return response;
+    } catch (e) {
       rethrow;
     }
   }
