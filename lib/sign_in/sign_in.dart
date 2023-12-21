@@ -22,7 +22,7 @@ class _SignIn extends State<SignInPage> {
   Color emailIconColor = Colors.grey;
   Color passwordIconColor = Colors.grey;
   Color confirmPasswordIconColor = Colors.grey;
-  bool _passwordVisible = true;
+  bool _passwordVisible = false;
 
   String verifyCodeData = "";
   String emailData = "";

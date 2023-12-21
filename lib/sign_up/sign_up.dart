@@ -22,7 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Color emailIconColor = Colors.grey;
   Color passwordIconColor = Colors.grey;
   Color confirmPasswordIconColor = Colors.grey;
-  bool _passwordVisible = true;
+  bool _passwordVisible = false;
 
   String verifyCodeData = "";
   String emailData = "";

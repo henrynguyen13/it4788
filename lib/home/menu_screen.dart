@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:it4788/home/setting_page.dart';
 import 'package:it4788/personal_page/personal_page.dart';
 import 'package:it4788/service/auth.dart';
 import 'package:it4788/sign_in/sign_in.dart';
@@ -24,7 +25,7 @@ class _MenuScreenState extends State<MenuScreen> {
   void handleNavToPersonalPage() async {
     var userId = await _getUserId();
     if (userId != null) {
-      conheo(userId);
+      redirectToPersonalPage(userId);
     }
   }
 
@@ -42,10 +43,17 @@ class _MenuScreenState extends State<MenuScreen> {
     }
   }
 
-  void conheo(String userId) {
+  void redirectToPersonalPage(String userId) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => PersonalPage(id: userId)),
+    );
+  }
+
+  void handleNavToSettingPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SettingPage()),
     );
   }
 
@@ -69,7 +77,9 @@ class _MenuScreenState extends State<MenuScreen> {
             return MenuItem(
               icon: Icons.settings,
               text: "Cài đặt",
-              function: () {},
+              function: () {
+                handleNavToSettingPage();
+              },
             );
           }
           if (index == 2) {

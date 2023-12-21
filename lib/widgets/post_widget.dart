@@ -109,8 +109,9 @@ class _PostWidgetState extends State<PostWidget> {
 
   String formatTimeDifference(DateTime from, DateTime to) {
     Duration difference = to.difference(from);
-
-    if (difference.inSeconds < 60) {
+    if (difference.inSeconds < 0) {
+      return '${difference.inSeconds} giây trước';
+    } else if (difference.inSeconds < 60) {
       return '${difference.inSeconds} giây trước';
     } else if (difference.inMinutes < 60) {
       return '${difference.inMinutes} phút trước';
