@@ -84,6 +84,7 @@ flutter:
     - assets/images/icons/avatar_icon.png
     - assets/images/auth_facebook.png
     - assets/images/icons/sad.png
+    - assets/images/icons/anti-facebook.png
     - assets/images/icons/heart.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
