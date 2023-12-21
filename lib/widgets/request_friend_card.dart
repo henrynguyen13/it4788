@@ -85,7 +85,7 @@ class _RequestFriendCardState extends State<RequestFriendCard> {
                                       Palette.facebookBlue)),
                               child: const Row(
                                 children: [
-                                  Icon(Icons.add),
+                                  Icon(Icons.check),
                                   SizedBox(
                                     width: 8.0,
                                   ),
