@@ -1089,16 +1089,42 @@ class _PersonalPageState extends State<PersonalPage> {
                                                       : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'),
                                             ),
                                           ),
-                                          const SizedBox(
-                                            width: 300,
-                                            height: 60,
-                                            child: TextField(
-                                              decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                labelText: 'Bạn đang nghĩ gì?',
-                                              ),
-                                            ),
-                                          ),
+                                          MaterialButton(
+                                              onPressed: () => {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                const PostArticle(),
+                                                            settings:
+                                                                const RouteSettings(
+                                                                    name:
+                                                                        '/home')))
+                                                  },
+                                              child: Container(
+                                                width: 280,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: const Color
+                                                            .fromARGB(255, 140,
+                                                            139, 139)),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                20))),
+                                                child: const Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16.0,
+                                                      vertical: 16.0),
+                                                  child: Text(
+                                                    "Bạn đang nghĩ gì?",
+                                                    style: TextStyle(
+                                                        color: Color.fromARGB(
+                                                            255, 83, 83, 83)),
+                                                  ),
+                                                ),
+                                              ))
                                         ],
                                       ),
                                     ),
