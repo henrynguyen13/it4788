@@ -150,8 +150,6 @@ class _PostArticleState extends State<PostArticle> {
                                             builder: (context) =>
                                                 const HomeScreen(),
                                           ));
-                                      // Navigator.popUntil(context,
-                                      //     ModalRoute.withName("/home"));
                                     }),
                                 TextButton(
                                   child: const Row(
@@ -546,62 +544,71 @@ class _PostArticleState extends State<PostArticle> {
                   ],
                 ),
               if (isKeyboardVisible)
-                // video == null
-                //     ? Container(
-                //         child: selectedImages.isNotEmpty
-                //             ? _buildImageSection(selectedImages)
-                //             : Padding(
-                //                 padding: const EdgeInsets.all(0),
-                //                 child: SizedBox(
-                //                   height:
-                //                       MediaQuery.of(context).size.height / 3,
-                //                 )),
-                //       )
-                //     : Container(
-                //         child: video != null
-                //             ? _buildVideoSection(video)
-                //             : Padding(
-                //                 padding: const EdgeInsets.all(0),
-                //                 child: SizedBox(
-                //                   height:
-                //                       MediaQuery.of(context).size.height / 3,
-                //                 )),
-                //       ),
-                const Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Icon(
-                        Icons.image,
-                        color: Colors.green,
-                        size: 28,
+                video == null && selectedImages.isEmpty
+                    ? Container(
+                        child: selectedImages.isNotEmpty
+                            ? _buildImageSection(selectedImages)
+                            : Padding(
+                                padding: const EdgeInsets.all(0),
+                                child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 3,
+                                )),
+                      )
+                    : Container(
+                        child: video != null && selectedImages.isEmpty
+                            ? _buildVideoSection(video)
+                            : Padding(
+                                padding: const EdgeInsets.all(0),
+                                child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 3,
+                                )),
                       ),
+              const Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                    child: Icon(
+                      Icons.image,
+                      color: Colors.green,
+                      size: 28,
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Icon(
-                        Icons.emoji_emotions_outlined,
-                        color: Colors.yellow,
-                        size: 28,
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                    child: Icon(
+                      Icons.emoji_emotions_outlined,
+                      color: Colors.yellow,
+                      size: 28,
                     ),
-                    Icon(
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                    child: Icon(
                       Icons.person,
                       color: Colors.blue,
                       size: 28,
                     ),
-                    Icon(
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                    child: Icon(
                       Icons.photo_camera,
                       color: Colors.lightBlueAccent,
                       size: 28,
                     ),
-                    Icon(
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                    child: Icon(
                       Icons.gif_box_rounded,
                       color: Colors.pinkAccent,
                       size: 28,
                     ),
-                  ],
-                )
+                  ),
+                ],
+              )
             ],
           ),
         ));

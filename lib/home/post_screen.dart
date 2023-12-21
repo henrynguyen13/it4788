@@ -32,15 +32,6 @@ class _PostScreenState extends State<PostScreen> {
   int count = 20;
   bool isLoading = false;
 
-  void handleOnMessageOpenedApp(RemoteMessage message) async {
-    var data = notificationFromJson(message.data['json']);
-    print('TESTTTT ${data.notificationId}');
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PersonalPage(id: data.user.id)),
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -51,9 +42,6 @@ class _PostScreenState extends State<PostScreen> {
         loadMoreData();
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       }
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      handleOnMessageOpenedApp(message);
     });
   }
 
