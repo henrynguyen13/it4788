@@ -211,7 +211,6 @@ class _SignIn extends State<SignInPage> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               const SetUsernamePage()));
-                                  // const HomeScreen()));
                                 }
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -305,21 +304,6 @@ class _SignIn extends State<SignInPage> {
                     ),
                   ],
                 ))));
-  }
-
-  Future<Response> _getVerifyCodeResponse(String email) async {
-    final getVerifyCodeResponse = await getVerifyCode(email);
-    return getVerifyCodeResponse;
-  }
-
-  // get verify code to the VerifyEmailPage
-  void _sendVerifyCode(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => VerifyEmailPage(email: emailData),
-      ),
-    );
   }
 
   void _navigateToVerifyResetPasswordPage(BuildContext context) {

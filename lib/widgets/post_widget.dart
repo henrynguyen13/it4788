@@ -7,6 +7,7 @@ import 'package:it4788/model/post.dart';
 import 'package:it4788/post_article/edit_post_article.dart';
 import 'package:it4788/report.dart';
 import 'package:it4788/service/profile_sevice.dart';
+// import 'package:video_player/video_player.dart';
 
 class PostWidget extends StatefulWidget {
   final Post post;
@@ -22,6 +23,7 @@ class _PostWidgetState extends State<PostWidget> {
   late Post post;
   late bool isClickKudos;
   late bool isClickDisappointed;
+  // late VideoPlayerController _videoPlayerController;
 
   @override
   void initState() {
@@ -129,6 +131,22 @@ class _PostWidgetState extends State<PostWidget> {
           child: _buildArticleItem(post)),
     );
   }
+
+  // @override
+  // void dispose() {
+  //   _videoPlayerController.dispose();
+  //   super.dispose();
+  // }
+
+  // Widget _buildVideoSection(Video? video) {
+  //   print("videoa $video");
+
+  //   return _videoPlayerController.value.isInitialized
+  //       ? AspectRatio(
+  //           aspectRatio: _videoPlayerController.value.aspectRatio,
+  //           child: VideoPlayer(_videoPlayerController))
+  //       : Container();
+  // }
 
   Widget _buildImageSection(List<ImagePost> images) {
     if (images.length == 1) {
@@ -264,6 +282,12 @@ class _PostWidgetState extends State<PostWidget> {
               ),
             ),
           ),
+          // Padding(
+          //   padding: const EdgeInsets.all(0),
+          //   child: post.video.url == ""
+          //       ? _buildImageSection(post.image)
+          //       : _buildVideoSection(post.video),
+          // ),
           _buildImageSection(post.image),
           Padding(
             padding: const EdgeInsets.all(10),
