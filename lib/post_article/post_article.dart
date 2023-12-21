@@ -302,29 +302,27 @@ class _PostArticleState extends State<PostArticle> {
               if (!isKeyboardVisible)
                 Column(
                   children: [
-                    video == null && selectedImages.isEmpty
-                        ? Container(
-                            child: selectedImages.isNotEmpty
-                                ? _buildImageSection(selectedImages)
-                                : Padding(
-                                    padding: const EdgeInsets.all(0),
-                                    child: SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              3,
-                                    )),
-                          )
-                        : Container(
-                            child: video != null && selectedImages.isEmpty
-                                ? _buildVideoSection(video)
-                                : Padding(
-                                    padding: const EdgeInsets.all(0),
-                                    child: SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              3,
-                                    )),
-                          ),
+                    // video == null && selectedImages.isEmpty
+                    Container(
+                      child: selectedImages.isNotEmpty
+                          ? _buildImageSection(selectedImages)
+                          : Padding(
+                              padding: const EdgeInsets.all(0),
+                              child: SizedBox(
+                                height: MediaQuery.of(context).size.height / 3,
+                              )),
+                    ),
+                    // : Container(
+                    //     child: video != null && selectedImages.isEmpty
+                    //         ? _buildVideoSection(video)
+                    //         : Padding(
+                    //             padding: const EdgeInsets.all(0),
+                    //             child: SizedBox(
+                    //               height:
+                    //                   MediaQuery.of(context).size.height /
+                    //                       3,
+                    //             )),
+                    //   ),
                     Padding(
                         padding: const EdgeInsets.all(0),
                         child: InkWell(
@@ -543,72 +541,72 @@ class _PostArticleState extends State<PostArticle> {
                         )),
                   ],
                 ),
-              if (isKeyboardVisible)
-                video == null && selectedImages.isEmpty
-                    ? Container(
-                        child: selectedImages.isNotEmpty
-                            ? _buildImageSection(selectedImages)
-                            : Padding(
-                                padding: const EdgeInsets.all(0),
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 3,
-                                )),
-                      )
-                    : Container(
-                        child: video != null && selectedImages.isEmpty
-                            ? _buildVideoSection(video)
-                            : Padding(
-                                padding: const EdgeInsets.all(0),
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 3,
-                                )),
-                      ),
-              const Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-                    child: Icon(
-                      Icons.image,
-                      color: Colors.green,
-                      size: 28,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-                    child: Icon(
-                      Icons.emoji_emotions_outlined,
-                      color: Colors.yellow,
-                      size: 28,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.blue,
-                      size: 28,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-                    child: Icon(
-                      Icons.photo_camera,
-                      color: Colors.lightBlueAccent,
-                      size: 28,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-                    child: Icon(
-                      Icons.gif_box_rounded,
-                      color: Colors.pinkAccent,
-                      size: 28,
-                    ),
-                  ),
-                ],
-              )
+              // if (isKeyboardVisible)
+              //   video == null && selectedImages.isEmpty
+              //       ? Container(
+              //           child: selectedImages.isNotEmpty
+              //               ? _buildImageSection(selectedImages)
+              //               : Padding(
+              //                   padding: const EdgeInsets.all(0),
+              //                   child: SizedBox(
+              //                     height:
+              //                         MediaQuery.of(context).size.height / 3,
+              //                   )),
+              //         )
+              //       : Container(
+              //           child: video != null && selectedImages.isEmpty
+              //               ? _buildVideoSection(video)
+              //               : Padding(
+              //                   padding: const EdgeInsets.all(0),
+              //                   child: SizedBox(
+              //                     height:
+              //                         MediaQuery.of(context).size.height / 3,
+              //                   )),
+              //         ),
+              // const Row(
+              //   children: [
+              //     Padding(
+              //       padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+              //       child: Icon(
+              //         Icons.image,
+              //         color: Colors.green,
+              //         size: 28,
+              //       ),
+              //     ),
+              //     Padding(
+              //       padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+              //       child: Icon(
+              //         Icons.emoji_emotions_outlined,
+              //         color: Colors.yellow,
+              //         size: 28,
+              //       ),
+              //     ),
+              //     Padding(
+              //       padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+              //       child: Icon(
+              //         Icons.person,
+              //         color: Colors.blue,
+              //         size: 28,
+              //       ),
+              //     ),
+              //     Padding(
+              //       padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+              //       child: Icon(
+              //         Icons.photo_camera,
+              //         color: Colors.lightBlueAccent,
+              //         size: 28,
+              //       ),
+              //     ),
+              //     Padding(
+              //       padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+              //       child: Icon(
+              //         Icons.gif_box_rounded,
+              //         color: Colors.pinkAccent,
+              //         size: 28,
+              //       ),
+              //     ),
+              //   ],
+              // )
             ],
           ),
         ));
@@ -676,17 +674,17 @@ class _PostArticleState extends State<PostArticle> {
     });
   }
 
-  Widget _buildVideoSection(XFile? video) {
-    if (video != null) {
-      return _videoPlayerController.value.isInitialized
-          ? AspectRatio(
-              aspectRatio: _videoPlayerController.value.aspectRatio,
-              child: VideoPlayer(_videoPlayerController))
-          : Container();
-    } else {
-      return const SizedBox();
-    }
-  }
+  // Widget _buildVideoSection(XFile? video) {
+  //   if (video != null) {
+  //     return _videoPlayerController.value.isInitialized
+  //         ? AspectRatio(
+  //             aspectRatio: _videoPlayerController.value.aspectRatio,
+  //             child: VideoPlayer(_videoPlayerController))
+  //         : Container();
+  //   } else {
+  //     return const SizedBox();
+  //   }
+  // }
 
   Widget _buildImageSection(List<XFile?> images) {
     if (images.length == 1) {
