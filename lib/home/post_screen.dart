@@ -30,7 +30,6 @@ class _PostScreenState extends State<PostScreen> {
   int count = 20;
   bool isLoading = false;
   bool isConnection = false;
-
   void setDevToken() async {
     FirebaseApi().setDevTokenFirebase();
   }

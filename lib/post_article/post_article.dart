@@ -28,6 +28,7 @@ class _PostArticleState extends State<PostArticle> {
   String? username = "";
   String? avatar;
   String id = "";
+  String coins = "";
 
   List<XFile?> selectedImages = [];
   XFile? video;
@@ -57,12 +58,18 @@ class _PostArticleState extends State<PostArticle> {
         avatar = value ?? "";
       });
 
-      _getUserId().then((value) {
-        setState(() {
-          id = value ?? "";
-        });
+    _getUserId().then((value) {
+      setState(() {
+        id = value ?? "";        
       });
     });
+
+    _getCoins().then((value) {
+      setState(() {
+        coins = value ?? "";        
+      });
+    });
+  });
 
     // KeyboardVisibilityController().onChange.listen((bool visible) {
     //   setState(() {
@@ -185,26 +192,31 @@ class _PostArticleState extends State<PostArticle> {
             MaterialButton(
               onPressed: () async {
                 try {
-                  final addPostResponse = await PostSevice().addPost(
+                  if(int.parse(coins) < 10) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Không đủ coins. Vào trang cá nhân để nạp !')));
+                  } else {
+                    final addPostResponse = await PostSevice().addPost(
                       selectedImages, video, postContent, status, auto_accept);
 
-                  final jsonResponse = json.decode(addPostResponse.data);
+                    final jsonResponse = json.decode(addPostResponse.data);
 
-                  String message = jsonResponse['message'];
+                    String message = jsonResponse['message'];
 
-                  if (message == 'OK') {
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Đăng bài viết thành công !')));
+                    if (message == 'OK') {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Đăng bài viết thành công !')));
 
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()));
-                  }
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()));
+                    }
+                  } 
                 } catch (e) {
-                  print(e);
-                }
+                    print(e);
+                  }
               },
               child: const Text(
                 'Đăng',
@@ -630,7 +642,7 @@ class _PostArticleState extends State<PostArticle> {
     if (pickedImages.isEmpty) return;
 
     setState(() {
-      if (pickedImages.length <= 4) {
+      if (pickedImages.length + selectedImages.length <= 4) {
         selectedImages.addAll(pickedImages);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -859,6 +871,11 @@ class _PostArticleState extends State<PostArticle> {
 
   // Future<String> get _localPath async {
   //   final directory = await getApplicationDocumentsDirectory();
+  Future<String?> _getCoins() async {
+    return await Storage().getCoins();
+  }
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
 
   //   return directory.path;
   // }

@@ -10,7 +10,7 @@ class EditPostDto {
   final List<int>? imageSort;
   final List<String?>? imageDel;
   final List<XFile?> images;
-  final File? video;
+  final XFile? video;
 
   EditPostDto({
     required this.id,
@@ -28,6 +28,7 @@ class EditPostDto {
         // 'image_sort': imageSort,
         'image_del': imageDel!.join(','),
         'auto_accept': '1',
+        'video': video
       };
 }
 

@@ -347,8 +347,6 @@ class _PostDetailWidgetState extends State<PostDetailWidget> {
               ),
               const Padding(padding: EdgeInsets.only(right: 4)),
               Text(feel),
-              const Spacer(),
-              Text("0 bình luận")
             ]),
           ),
           const Divider(
@@ -419,15 +417,7 @@ class _PostDetailWidgetState extends State<PostDetailWidget> {
                     ),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CommentPage(
-                                      postID: post.id,
-                                    )),
-                          );
-                        },
+                        onTap: () {},
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

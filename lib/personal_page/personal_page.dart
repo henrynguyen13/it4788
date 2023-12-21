@@ -186,7 +186,9 @@ class _PersonalPageState extends State<PersonalPage> {
               userInfor = snapshot.data!.elementAt(0);
               userFriends = snapshot.data!.elementAt(1);
               listPost ??= snapshot.data!.elementAt(2);
-              coins = userInfor.data.coins;
+              coins = int.parse(userInfor.data.coins) > 0
+                  ? userInfor.data.coins
+                  : '0';
               return SingleChildScrollView(
                   controller: _scrollController,
                   physics: const ScrollPhysics(),
@@ -419,247 +421,267 @@ class _PersonalPageState extends State<PersonalPage> {
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600)),
                             ),
-                            ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.red[600]!)),
-                                onPressed: () => showDialog<String>(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AlertDialog(
-                                        title: const Text('Mua coins'),
-                                        backgroundColor: Colors.white,
-                                        content: SingleChildScrollView(
-                                          child: Form(
-                                              key: _formKey,
-                                              child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 5),
-                                                      child: Text(
-                                                        'Mã code',
-                                                        style: TextStyle(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 5),
-                                                      child: Container(
-                                                        margin: const EdgeInsets
-                                                            .symmetric(
-                                                          vertical: 12,
-                                                        ),
-                                                        child: SizedBox(
-                                                          child: TextFormField(
-                                                            decoration:
-                                                                InputDecoration(
-                                                              // contentPadding: EdgeInsets.zero,
-                                                              border:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10.0),
-                                                              ),
-                                                              focusedBorder:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10.0),
-                                                                borderSide: const BorderSide(
-                                                                    width: 2,
-                                                                    color: Color(
-                                                                        0xFF1878F2)),
-                                                              ),
-                                                              hintText:
-                                                                  'Nhập mã code...',
-                                                            ),
-                                                            onChanged:
-                                                                (value) => {},
-                                                            controller:
-                                                                _codeController,
-                                                            validator: (value) {
-                                                              if (value ==
-                                                                      null ||
-                                                                  value
-                                                                      .isEmpty) {
-                                                                return 'Đây là trường bắt buộc';
-                                                              }
-                                                              return null;
-                                                            },
+                            isCurrentUser()
+                                ? ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.red[600]!)),
+                                    onPressed: () => showDialog<String>(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                            title: const Text('Mua coins'),
+                                            backgroundColor: Colors.white,
+                                            content: SingleChildScrollView(
+                                              child: Form(
+                                                  key: _formKey,
+                                                  child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        const Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      5),
+                                                          child: Text(
+                                                            'Mã code',
+                                                            style: TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    const Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 5),
-                                                      child: Text(
-                                                        'Số coin cần mua',
-                                                        style: TextStyle(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 5),
-                                                      child: Container(
-                                                        margin: const EdgeInsets
-                                                            .symmetric(
-                                                          vertical: 12,
-                                                        ),
-                                                        child: SizedBox(
-                                                          child: TextFormField(
-                                                            keyboardType:
-                                                                TextInputType
-                                                                    .number,
-                                                            decoration:
-                                                                InputDecoration(
-                                                              border:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10.0),
-                                                              ),
-                                                              focusedBorder:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10.0),
-                                                                borderSide: const BorderSide(
-                                                                    width: 2,
-                                                                    color: Color(
-                                                                        0xFF1878F2)),
-                                                              ),
-                                                              hintText:
-                                                                  'Nhập số coin cần mua...',
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      5),
+                                                          child: Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                              vertical: 12,
                                                             ),
-                                                            onChanged:
-                                                                (value) => {
-                                                              setState(() {})
-                                                            },
-                                                            controller:
-                                                                _coinController,
-                                                            validator: (value) {
-                                                              if (value ==
-                                                                      null ||
-                                                                  value
-                                                                      .isEmpty) {
-                                                                return 'Đây là trường bắt buộc';
-                                                              } else {
-                                                                double?
-                                                                    parsedValue =
-                                                                    double.tryParse(
-                                                                        value);
-
-                                                                if (parsedValue ==
-                                                                    null) {
-                                                                  return 'Vui lòng nhập đúng định dạng số';
-                                                                }
-
-                                                                if (parsedValue %
-                                                                        1 !=
-                                                                    0) {
-                                                                  return 'Vui lòng nhập số nguyên';
-                                                                }
-                                                                if (parsedValue <=
-                                                                    0) {
-                                                                  return 'Giá trị phải lớn hơn 0';
-                                                                }
-                                                              }
-                                                              return null;
-                                                            },
+                                                            child: SizedBox(
+                                                              child:
+                                                                  TextFormField(
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  // contentPadding: EdgeInsets.zero,
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0),
+                                                                  ),
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0),
+                                                                    borderSide: const BorderSide(
+                                                                        width:
+                                                                            2,
+                                                                        color: Color(
+                                                                            0xFF1878F2)),
+                                                                  ),
+                                                                  hintText:
+                                                                      'Nhập mã code...',
+                                                                ),
+                                                                onChanged:
+                                                                    (value) =>
+                                                                        {},
+                                                                controller:
+                                                                    _codeController,
+                                                                validator:
+                                                                    (value) {
+                                                                  if (value ==
+                                                                          null ||
+                                                                      value
+                                                                          .isEmpty) {
+                                                                    return 'Đây là trường bắt buộc';
+                                                                  }
+                                                                  return null;
+                                                                },
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                  ])),
-                                        ),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context, 'Hủy'),
-                                            child: const Text('Hủy',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.black)),
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              if (_formKey.currentState!
-                                                  .validate()) {
-                                                String code =
-                                                    _codeController.text;
-                                                String coins =
-                                                    _coinController.text;
+                                                        const Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      5),
+                                                          child: Text(
+                                                            'Số coin cần mua',
+                                                            style: TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      5),
+                                                          child: Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                              vertical: 12,
+                                                            ),
+                                                            child: SizedBox(
+                                                              child:
+                                                                  TextFormField(
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0),
+                                                                  ),
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0),
+                                                                    borderSide: const BorderSide(
+                                                                        width:
+                                                                            2,
+                                                                        color: Color(
+                                                                            0xFF1878F2)),
+                                                                  ),
+                                                                  hintText:
+                                                                      'Nhập số coin cần mua...',
+                                                                ),
+                                                                onChanged:
+                                                                    (value) => {
+                                                                  setState(
+                                                                      () {})
+                                                                },
+                                                                controller:
+                                                                    _coinController,
+                                                                validator:
+                                                                    (value) {
+                                                                  if (value ==
+                                                                          null ||
+                                                                      value
+                                                                          .isEmpty) {
+                                                                    return 'Đây là trường bắt buộc';
+                                                                  } else {
+                                                                    double?
+                                                                        parsedValue =
+                                                                        double.tryParse(
+                                                                            value);
 
-                                                final response =
-                                                    await SettingService()
-                                                        .buyCoins(code, coins);
+                                                                    if (parsedValue ==
+                                                                        null) {
+                                                                      return 'Vui lòng nhập đúng định dạng số';
+                                                                    }
 
-                                                final jsonResponse =
-                                                    json.decode(response.data);
-
-                                                String message =
-                                                    jsonResponse['message'];
-
-                                                if (message == 'OK') {
-                                                  Navigator.pop(context, 'Mua');
-                                                  getData();
-                                                  setState(() {
-                                                    coins =
-                                                        userInfor.data.coins;
-                                                  });
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                          const SnackBar(
-                                                    content: Text(
-                                                      'Mua coins thành công',
-                                                    ),
-                                                  ));
-                                                }
-                                              }
-                                            },
-                                            child: const Text(
-                                              'Mua',
-                                              style: TextStyle(
-                                                  color: Color(0xFF1878F2),
-                                                  fontSize: 18),
+                                                                    if (parsedValue %
+                                                                            1 !=
+                                                                        0) {
+                                                                      return 'Vui lòng nhập số nguyên';
+                                                                    }
+                                                                    if (parsedValue <=
+                                                                        0) {
+                                                                      return 'Giá trị phải lớn hơn 0';
+                                                                    }
+                                                                  }
+                                                                  return null;
+                                                                },
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ])),
                                             ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'Hủy'),
+                                                child: const Text('Hủy',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        color: Colors.black)),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    String code =
+                                                        _codeController.text;
+                                                    String coins =
+                                                        _coinController.text;
+
+                                                    final response =
+                                                        await SettingService()
+                                                            .buyCoins(
+                                                                code, coins);
+
+                                                    final jsonResponse = json
+                                                        .decode(response.data);
+
+                                                    String message =
+                                                        jsonResponse['message'];
+
+                                                    if (message == 'OK') {
+                                                      Navigator.pop(
+                                                          context, 'Mua');
+                                                      getData();
+                                                      setState(() {
+                                                        coins = userInfor
+                                                            .data.coins;
+                                                      });
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                              const SnackBar(
+                                                        content: Text(
+                                                          'Mua coins thành công',
+                                                        ),
+                                                      ));
+                                                    }
+                                                  }
+                                                },
+                                                child: const Text(
+                                                  'Mua',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF1878F2),
+                                                      fontSize: 18),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                child: const Row(
-                                  children: [
-                                    FaIcon(
-                                      FontAwesomeIcons.plus,
-                                      color: Color.fromARGB(234, 255, 255, 255),
-                                    ),
-                                    FaIcon(
-                                      FontAwesomeIcons.cartShopping,
-                                      color: Color.fromARGB(234, 255, 255, 255),
-                                    )
-                                  ],
-                                ))
+                                        ),
+                                    child: const Row(
+                                      children: [
+                                        FaIcon(
+                                          FontAwesomeIcons.plus,
+                                          color: Color.fromARGB(
+                                              234, 255, 255, 255),
+                                        ),
+                                        FaIcon(
+                                          FontAwesomeIcons.cartShopping,
+                                          color: Color.fromARGB(
+                                              234, 255, 255, 255),
+                                        )
+                                      ],
+                                    ))
+                                : const Text('')
                           ],
                         ),
                       ),
@@ -1198,7 +1220,20 @@ class _PersonalPageState extends State<PersonalPage> {
                     ],
                   ));
             } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              return const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      "Trang này hiện không tồn tại!",
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 123, 123, 123)),
+                    ),
+                  )
+                ],
+              );
             } else {
               return const Text('No data available');
             }
