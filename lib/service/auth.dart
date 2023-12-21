@@ -36,6 +36,7 @@ Future<Response> signIn(String email, String password, String uuid) async {
   Storage().saveToken(jsonResponse['data']['token']);
   Storage().saveUsername(jsonResponse['data']['username']);
   Storage().saveAvatar(jsonResponse['data']['avatar']).toString();
+  Storage().saveCoins(jsonResponse['data']['coins']);
 
   return response;
 }
@@ -93,6 +94,10 @@ Future<Response> setUsername(String username, File? avatar) async {
   final response = await dio.post('change_profile_after_signup',
       data: formData,
       options: Options(headers: {"Authorization": "Bearer $token"}));
+
+  final jsonResponse = json.decode(response.data);
+  Storage().saveUsername(jsonResponse['data']['username']);
+  Storage().saveAvatar(jsonResponse['data']['avatar']).toString();
   print('Bạn đã đặt tên thành công !');
   return response;
 }

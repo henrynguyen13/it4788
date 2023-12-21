@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -151,8 +152,16 @@ class _PostWidgetState extends State<PostWidget> {
 
   Widget _buildImageSection(List<ImagePost> images) {
     if (images.length == 1) {
-      return Image.network(images[0].url,
-          height: 400, width: double.infinity, fit: BoxFit.cover);
+      return CachedNetworkImage(
+          imageUrl: images[0].url,
+          progressIndicatorBuilder: (context, url, progress) => Center(
+                child: CircularProgressIndicator(
+                  value: progress.progress,
+                ),
+              ),
+          height: 400,
+          width: double.infinity,
+          fit: BoxFit.cover);
     } else if (images.length == 2) {
       return GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -164,8 +173,16 @@ class _PostWidgetState extends State<PostWidget> {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 1),
-            child: Image.network(images[index].url,
-                height: 400, width: double.infinity, fit: BoxFit.cover),
+            child: CachedNetworkImage(
+                imageUrl: images[index].url,
+                progressIndicatorBuilder: (context, url, progress) => Center(
+                      child: CircularProgressIndicator(
+                        value: progress.progress,
+                      ),
+                    ),
+                height: 400,
+                width: double.infinity,
+                fit: BoxFit.cover),
           );
         },
       );
@@ -173,20 +190,47 @@ class _PostWidgetState extends State<PostWidget> {
       return Row(
         children: [
           Expanded(
-            child: Image.network(images[0].url, height: 400, fit: BoxFit.cover),
+            child: CachedNetworkImage(
+                imageUrl: images[0].url,
+                progressIndicatorBuilder: (context, url, progress) => Center(
+                      child: CircularProgressIndicator(
+                        value: progress.progress,
+                      ),
+                    ),
+                height: 400,
+                width: double.infinity,
+                fit: BoxFit.cover),
           ),
           Expanded(
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 4, bottom: 2),
-                  child: Image.network(images[1].url,
-                      height: 198, width: double.infinity, fit: BoxFit.cover),
+                  child: CachedNetworkImage(
+                      imageUrl: images[1].url,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          Center(
+                            child: CircularProgressIndicator(
+                              value: progress.progress,
+                            ),
+                          ),
+                      height: 198,
+                      width: double.infinity,
+                      fit: BoxFit.cover),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4, top: 2),
-                  child: Image.network(images[1].url,
-                      height: 198, width: double.infinity, fit: BoxFit.cover),
+                  child: CachedNetworkImage(
+                      imageUrl: images[2].url,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          Center(
+                            child: CircularProgressIndicator(
+                              value: progress.progress,
+                            ),
+                          ),
+                      height: 198,
+                      width: double.infinity,
+                      fit: BoxFit.cover),
                 ),
               ],
             ),
@@ -204,8 +248,16 @@ class _PostWidgetState extends State<PostWidget> {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(1),
-            child: Image.network(images[index].url,
-                height: 200, width: double.infinity, fit: BoxFit.cover),
+            child: CachedNetworkImage(
+                imageUrl: images[index].url,
+                progressIndicatorBuilder: (context, url, progress) => Center(
+                      child: CircularProgressIndicator(
+                        value: progress.progress,
+                      ),
+                    ),
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover),
           );
         },
       );
@@ -230,7 +282,15 @@ class _PostWidgetState extends State<PostWidget> {
                   child: CircleAvatar(
                     backgroundColor: Colors.brown.shade800,
                     radius: 28,
-                    child: Image.network(post.author.avatar),
+                    child: CachedNetworkImage(
+                      imageUrl: post.author.avatar,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          Center(
+                        child: CircularProgressIndicator(
+                          value: progress.progress,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
