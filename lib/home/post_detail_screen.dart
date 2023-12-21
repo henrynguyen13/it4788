@@ -40,7 +40,7 @@ class _PostDetailScreenState extends State<PostDetailScreen>
   var _avatar;
 
   int currentIndex = 0;
-  int defaultCount = 3;
+  int defaultCount = 1;
 
   Future<void> getAllMark() async {
     _futureMark = getMarkComment(
