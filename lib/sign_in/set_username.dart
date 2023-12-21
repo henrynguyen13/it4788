@@ -15,7 +15,6 @@ class SetUsernamePage extends StatefulWidget {
 class _SetUsernamePageState extends State<SetUsernamePage> {
   String username = '';
   File? avatar;
-  bool hasSelectedImage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +109,7 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
                   try {
                     final setUsernameResponse =
                         await setUsername(username, avatar);
+
                     final jsonResponse = json.decode(setUsernameResponse.data);
                     print(jsonResponse);
 
@@ -154,7 +154,6 @@ class _SetUsernamePageState extends State<SetUsernamePage> {
 
     setState(() {
       avatar = imageTemporary;
-      hasSelectedImage = true;
     });
   }
 }
