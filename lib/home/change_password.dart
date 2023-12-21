@@ -182,8 +182,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                               if (value == null || value.isEmpty) {
                                 return 'Đây là trường bắt buộc';
                               }
-                              if (value.length < 6) {
-                                return 'Mật khẩu phải có ít nhất 6 kí tự';
+                              if (value.length < 6 || value.length > 10) {
+                                return 'Mật khẩu phải có từ 6 đến 10 kí tự';
                               }
                               return null;
                             },
@@ -250,8 +250,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                               if (value == null || value.isEmpty) {
                                 return 'Đây là trường bắt buộc';
                               }
-                              if (value.length < 6) {
-                                return 'Mật khẩu phải có ít nhất 6 kí tự';
+                              if (value.length < 6 || value.length > 10) {
+                                return 'Mật khẩu phải có từ 6 đến 10 kí tự';
                               }
                               if (value != _newPasswordController.text) {
                                 return 'Xác nhận mật khẩu không đúng';
