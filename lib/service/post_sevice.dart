@@ -119,6 +119,9 @@ class PostSevice {
             "Authorization": "Bearer $token",
           }));
 
+      final jsonResponse = json.decode(response.data);
+      Storage().saveCoins(jsonResponse['data']['coins']);
+
       print(response.data);
       return response;
     } catch (e) {
