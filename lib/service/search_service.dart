@@ -50,6 +50,7 @@ class SearchService {
     for (int i = 0; i < postListJson.length; i++) {
       postIdlist.add(postListJson[i]['id']);
     }
+
     return postIdlist;
   }
 }
