@@ -59,6 +59,9 @@ dependencies:
   flutter_keyboard_visibility: ^5.4.1
   video_player: ^2.8.1
   chewie: ^1.7.4
+  cached_network_image: ^3.3.0
+  hive: ^2.2.3
+  connectivity_plus: ^5.0.2
 
 dev_dependencies:
   flutter_test:
