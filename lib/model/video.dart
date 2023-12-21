@@ -1,98 +1,104 @@
 // To parse this JSON data, do
 //
-//     final ListVideo = ListVideoFromJson(jsonString);
+//     final listVideo = listVideoFromJson(jsonString);
 
 import 'dart:convert';
 
-ListVideo ListVideoFromJson(String str) => ListVideo.fromJson(json.decode(str));
+ListVideo listVideoFromJson(String str) => ListVideo.fromJson(json.decode(str));
 
-String ListVideoToJson(ListVideo data) => json.encode(data.toJson());
+String listVideoToJson(ListVideo data) => json.encode(data.toJson());
 
 class ListVideo {
-  String code;
-  String message;
-  Data data;
+  String? code;
+  String? message;
+  Data? data;
 
   ListVideo({
-    required this.code,
-    required this.message,
-    required this.data,
+    this.code,
+    this.message,
+    this.data,
   });
 
   factory ListVideo.fromJson(Map<String, dynamic> json) => ListVideo(
         code: json["code"],
         message: json["message"],
-        data: Data.fromJson(json["data"]),
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
         "code": code,
         "message": message,
-        "data": data.toJson(),
+        "data": data?.toJson(),
       };
 }
 
 class Data {
-  List<Post> post;
-  String newItems;
-  String lastId;
+  List<PostVideo>? post;
+  String? newItems;
+  String? lastId;
 
   Data({
-    required this.post,
-    required this.newItems,
-    required this.lastId,
+    this.post,
+    this.newItems,
+    this.lastId,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        post: List<Post>.from(json["post"].map((x) => Post.fromJson(x))),
+        post: json["post"] == null
+            ? []
+            : List<PostVideo>.from(
+                json["post"]!.map((x) => PostVideo.fromJson(x))),
         newItems: json["new_items"],
         lastId: json["last_id"],
       );
 
   Map<String, dynamic> toJson() => {
-        "post": List<dynamic>.from(post.map((x) => x.toJson())),
+        "post": post == null
+            ? []
+            : List<dynamic>.from(post!.map((x) => x.toJson())),
         "new_items": newItems,
         "last_id": lastId,
       };
 }
 
-class Post {
-  String id;
-  String name;
-  Video video;
-  String described;
-  DateTime created;
-  String feel;
-  String commentMark;
-  String isFelt;
-  String isBlocked;
-  String canEdit;
-  String banned;
-  String state;
-  Author author;
+class PostVideo {
+  String? id;
+  String? name;
+  Video? video;
+  String? described;
+  DateTime? created;
+  String? feel;
+  String? commentMark;
+  String? isFelt;
+  String? isBlocked;
+  String? canEdit;
+  String? banned;
+  String? state;
+  Author? author;
 
-  Post({
-    required this.id,
-    required this.name,
-    required this.video,
-    required this.described,
-    required this.created,
-    required this.feel,
-    required this.commentMark,
-    required this.isFelt,
-    required this.isBlocked,
-    required this.canEdit,
-    required this.banned,
-    required this.state,
-    required this.author,
+  PostVideo({
+    this.id,
+    this.name,
+    this.video,
+    this.described,
+    this.created,
+    this.feel,
+    this.commentMark,
+    this.isFelt,
+    this.isBlocked,
+    this.canEdit,
+    this.banned,
+    this.state,
+    this.author,
   });
 
-  factory Post.fromJson(Map<String, dynamic> json) => Post(
+  factory PostVideo.fromJson(Map<String, dynamic> json) => PostVideo(
         id: json["id"],
         name: json["name"],
-        video: Video.fromJson(json["video"]),
+        video: json["video"] == null ? null : Video.fromJson(json["video"]),
         described: json["described"],
-        created: DateTime.parse(json["created"]),
+        created:
+            json["created"] == null ? null : DateTime.parse(json["created"]),
         feel: json["feel"],
         commentMark: json["comment_mark"],
         isFelt: json["is_felt"],
@@ -100,15 +106,15 @@ class Post {
         canEdit: json["can_edit"],
         banned: json["banned"],
         state: json["state"],
-        author: Author.fromJson(json["author"]),
+        author: json["author"] == null ? null : Author.fromJson(json["author"]),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
-        "video": video.toJson(),
+        "video": video?.toJson(),
         "described": described,
-        "created": created.toIso8601String(),
+        "created": created?.toIso8601String(),
         "feel": feel,
         "comment_mark": commentMark,
         "is_felt": isFelt,
@@ -116,19 +122,19 @@ class Post {
         "can_edit": canEdit,
         "banned": banned,
         "state": state,
-        "author": author.toJson(),
+        "author": author?.toJson(),
       };
 }
 
 class Author {
-  String id;
-  String name;
-  String avatar;
+  String? id;
+  String? name;
+  String? avatar;
 
   Author({
-    required this.id,
-    required this.name,
-    required this.avatar,
+    this.id,
+    this.name,
+    this.avatar,
   });
 
   factory Author.fromJson(Map<String, dynamic> json) => Author(
@@ -145,10 +151,10 @@ class Author {
 }
 
 class Video {
-  String url;
+  String? url;
 
   Video({
-    required this.url,
+    this.url,
   });
 
   factory Video.fromJson(Map<String, dynamic> json) => Video(

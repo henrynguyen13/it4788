@@ -5,13 +5,12 @@ import 'package:it4788/comment/commentPage.dart';
 import 'package:it4788/home/post_detail_screen.dart';
 import 'package:it4788/model/video.dart';
 import 'package:it4788/post_article/edit_post_article.dart';
-import 'package:it4788/report.dart';
 import 'package:it4788/service/profile_sevice.dart';
 import 'package:video_player/video_player.dart';
 // import 'package:video_player/video_player.dart';
 
 class VideoWidget extends StatefulWidget {
-  final Post post;
+  final PostVideo post;
 
   const VideoWidget({super.key, required this.post});
   @override
@@ -21,16 +20,22 @@ class VideoWidget extends StatefulWidget {
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
-  late Post post;
+  late PostVideo post;
   late bool isClickKudos;
   late bool isClickDisappointed;
   VideoPlayerController? _videoPlayerController;
+  late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState() {
     super.initState();
-
     post = widget.post;
+    _videoPlayerController = VideoPlayerController.networkUrl(
+      Uri.parse(
+        post.video!.url!,
+      ),
+    );
+    _initializeVideoPlayerFuture = _videoPlayerController!.initialize();
     if (post.isFelt == "-1") {
       isClickKudos = false;
       isClickDisappointed = false;
@@ -43,20 +48,11 @@ class _VideoWidgetState extends State<VideoWidget> {
     }
   }
 
-  void navigateToDetail() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PostDetailScreen(id: post.id),
-      ),
-    );
-  }
-
   void handleClickKudos() async {
     if (post.isFelt == '1') {
-      ProfileSevice().deleteFeelPost(post.id);
+      ProfileSevice().deleteFeelPost(post.id!);
     } else {
-      ProfileSevice().feelPost(post.id, "1");
+      ProfileSevice().feelPost(post.id!, "1");
     }
     setState(() {
       if (isClickDisappointed) {
@@ -67,13 +63,13 @@ class _VideoWidgetState extends State<VideoWidget> {
       }
 
       if (post.isFelt == '1') {
-        int feelInt = int.parse(post.feel) - 1;
+        int feelInt = int.parse(post.feel!) - 1;
         post.isFelt = '-1';
         post.feel = feelInt.toString();
       } else if (post.isFelt == '0') {
         post.isFelt = '1';
       } else {
-        int feelInt = int.parse(post.feel) + 1;
+        int feelInt = int.parse(post.feel!) + 1;
         post.isFelt = '1';
         post.feel = feelInt.toString();
       }
@@ -82,9 +78,9 @@ class _VideoWidgetState extends State<VideoWidget> {
 
   void handleClickDisappointed() async {
     if (post.isFelt == '0') {
-      ProfileSevice().deleteFeelPost(post.id);
+      ProfileSevice().deleteFeelPost(post.id!);
     } else {
-      ProfileSevice().feelPost(post.id, "0");
+      ProfileSevice().feelPost(post.id!, "0");
     }
     setState(() {
       if (isClickKudos == true) {
@@ -95,13 +91,13 @@ class _VideoWidgetState extends State<VideoWidget> {
       }
 
       if (post.isFelt == '0') {
-        int feelInt = int.parse(post.feel) - 1;
+        int feelInt = int.parse(post.feel!) - 1;
         post.isFelt = '-1';
         post.feel = feelInt.toString();
       } else if (post.isFelt == '1') {
         post.isFelt = '0';
       } else {
-        int feelInt = int.parse(post.feel) + 1;
+        int feelInt = int.parse(post.feel!) + 1;
         post.isFelt = '0';
         post.feel = feelInt.toString();
       }
@@ -125,13 +121,64 @@ class _VideoWidgetState extends State<VideoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => {navigateToDetail()},
-      child: Card(
-          elevation: 0,
-          color: Colors.transparent,
-          child: _buildArticleItem(post)),
-    );
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: Scaffold(
+          body: Center(
+            child: Stack(alignment: Alignment.center, children: [
+              FutureBuilder(
+                  future: _initializeVideoPlayerFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.done) {
+                      return GestureDetector(
+                        onTap: () => {},
+                        child: Card(
+                            elevation: 0,
+                            color: Colors.transparent,
+                            child: _buildArticleItem(post)),
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  }),
+              Positioned(
+                child: FloatingActionButton(
+                  backgroundColor: Color.fromARGB(255, 48, 47, 47),
+                  tooltip: 'Capture Picture',
+                  elevation: 5,
+                  splashColor: Colors.grey,
+                  onPressed: () {
+                    setState(() {
+                      // If the video is playing, pause it.
+                      if (_videoPlayerController!.value.isPlaying) {
+                        _videoPlayerController!.pause();
+                      } else {
+                        // If the video is paused, play it.
+                        _videoPlayerController!.play();
+                      }
+                    });
+                  },
+                  // Display the correct icon depending on the state of the player.
+                  child: Icon(
+                    color: Colors.white,
+                    size: 29,
+                    _videoPlayerController!.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        ));
   }
 
   @override
@@ -141,16 +188,18 @@ class _VideoWidgetState extends State<VideoWidget> {
   }
 
   Widget _buildVideoSection(Video? video) {
-    print("videoa ${video!.url}");
-
-    return _videoPlayerController!.value.isInitialized
-        ? AspectRatio(
-            aspectRatio: _videoPlayerController!.value.aspectRatio,
-            child: VideoPlayer(_videoPlayerController!))
-        : Container();
+    return Container(
+      width: MediaQuery.of(context).size.width, // Set your desired width
+      height:
+          MediaQuery.of(context).size.height * 0.4, // Set your desired height
+      child: AspectRatio(
+        aspectRatio: _videoPlayerController!.value.aspectRatio,
+        child: VideoPlayer(_videoPlayerController!),
+      ),
+    );
   }
 
-  Widget _buildArticleItem(Post post) {
+  Widget _buildArticleItem(PostVideo post) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -166,19 +215,19 @@ class _VideoWidgetState extends State<VideoWidget> {
                   child: CircleAvatar(
                     backgroundColor: Colors.brown.shade800,
                     radius: 28,
-                    child: Image.network(post.author.avatar),
+                    child: Image.network(post.author!.avatar!),
                   ),
                 ),
               ),
               Container(
                 constraints: const BoxConstraints(
-                  maxWidth: 260,
+                  maxWidth: 300,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      post.author.name,
+                      post.author!.name!,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: const TextStyle(
@@ -186,7 +235,7 @@ class _VideoWidgetState extends State<VideoWidget> {
                     ),
                     Row(
                       children: [
-                        Text(formatTimeDifference(post.created, DateTime.now())
+                        Text(formatTimeDifference(post.created!, DateTime.now())
                             .toString()),
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 4),
@@ -211,7 +260,7 @@ class _VideoWidgetState extends State<VideoWidget> {
             child: Align(
               alignment: Alignment.topLeft,
               child: ExpandableText(
-                post.described,
+                post.described!,
                 style: const TextStyle(fontSize: 16),
                 expandText: 'show more',
                 collapseText: 'show less',
@@ -219,12 +268,6 @@ class _VideoWidgetState extends State<VideoWidget> {
               ),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(0),
-          //   child: post.video.url == ""
-          //       ? _buildImageSection(post.image)
-          //       : _buildVideoSection(post.video),
-          // ),
           _buildVideoSection(post.video),
           Padding(
             padding: const EdgeInsets.all(10),
@@ -248,7 +291,7 @@ class _VideoWidgetState extends State<VideoWidget> {
                 ],
               ),
               const Padding(padding: EdgeInsets.only(right: 4)),
-              Text(post.feel),
+              Text(post.feel!),
               const Spacer(),
               Text("${post.commentMark} bình luận")
             ]),
@@ -368,7 +411,7 @@ class _VideoWidgetState extends State<VideoWidget> {
 // ignore: must_be_immutable
 class BottomPopup extends StatelessWidget {
   BottomPopup({super.key, required this.post});
-  Post post;
+  PostVideo post;
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -440,7 +483,7 @@ class BottomPopup extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    EditPostArticle(id: post.id),
+                                    EditPostArticle(id: post.id!),
                               ),
                             );
                           },

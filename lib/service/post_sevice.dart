@@ -226,8 +226,9 @@ class PostSevice {
       final response = await dio.post('get_list_videos',
           data: request,
           options: Options(headers: {"Authorization": "Bearer $token"}));
-      listVideo = ListVideoFromJson(response.data);
       print(response.data);
+      listVideo = listVideoFromJson(response.data);
+      print("NULL O DAY NE ${listVideo.data!.post!.length}");
       return listVideo;
     } catch (e) {
       print(e);
