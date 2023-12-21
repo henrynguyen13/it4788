@@ -185,7 +185,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                         ? requestFriendList.length
                         : 0,
                   ),
-                ),
+                )
               ],
             );
           } else if (snapshot.hasError) {

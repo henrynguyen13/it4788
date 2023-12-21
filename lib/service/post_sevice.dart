@@ -10,6 +10,7 @@ import 'package:it4788/model/user_infor_profile.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:it4788/model/post.dart';
+import 'package:it4788/model/video.dart';
 import 'package:it4788/service/authStorage.dart';
 import 'api_service.dart';
 
@@ -202,6 +203,33 @@ class PostSevice {
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print(response.data);
       return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<ListVideo?> getListVideos(int index, int count) async {
+    ListVideo listVideo;
+    var token = await _getToken();
+    try {
+      Map<String, dynamic> request = {
+        "index": index,
+        'count': count,
+        'last_id': 0,
+        "in_campaign": "1",
+        "campaign_id": "1",
+        "latitude": "1.0",
+        "longitude": "1.0",
+      };
+      final dio = ApiService.createDio();
+      final response = await dio.post('get_list_videos',
+          data: request,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print(response.data);
+      listVideo = listVideoFromJson(response.data);
+      print("NULL O DAY NE ${listVideo.data!.post!.length}");
+      return listVideo;
     } catch (e) {
       print(e);
       rethrow;

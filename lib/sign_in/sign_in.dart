@@ -8,6 +8,7 @@ import 'package:it4788/sign_in/set_username.dart';
 import 'package:it4788/sign_in/verify_reset_password.dart';
 import 'package:it4788/sign_up/sign_up.dart';
 import 'package:it4788/sign_up/verify_email.dart';
+import 'package:it4788/firebase_api/firebase_api.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -26,6 +27,10 @@ class _SignIn extends State<SignInPage> {
 
   String verifyCodeData = "";
   String emailData = "";
+
+  void setDevToken() async {
+    FirebaseApi().setDevTokenFirebase();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,8 +169,8 @@ class _SignIn extends State<SignInPage> {
                               if (value == null || value.isEmpty) {
                                 return 'Đây là trường bắt buộc';
                               }
-                              if (value.length < 6) {
-                                return 'Mật khẩu phải có ít nhất 6 kí tự';
+                              if (value.length < 6 || value.length > 10) {
+                                return 'Mật khẩu phải có từ 6 đến 10 kí tự';
                               }
                               return null;
                             },
@@ -195,7 +200,7 @@ class _SignIn extends State<SignInPage> {
 
                                 if (message == 'OK' && username != '') {
                                   if (!context.mounted) return;
-
+                                  setDevToken();
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
@@ -205,7 +210,7 @@ class _SignIn extends State<SignInPage> {
                                   );
                                 } else {
                                   if (!context.mounted) return;
-
+                                  setDevToken();
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -243,7 +248,7 @@ class _SignIn extends State<SignInPage> {
                           padding: EdgeInsets.all(0),
                           child: Text(
                             "Quên mật khẩu?",
-                            style: TextStyle(color: Colors.blue),
+                            style: TextStyle(color: Color(0xFF1878F2)),
                           ),
                         ),
                       ),

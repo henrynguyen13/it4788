@@ -1,36 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:it4788/core/pallete.dart';
 import 'package:it4788/firebase_api/firebase_api.dart';
-
-import 'package:it4788/model/post.dart';
 import 'package:it4788/model/user_infor_profile.dart';
+import 'package:it4788/model/video.dart';
 import 'package:it4788/service/authStorage.dart';
 import 'package:it4788/service/profile_sevice.dart';
 import 'package:it4788/widgets/post_widget.dart';
 import 'package:it4788/service/post_sevice.dart';
+import 'package:it4788/widgets/video_widget.dart';
 import '../widgets/create_post.dart';
 
-class PostScreen extends StatefulWidget {
-  const PostScreen({Key? key}) : super(key: key);
+class VideoScreen extends StatefulWidget {
+  const VideoScreen({Key? key}) : super(key: key);
   @override
-  State<PostScreen> createState() => _PostScreenState();
+  State<VideoScreen> createState() => _VideoScreenState();
 }
 
-class _PostScreenState extends State<PostScreen> {
+class _VideoScreenState extends State<VideoScreen> {
   final ScrollController _scrollController =
       ScrollController(keepScrollOffset: true);
-  Future<ListPost?>? _future;
-  ListPost? listPostResponse;
+  Future<ListVideo?>? _future;
+  ListVideo? listVideoResponse;
   PostSevice? postSevice;
   UserInfor? userInfor;
-  List<Post> postList = <Post>[];
+  List<PostVideo> videoList = <PostVideo>[];
   int index = 0;
   int count = 20;
   bool isLoading = false;
-
-  void setDevToken() async {
-    FirebaseApi().setDevTokenFirebase();
-  }
 
   @override
   void initState() {
@@ -43,8 +39,6 @@ class _PostScreenState extends State<PostScreen> {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       }
     });
-    setDevToken();
-
   }
 
   void loadMoreData() async {
@@ -53,32 +47,18 @@ class _PostScreenState extends State<PostScreen> {
         isLoading = true;
         index += count; // Increment the index to load the next set of data
       });
-      var tmp = await postSevice?.getPostList(index, count);
+      var tmp = await postSevice?.getListVideos(index, count);
 
       setState(() {
-        postList.addAll(tmp!.data.post);
+        videoList.addAll(tmp!.data!.post!);
         isLoading = false;
       });
     }
   }
 
-  Future<String?> _getUserId() async {
-    return await Storage().getUserId();
-  }
-
   void getData() async {
     postSevice = PostSevice();
-    var userId = await _getUserId();
-
-    if (userId != null) {
-      _future = postSevice?.getPostList(index, count);
-      Future<UserInfor?> user = ProfileSevice().getUserInfor(userId);
-      user.then((value) => {
-            setState(() {
-              userInfor = value;
-            })
-          });
-    }
+    _future = postSevice?.getListVideos(index, count);
   }
 
   @override
@@ -87,38 +67,34 @@ class _PostScreenState extends State<PostScreen> {
       future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
-            postList.isEmpty) {
+            videoList.isEmpty) {
           return const Align(
               alignment: Alignment.center,
               child: CircularProgressIndicator(
                 color: Palette.facebookBlue,
               ));
         } else if (snapshot.hasData) {
-          if (postList.isEmpty) {
-            listPostResponse = snapshot.data!;
-            postList.addAll(listPostResponse!.data.post);
+          if (videoList.isEmpty) {
+            listVideoResponse = snapshot.data!;
+            videoList.addAll(listVideoResponse!.data!.post!);
           }
 
           return CustomScrollView(
             controller: _scrollController,
             slivers: [
-              SliverToBoxAdapter(
-                  child: userInfor != null
-                      ? CreatePostContainer(currentUser: userInfor!)
-                      : const SizedBox(width: double.infinity, height: 10)),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    if (index == postList.length) {
+                    if (index == videoList.length) {
                       return const SizedBox(
                           height: 300,
                           width: double.infinity,
                           child: Center(child: CircularProgressIndicator()));
                     } else {
-                      return PostWidget(post: postList[index]);
+                      return VideoWidget(post: videoList[index]);
                     }
                   },
-                  childCount: postList.length + (isLoading ? 1 : 0),
+                  childCount: videoList.length + (isLoading ? 1 : 0),
                 ),
               ),
             ],

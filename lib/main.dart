@@ -13,8 +13,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
-  // await FirebaseApi().initNotification();
+  await Firebase.initializeApp();
+  await FirebaseApi().initNotification();
   runApp(const MyApp());
 }
 
@@ -56,9 +56,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
       home: const SignUpPage(),
-      // routes: <String, WidgetBuilder>{
-      //   '/home': (BuildContext context) => new HomeScreen(),
-      // },
+      debugShowCheckedModeBanner: false,
     );
   }
 }

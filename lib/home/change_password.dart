@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:it4788/service/auth.dart';
+import 'package:it4788/service/authStorage.dart';
 
 import 'package:it4788/sign_in/sign_in.dart';
 import 'package:flutter/material.dart';
@@ -182,8 +183,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                               if (value == null || value.isEmpty) {
                                 return 'Đây là trường bắt buộc';
                               }
-                              if (value.length < 6) {
-                                return 'Mật khẩu phải có ít nhất 6 kí tự';
+                              if (value.length < 6 || value.length > 10) {
+                                return 'Mật khẩu phải có từ 6 đến 10 kí tự';
                               }
                               return null;
                             },
@@ -250,8 +251,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                               if (value == null || value.isEmpty) {
                                 return 'Đây là trường bắt buộc';
                               }
-                              if (value.length < 6) {
-                                return 'Mật khẩu phải có ít nhất 6 kí tự';
+                              if (value.length < 6 || value.length > 10) {
+                                return 'Mật khẩu phải có từ 6 đến 10 kí tự';
                               }
                               if (value != _newPasswordController.text) {
                                 return 'Xác nhận mật khẩu không đúng';
@@ -286,7 +287,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                               // }
                               final jsonResponse = json.decode(response.data);
                               String message = jsonResponse['message'];
-
+                              String token = jsonResponse['data']['token'];
+                              Storage().saveToken(token);
                               if (message == 'OK') {
                                 _logOut();
                                 print("OKKKKKKKKKKKKKKKKKKKKKKK");

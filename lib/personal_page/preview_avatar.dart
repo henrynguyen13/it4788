@@ -52,9 +52,12 @@ class _PreviewAvatarState extends State<PreviewAvatar> {
             ),
           ],
         ),
-        body: CircleAvatar(
-          radius: 200,
-          backgroundImage: FileImage(File(widget.imagePath)),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            radius: 200,
+            backgroundImage: FileImage(File(widget.imagePath)),
+          ),
         ));
   }
 }

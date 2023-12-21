@@ -1,18 +1,19 @@
-// Example: ImageListScreen.dart
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:it4788/model/post_response.dart';
-import 'package:it4788/post_article/image_carousel.dart';
 import 'package:it4788/post_article/image_carousel_add.dart';
 
 class ImageDetailAddScreen extends StatelessWidget {
   final List<XFile?> images;
   final int initialPage;
+
   final Function(int, String) onImageRemoved;
+  final String? type;
   const ImageDetailAddScreen({
+    super.key,
     required this.images,
     required this.initialPage,
     required this.onImageRemoved,
+    this.type,
   });
 
   @override
@@ -27,10 +28,10 @@ class ImageDetailAddScreen extends StatelessWidget {
         ),
       ),
       body: ImageCarouselAdd(
-        images: images,
-        initialPage: initialPage,
-        onImageRemoved: onImageRemoved,
-      ),
+          images: images,
+          initialPage: initialPage,
+          onImageRemoved: onImageRemoved,
+          type: type),
     );
   }
 }
