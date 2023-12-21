@@ -1123,7 +1123,7 @@ class _PersonalPageState extends State<PersonalPage> {
                                                                         '/home')))
                                                   },
                                               child: Container(
-                                                width: 300,
+                                                width: 280,
                                                 decoration: BoxDecoration(
                                                     border: Border.all(
                                                         width: 1,
