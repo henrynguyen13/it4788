@@ -31,6 +31,8 @@ class _PostScreenState extends State<PostScreen> {
   bool isLoading = false;
   bool isConnection = false;
   bool isGetFromCached = false;
+  bool activeConnection = false;
+
   void setDevToken() async {
     FirebaseApi().setDevTokenFirebase();
   }
@@ -38,7 +40,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   void initState() {
     super.initState();
-    getData();
+    checkConnection();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -64,6 +66,23 @@ class _PostScreenState extends State<PostScreen> {
     }
   }
 
+  Future checkConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        getData();
+        setState(() {
+          activeConnection = true;
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        activeConnection = false;
+      });
+      getDataFromCached();
+    }
+  }
+
   Future<String?> _getUserId() async {
     return await Storage().getUserId();
   }
@@ -86,43 +105,77 @@ class _PostScreenState extends State<PostScreen> {
   Future<void> cachedPost(String json) async {
     var box = await Hive.openBox('cached_post');
     await box.put('post_list', json);
-    print("CACHED NEEEEEEE");
     print(box.get('post_list'));
   }
 
   void getDataFromCached() async {
-    var box = await Hive.openBox('cached_post');
-    var tmp = listPostFromJson(box.get('post_list'));
+    if (isGetFromCached == false) {
+      var box = await Hive.openBox('cached_post');
+      var tmp = listPostFromJson(box.get('post_list'));
 
-    setState(() {
-      postList.addAll(tmp.data.post);
-      isGetFromCached = true;
-    });
+      setState(() {
+        postList.addAll(tmp.data.post);
+        isGetFromCached = true;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            postList.isEmpty) {
-          return const Align(
-              alignment: Alignment.center,
-              child: CircularProgressIndicator(
-                color: Palette.facebookBlue,
-              ));
-        } else if (snapshot.hasData) {
-          if (isGetFromCached == true) {
-            postList.clear();
-          }
-          if (postList.isEmpty) {
-            listPostResponse = snapshot.data!;
-            postList.addAll(listPostResponse!.data.post);
-            cachedPost(listPostToJson(snapshot.data!));
-          }
+    return activeConnection
+        ? FutureBuilder(
+            future: _future,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting &&
+                  postList.isEmpty) {
+                return const Align(
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      color: Palette.facebookBlue,
+                    ));
+              } else if (snapshot.hasData) {
+                if (postList.isEmpty) {
+                  listPostResponse = snapshot.data!;
+                  postList.addAll(listPostResponse!.data.post);
+                  cachedPost(listPostToJson(snapshot.data!));
+                }
 
-          return CustomScrollView(
+                return CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    SliverToBoxAdapter(
+                        child: userInfor != null
+                            ? CreatePostContainer(currentUser: userInfor!)
+                            : const SizedBox(
+                                width: double.infinity, height: 10)),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          if (index == postList.length) {
+                            return const SizedBox(
+                                height: 300,
+                                width: double.infinity,
+                                child:
+                                    Center(child: CircularProgressIndicator()));
+                          } else {
+                            return PostWidget(post: postList[index]);
+                          }
+                        },
+                        childCount: postList.length + (isLoading ? 1 : 0),
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return const Align(
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      color: Palette.facebookBlue,
+                    ));
+              }
+            },
+          )
+        : CustomScrollView(
             controller: _scrollController,
             slivers: [
               SliverToBoxAdapter(
@@ -146,34 +199,5 @@ class _PostScreenState extends State<PostScreen> {
               ),
             ],
           );
-        } else {
-          getDataFromCached();
-          return CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              SliverToBoxAdapter(
-                  child: userInfor != null
-                      ? CreatePostContainer(currentUser: userInfor!)
-                      : const SizedBox(width: double.infinity, height: 10)),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    if (index == postList.length) {
-                      return const SizedBox(
-                          height: 300,
-                          width: double.infinity,
-                          child: Center(child: CircularProgressIndicator()));
-                    } else {
-                      return PostWidget(post: postList[index]);
-                    }
-                  },
-                  childCount: postList.length + (isLoading ? 1 : 0),
-                ),
-              ),
-            ],
-          );
-        }
-      },
-    );
   }
 }
